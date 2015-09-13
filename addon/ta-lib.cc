@@ -1,6 +1,6 @@
 #include <node.h>
 
-#include "ta_libc.h"
+#include "ta_libc.h" //http://www.ta-lib.org/hdr_dw.html
 
 using node::AtExit;
 using namespace v8;
