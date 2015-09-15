@@ -1,6 +1,7 @@
 #include <node.h>
 
-#include "ta_libc.h" //http://www.ta-lib.org/hdr_dw.html
+//http://www.ta-lib.org/hdr_dw.html
+#include "ta_libc.h"
 
 using node::AtExit;
 using namespace v8;
@@ -16,12 +17,6 @@ using namespace v8;
  * optInTimePeriod:(From 2 to 100000)
  *    Number of period
  */
-// TA.SMA(/*Number*/ startIdx,
-//        /*Number*/ endIdx,
-//        /*const Array<Number>*/ inReal[],
-//        /*Number*/ optInTimePeriod, // From 2 to 100000
-//        /*Function(Number outBegIdx, Number outNBElement, Array<Number> outReal)*/ callback)
-// Returns: Number (TA_RetCode)
 void SMA(const FunctionCallbackInfo<Value>& args) {
     TA_RetCode retCode;
     
@@ -75,16 +70,15 @@ void SMA(const FunctionCallbackInfo<Value>& args) {
 
 static void Shutdown(void*) {
     TA_Shutdown();
-    printf("TA-Lib did correctly shutdown.\n");
+    // printf("TA-Lib did correctly shutdown.\n");
 }
 
 void init(Local<Object> exports) {
     TA_RetCode retCode = TA_Initialize();    
-    if(retCode != TA_SUCCESS)
-        printf("Cannot initialize TA-Lib (%d)!\n", retCode);
-    else
-    {
-        printf("TA-Lib correctly initialized.\n");
+    if(retCode != TA_SUCCESS) {
+        // printf("Cannot initialize TA-Lib (%d)!\n", retCode);
+    } else {
+        // printf("TA-Lib correctly initialized.\n");
         
         NODE_SET_METHOD(exports, "SMA", SMA);
         
