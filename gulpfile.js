@@ -13,19 +13,19 @@ gulp.task('clean', function () {
 });
 
 gulp.task('build:js', function () {
-	return gulp.src(['src/**/*.ts', '!src/test/**'])
+	return gulp.src(['src/**/*.ts', '!src/test/**', 'addon/**/*.d.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(gulp.dest('release'));
 });
 
 gulp.task('build:test', function () {
-	return gulp.src('src/test/**/*.ts')
+	return gulp.src(['src/test/**/*.ts', 'addon/**/*.d.ts'])
 		.pipe(tsc({ target: 'ES5', module: 'commonjs' }))
 		.js.pipe(gulp.dest('release/test'));
 });
 
 gulp.task('build', ['clean'], function () {
-	return gulp.src('src/**/*.ts')
+	return gulp.src(['src/**/*.ts', 'addon/**/*.d.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(through2.obj(function (chunk, enc, callback) {
 			chunk.contents = new Buffer(
