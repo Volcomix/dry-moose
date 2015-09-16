@@ -14,6 +14,7 @@ describe('ta-lib', function() {
                     outBegIdx.should.equal(2);
                     outNBElement.should.equal(3);
                     outReal.should.have.length(3);
+                    outReal.should.have.members([2, 3, 4]);
                     done();
                 });
         });
