@@ -1,9 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../addon/ta-lib.d.ts" />
 
 require('chai').should();
 
-import TA = require('../../build/Release/ta-lib');
+import TA = require('ta-lib');
 
 describe('ta-lib', function() {
     describe('#SMA()', function() {

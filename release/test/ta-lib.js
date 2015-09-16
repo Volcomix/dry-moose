@@ -1,7 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../addon/ta-lib.d.ts" />
 require('chai').should();
-var TA = require('../../build/Release/ta-lib');
+var TA = require("../../build/Release/ta-lib");
 describe('ta-lib', function () {
     describe('#SMA()', function () {
         it('should return Simple Moving Average', function (done) {

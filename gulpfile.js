@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var tsc = require('gulp-typescript');
 var mocha = require('gulp-mocha');
 var del = require('del');
+var through2 = require('through2');
 
 var tsProject = tsc.createProject('tsconfig.json');
 
@@ -26,7 +27,18 @@ gulp.task('build:test', function () {
 gulp.task('build', ['clean'], function () {
 	return gulp.src('src/**/*.ts')
 		.pipe(tsc(tsProject))
-		.js.pipe(gulp.dest('release'));
+		.js.pipe(through2.obj(function (chunk, enc, callback) {
+			chunk.contents = new Buffer(
+				chunk.contents.toString().replace(
+					/require\s*\(\s*['"]ta-lib['"]\s*\)/g,
+					'require("../../build/Release/ta-lib")'
+				)
+			);
+
+			this.push(chunk);
+			callback();
+		}))
+		.pipe(gulp.dest('release'));
 });
 
 gulp.task('test', ['build'], function () {
