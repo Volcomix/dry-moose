@@ -22,18 +22,17 @@ void SMA(const FunctionCallbackInfo<Value>& args) {
     
     Isolate* isolate = args.GetIsolate();
     
-    // Parse input
+    // Get input
     int startIdx = args[0]->NumberValue();
     int endIdx = args[1]->NumberValue();
-    
     Local<Array> inArr = Local<Array>::Cast(args[2]);
     int length = inArr->Length();
+    int optInTimePeriod = args[3]->NumberValue();
+    
     double * inReal = new double[length];
     for (int i = 0; i < length; i++) {
         inReal[i] = inArr->Get(i)->NumberValue();
     }
-    
-    int optInTimePeriod = args[3]->NumberValue();
     
     // Prepare output
     int outBegIdx;
@@ -43,10 +42,7 @@ void SMA(const FunctionCallbackInfo<Value>& args) {
     // Call TA-Lib function
     retCode = TA_SMA(startIdx, endIdx, inReal, optInTimePeriod,
                      &outBegIdx, &outNBElement, outReal);
-    
-    // Set return code
-    args.GetReturnValue().Set(Number::New(isolate, retCode));
-    
+
     delete[] inReal;
     
     // Get output
@@ -54,18 +50,17 @@ void SMA(const FunctionCallbackInfo<Value>& args) {
     for (int i = 0; i < outNBElement; i++) {
         outArr->Set(i, Number::New(isolate, outReal[i]));
     }
+    
     delete[] outReal;
     
-    Local<Function> cb = Local<Function>::Cast(args[4]);
-    const unsigned argc = 3;
-    Local<Value> argv[argc] = {
-        Number::New(isolate, outBegIdx),
-        Number::New(isolate, outNBElement),
-        outArr
-    };
+    // Set up result
+    Local<Object> obj = Object::New(isolate);
+    obj->Set(String::NewFromUtf8(isolate, "retCode"), Number::New(isolate, retCode));
+    obj->Set(String::NewFromUtf8(isolate, "outBegIdx"), Number::New(isolate, outBegIdx));
+    obj->Set(String::NewFromUtf8(isolate, "outNBElement"), Number::New(isolate, outNBElement));
+    obj->Set(String::NewFromUtf8(isolate, "outReal"), outArr);
     
-    // Call back javascript with output
-    cb->Call(Null(isolate), argc, argv);
+    args.GetReturnValue().Set(obj);
 }
 
 static void Shutdown(void*) {
