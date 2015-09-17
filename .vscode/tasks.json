@@ -18,7 +18,7 @@
         "owner": "cpp",
         "fileLocation": ["relative", "${workspaceRoot}/dry-moose"],
         "pattern": {
-            "regexp": "^(.*):(\\d+):(\\d+):\\s+(avertissement|erreur):\\s+(.*)$",
+            "regexp": "^(.*):(\\d+):(\\d+):\\s+(attention|erreur)\\s+:\\s+(.*)$",
             "file": 1,
             "line": 2,
             "column": 3,
