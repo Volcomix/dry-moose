@@ -6,43 +6,49 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "gulp/gulp.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "orchestrator/orchestrator.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "node/node.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "q/Q.d.ts": {
       "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "gulp-typescript/gulp-typescript.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "gulp-mocha/gulp-mocha.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "mocha/mocha.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "chai/chai.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "assertion-error/assertion-error.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "del/del.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "glob/glob.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "minimatch/minimatch.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     },
     "through2/through2.d.ts": {
-      "commit": "52b0ea5c9719831eecf6ba7436660e30061a4b3c"
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
+    },
+    "moment/moment.d.ts": {
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
+    },
+    "moment/moment-node.d.ts": {
+      "commit": "6f6e5c7dd9effe21fee14eb65fe340ecbbc8580a"
     }
   }
 }

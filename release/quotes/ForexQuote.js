@@ -1,3 +1,4 @@
+/// <reference path="../../typings/tsd.d.ts" />
 var ForexQuote = (function () {
     function ForexQuote(dateTime, open, high, low, close, volume) {
         this._dateTime = dateTime;

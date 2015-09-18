@@ -1,7 +1,11 @@
+/// <reference path="../../typings/tsd.d.ts" />
+
 import fs = require('fs');
 import readline = require('readline');
 
-import ForexQuote = require('./ForexQuote');
+import moment = require('moment');
+
+import ForexQuote = require('../quotes/ForexQuote');
 
 export function fromFile(filename: string) {
     var rl = readline.createInterface({
@@ -12,7 +16,7 @@ export function fromFile(filename: string) {
     rl.on('line', function(line) {
         var arr = line.split(';');
 		
-		var dateTime = new Date(arr[0]);
+		var dateTime = moment(arr[0] + '-0500', 'YYYYMMDD hhmmssZ');
 		var open = parseFloat(arr[1]);
 		var high = parseFloat(arr[2]);
         var low = parseFloat(arr[3]);
@@ -21,6 +25,6 @@ export function fromFile(filename: string) {
 		
         var quote = new ForexQuote(dateTime, open, high, low, close, volume);
 		
-        console.log(quote);
+        console.log(quote.dateTime.format() + " => " + quote.close);
     });
 }

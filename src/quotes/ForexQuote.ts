@@ -1,6 +1,10 @@
+/// <reference path="../../typings/tsd.d.ts" />
+
+import moment = require('moment');
+
 class ForexQuote {
     
-    private _dateTime: Date;
+    private _dateTime: moment.Moment;
     private _open: number;
     private _high: number;
     private _low: number;
@@ -8,7 +12,7 @@ class ForexQuote {
     private _volume: number;
     
     constructor(
-        dateTime: Date,
+        dateTime: moment.Moment,
         open: number,
         high: number,
         low: number,
@@ -23,23 +27,23 @@ class ForexQuote {
         this._volume = volume;
     }
     
-    get dateTime() {
+    get dateTime(): moment.Moment {
         return this._dateTime;
     }
     
-    get open() {
+    get open(): number {
         return this._open;
     }
     
-    get high() {
+    get high(): number {
         return this._high;
     }
     
-    get low() {
+    get low(): number {
         return this._low;
     }
     
-    get close() {
+    get close(): number {
         return this._close;
     }
     
