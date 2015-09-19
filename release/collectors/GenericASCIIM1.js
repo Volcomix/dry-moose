@@ -11,8 +11,8 @@ var AbstractCollector = require('./AbstractCollector');
 var ForexQuote = require('../quotes/ForexQuote');
 var GenericASCIIM1 = (function (_super) {
     __extends(GenericASCIIM1, _super);
-    function GenericASCIIM1(processor, filename, rewards) {
-        _super.call(this, processor);
+    function GenericASCIIM1(processor, investor, filename, rewards) {
+        _super.call(this, processor, investor);
         this.filename = filename;
         this.rewards = rewards;
     }
@@ -40,7 +40,10 @@ var GenericASCIIM1 = (function (_super) {
                     percent: reward.percent
                 };
             });
-            _this.processor.process(quote, rewards);
+            var option = _this.processor.process(quote, rewards);
+            if (option) {
+                _this.investor.invest(option);
+            }
         });
     };
     return GenericASCIIM1;

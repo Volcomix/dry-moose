@@ -7,6 +7,7 @@ import moment = require('moment');
 
 import AbstractCollector = require('./AbstractCollector');
 import IProcessor = require('../processors/IProcessor');
+import IInvestor = require('../investors/IInvestor');
 import ForexQuote = require('../quotes/ForexQuote');
 import Reward = require('../options/Reward');
 import IOption = require('../options/IOption');
@@ -15,10 +16,11 @@ class GenericASCIIM1 extends AbstractCollector {
     
     constructor(
         processor: IProcessor<ForexQuote, IOption>,
+        investor: IInvestor,
         private filename: string,
         private rewards: Reward[]
     ){
-        super(processor);
+        super(processor, investor);
     }
     
     collect() {
@@ -49,7 +51,10 @@ class GenericASCIIM1 extends AbstractCollector {
                 }
             });
             
-            this.processor.process(quote, rewards);
+            var option = this.processor.process(quote, rewards);
+            if (option) {
+                this.investor.invest(option);
+            }
         });
     }
 }
