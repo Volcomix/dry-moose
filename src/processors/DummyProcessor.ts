@@ -9,9 +9,6 @@ class DummyProcessor extends AbstractProcessor<ForexQuote, BinaryOption> {
 	private lastQuote: ForexQuote;
 	
 	process(quote: ForexQuote): BinaryOption {
-		
-        console.log(quote.dateTime.format() + " => " + quote.close);
-			
 		var option: BinaryOption;
 		if (this.lastQuote && this.lastQuote.close < quote.close) {
 			option = BinaryOption.Call;

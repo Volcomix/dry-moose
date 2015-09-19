@@ -1,10 +1,14 @@
-/// <reference path="../../typings/tsd.d.ts" />
-var chai = require('chai');
-var TA = require("../../build/Release/ta-lib");
+/// <reference path="../../../typings/tsd.d.ts" />
+
+import chai = require('chai')
+
+import TA = require('ta-lib');
+
 chai.should();
-describe('ta-lib', function () {
-    describe('#SMA()', function () {
-        it('should return Simple Moving Average', function () {
+
+describe('ta-lib', function() {
+    describe('#SMA()', function() {
+        it('should return Simple Moving Average', function() {
             var result = TA.SMA(0, 4, [1, 2, 3, 4, 5], 3);
             result.retCode.should.equal(0);
             result.outBegIdx.should.equal(2);
@@ -13,8 +17,8 @@ describe('ta-lib', function () {
             result.outReal.should.have.members([2, 3, 4]);
         });
     });
-    describe('#MACD()', function () {
-        it('should return Moving Average Convergence/Divergence', function () {
+    describe('#MACD()', function() {
+        it('should return Moving Average Convergence/Divergence', function() {
             var result = TA.MACD(0, 4, [1, 8, 18, 7, 11], 2, 3, 2);
             result.retCode.should.equal(0);
             result.outBegIdx.should.equal(3);

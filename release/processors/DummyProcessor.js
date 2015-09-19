@@ -12,7 +12,6 @@ var DummyProcessor = (function (_super) {
         _super.apply(this, arguments);
     }
     DummyProcessor.prototype.process = function (quote) {
-        console.log(quote.dateTime.format() + " => " + quote.close);
         var option;
         if (this.lastQuote && this.lastQuote.close < quote.close) {
             option = BinaryOption.Call;

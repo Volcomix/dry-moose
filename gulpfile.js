@@ -1,5 +1,7 @@
 /// <reference path="typings/tsd.d.ts" />
 
+var path = require('path');
+
 var gulp = require('gulp');
 var tsc = require('gulp-typescript');
 var mocha = require('gulp-mocha');
@@ -31,7 +33,7 @@ gulp.task('build', ['clean'], function () {
 			chunk.contents = new Buffer(
 				chunk.contents.toString().replace(
 					/require\s*\(\s*['"]ta-lib['"]\s*\)/g,
-					'require("../../build/Release/ta-lib")'
+					'require("' + path.relative(chunk.relative, 'build/Release/ta-lib') + '")'
 				)
 			);
 
