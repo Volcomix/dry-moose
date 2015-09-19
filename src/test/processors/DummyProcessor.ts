@@ -17,7 +17,7 @@ describe('DummyProcessor', function() {
         
         var rewards: Reward[] = [{
                 expiration: moment().add({ minutes: 30 }),
-                percent: 0.75
+                payout: 0.75
         }];
         
         context('when not enough quotes', function() {

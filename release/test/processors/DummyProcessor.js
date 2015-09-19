@@ -10,7 +10,7 @@ describe('DummyProcessor', function () {
     describe('#process()', function () {
         var rewards = [{
                 expiration: moment().add({ minutes: 30 }),
-                percent: 0.75
+                payout: 0.75
             }];
         context('when not enough quotes', function () {
             it('should not return an option', function () {

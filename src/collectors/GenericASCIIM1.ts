@@ -47,7 +47,7 @@ class GenericASCIIM1 extends AbstractCollector {
                         hours: reward.expiration.hours(),
                         minutes: reward.expiration.minutes()
                     }),
-                    percent: reward.percent
+                    payout: reward.payout
                 }
             });
             

@@ -5,8 +5,8 @@ import moment = require('moment');
 interface Reward {
 	expiration: moment.Moment;
 	
-	/** 0..1 */
-	percent: number;
+	/** Percent 0..1 */
+	payout: number;
 }
 
 export = Reward;

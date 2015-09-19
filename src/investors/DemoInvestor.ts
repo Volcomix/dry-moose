@@ -8,3 +8,5 @@ class DemoInvestor implements IInvestor {
 		console.log(option);
 	}
 }
+
+export = DemoInvestor;

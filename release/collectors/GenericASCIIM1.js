@@ -37,7 +37,7 @@ var GenericASCIIM1 = (function (_super) {
                         hours: reward.expiration.hours(),
                         minutes: reward.expiration.minutes()
                     }),
-                    percent: reward.percent
+                    payout: reward.payout
                 };
             });
             var option = _this.processor.process(quote, rewards);

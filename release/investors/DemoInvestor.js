@@ -7,3 +7,4 @@ var DemoInvestor = (function () {
     };
     return DemoInvestor;
 })();
+module.exports = DemoInvestor;
