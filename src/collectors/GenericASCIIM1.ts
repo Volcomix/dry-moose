@@ -7,13 +7,12 @@ import moment = require('moment');
 
 import AbstractCollector = require('./AbstractCollector');
 import AbstractProcessor = require('../processors/AbstractProcessor');
-import IQuote = require('../quotes/IQuote');
 import ForexQuote = require('../quotes/ForexQuote');
 import IOption = require('../options/IOption');
 
 class GenericASCIIM1 extends AbstractCollector {
     
-    constructor(processor: AbstractProcessor<IQuote, IOption>, private filename: string) {
+    constructor(processor: AbstractProcessor<ForexQuote, IOption>, private filename: string) {
         super(processor);
     }
     
