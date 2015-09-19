@@ -2,7 +2,9 @@
 
 import moment = require('moment');
 
-class ForexQuote {
+import IQuote = require('./IQuote');
+
+class ForexQuote implements IQuote {
     
     private _dateTime: moment.Moment;
     private _open: number;
