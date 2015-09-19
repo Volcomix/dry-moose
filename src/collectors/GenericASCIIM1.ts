@@ -6,13 +6,18 @@ import readline = require('readline');
 import moment = require('moment');
 
 import AbstractCollector = require('./AbstractCollector');
-import AbstractProcessor = require('../processors/AbstractProcessor');
+import IProcessor = require('../processors/IProcessor');
 import ForexQuote = require('../quotes/ForexQuote');
+import Reward = require('../options/Reward');
 import IOption = require('../options/IOption');
 
 class GenericASCIIM1 extends AbstractCollector {
     
-    constructor(processor: AbstractProcessor<ForexQuote, IOption>, private filename: string) {
+    constructor(
+        processor: IProcessor<ForexQuote, IOption>,
+        private filename: string,
+        private rewards: Reward[]
+    ){
         super(processor);
     }
     
@@ -34,7 +39,17 @@ class GenericASCIIM1 extends AbstractCollector {
             
             var quote = new ForexQuote(dateTime, open, high, low, close, volume);
             
-            this.processor.process(quote);
+            var rewards: Reward[] = this.rewards.map(function(reward: Reward) {
+                return {
+                    expiration: moment().add({
+                        hours: reward.expiration.hours(),
+                        minutes: reward.expiration.minutes()
+                    }),
+                    percent: reward.percent
+                }
+            });
+            
+            this.processor.process(quote, rewards);
         });
     }
 }

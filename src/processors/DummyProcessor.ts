@@ -1,21 +1,22 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import AbstractProcessor = require('./AbstractProcessor');
+import IProcessor = require('./IProcessor');
 import ForexQuote = require('../quotes/ForexQuote');
+import Reward = require('../options/Reward');
 import BinaryOption = require('../options/BinaryOption');
 
-class DummyProcessor extends AbstractProcessor<ForexQuote, BinaryOption> {
+class DummyProcessor implements IProcessor<ForexQuote, BinaryOption> {
 	
 	private lastQuote: ForexQuote;
 	
-	process(quote: ForexQuote): BinaryOption {
+	process(quote: ForexQuote, rewards: Reward[]): BinaryOption {
 		var option: BinaryOption;
 		if (this.lastQuote && this.lastQuote.close < quote.close) {
-			option = BinaryOption.Call;
+			var expiration = rewards[0].expiration;
+			option = new BinaryOption(expiration, 10, BinaryOption.Direction.Call);
 		} else if (this.lastQuote && this.lastQuote.close > quote.close) {
-			option = BinaryOption.Put;
-		} else {
-			option = BinaryOption.None;
+			var expiration = rewards[0].expiration;
+			option = new BinaryOption(expiration, 10, BinaryOption.Direction.Put);
 		}
 		this.lastQuote = quote;
 		return option;

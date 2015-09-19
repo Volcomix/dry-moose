@@ -5,14 +5,35 @@ import moment = require('moment');
 import IOption = require('./IOption');
 
 class BinaryOption implements IOption {	
-	constructor(private option: BinaryOption._option) { }
+	
+	private _expiration: moment.Moment;
+	private _amount: number;
+	private _direction: BinaryOption.Direction;
+	
+	constructor(
+		expiration: moment.Moment,
+		amount: number,
+		direction: BinaryOption.Direction
+	) {
+		this._expiration = expiration;
+		this._amount = amount;
+		this._direction = direction;
+	}
+	
+	get expiration() {
+		return this._expiration;
+	}
+	
+	get amount() {
+		return this._amount;
+	}
+	
+	get direction() {
+		return this._direction;
+	}
 }
 module BinaryOption {
-	export enum _option { Call, Put, None };
-	
-	export var Call: BinaryOption = new BinaryOption(_option.Call);
-	export var Put: BinaryOption = new BinaryOption(_option.Put);
-	export var None: BinaryOption = new BinaryOption(_option.None);
+	export enum Direction { Call, Put };
 }
 
 export = BinaryOption;

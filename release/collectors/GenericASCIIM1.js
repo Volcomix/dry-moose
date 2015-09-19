@@ -11,9 +11,10 @@ var AbstractCollector = require('./AbstractCollector');
 var ForexQuote = require('../quotes/ForexQuote');
 var GenericASCIIM1 = (function (_super) {
     __extends(GenericASCIIM1, _super);
-    function GenericASCIIM1(processor, filename) {
+    function GenericASCIIM1(processor, filename, rewards) {
         _super.call(this, processor);
         this.filename = filename;
+        this.rewards = rewards;
     }
     GenericASCIIM1.prototype.collect = function () {
         var _this = this;
@@ -30,7 +31,16 @@ var GenericASCIIM1 = (function (_super) {
             var close = parseFloat(arr[4]);
             var volume = parseFloat(arr[5]);
             var quote = new ForexQuote(dateTime, open, high, low, close, volume);
-            _this.processor.process(quote);
+            var rewards = _this.rewards.map(function (reward) {
+                return {
+                    expiration: moment().add({
+                        hours: reward.expiration.hours(),
+                        minutes: reward.expiration.minutes()
+                    }),
+                    percent: reward.percent
+                };
+            });
+            _this.processor.process(quote, rewards);
         });
     };
     return GenericASCIIM1;
