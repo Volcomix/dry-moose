@@ -3,6 +3,7 @@
 import fs = require('fs');
 import readline = require('readline');
 
+import Q = require('q');
 import moment = require('moment');
 
 import AbstractCollector = require('./AbstractCollector');
@@ -23,38 +24,46 @@ class GenericASCIIM1 extends AbstractCollector {
         super(processor, investor);
     }
     
-    collect() {
-        var rl = readline.createInterface({
-            input: fs.createReadStream(this.filename),
-            output: null
-        });
+    collect(): Q.Promise<{}> {
+        return Q.Promise((resolve, reject, notify) => {
+            var rs = fs.createReadStream(this.filename);
         
-        rl.on('line', (line) => {
-            var arr = line.split(';');
+            rs.on('error', reject);
             
-            var dateTime = moment(arr[0] + '-0500', 'YYYYMMDD hhmmssZ');
-            var open = parseFloat(arr[1]);
-            var high = parseFloat(arr[2]);
-            var low = parseFloat(arr[3]);
-            var close = parseFloat(arr[4]);
-            var volume = parseFloat(arr[5]);
+            var rl = readline.createInterface({
+                input: rs,
+                output: null
+            });
             
-            var quote = new ForexQuote(dateTime, open, high, low, close, volume);
-            
-            var rewards: Reward[] = this.rewards.map(function(reward: Reward) {
-                return {
-                    expiration: moment().add({
-                        hours: reward.expiration.hours(),
-                        minutes: reward.expiration.minutes()
-                    }),
-                    payout: reward.payout
+            rl.on('line', (line) => {
+                var arr = line.split(';');
+                
+                var dateTime = moment(arr[0] + '-0500', 'YYYYMMDD hhmmssZ');
+                var open = parseFloat(arr[1]);
+                var high = parseFloat(arr[2]);
+                var low = parseFloat(arr[3]);
+                var close = parseFloat(arr[4]);
+                var volume = parseFloat(arr[5]);
+                
+                var quote = new ForexQuote(dateTime, open, high, low, close, volume);
+                
+                var rewards: Reward[] = this.rewards.map(function(reward: Reward) {
+                    return {
+                        expiration: dateTime.clone().add({
+                            hours: reward.expiration.hours(),
+                            minutes: reward.expiration.minutes()
+                        }),
+                        payout: reward.payout
+                    }
+                });
+                
+                var option = this.processor.process(quote, rewards);
+                if (option) {
+                    this.investor.invest(option);
                 }
             });
             
-            var option = this.processor.process(quote, rewards);
-            if (option) {
-                this.investor.invest(option);
-            }
+            rl.on('close', resolve);
         });
     }
 }

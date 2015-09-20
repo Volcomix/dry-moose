@@ -1,5 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
+import Q = require('q');
+
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
 import IQuote = require('../quotes/IQuote');
@@ -23,7 +25,7 @@ abstract class AbstractCollector {
 		return this._investor;
 	}
 	
-	abstract collect();
+	abstract collect(): Q.Promise<{}>;
 }
 
 export = AbstractCollector;
