@@ -34,6 +34,16 @@ class BinaryOption implements IOption {
 }
 module BinaryOption {
 	export enum Direction { Call, Put };
+	export module Direction {
+		export function toString(direction: Direction): string {
+			switch (direction) {
+				case Direction.Call:
+					return 'Call';
+				case Direction.Put:
+					return 'Put';
+			}
+		}
+	}
 }
 
 export = BinaryOption;

@@ -8,7 +8,7 @@ class ConsoleInvestor implements IInvestor {
 	invest(option: IOption) {
 		if (option instanceof BinaryOption) {
 			console.log(
-				(option.direction == BinaryOption.Direction.Call ? 'Call' : 'Put') +
+				BinaryOption.Direction.toString(option.direction) +
 				' for ' + option.amount + '$ expiring at ' + option.expiration.format()
 			);
 		} else {

@@ -36,5 +36,17 @@ var BinaryOption;
     })(BinaryOption.Direction || (BinaryOption.Direction = {}));
     var Direction = BinaryOption.Direction;
     ;
+    var Direction;
+    (function (Direction) {
+        function toString(direction) {
+            switch (direction) {
+                case Direction.Call:
+                    return 'Call';
+                case Direction.Put:
+                    return 'Put';
+            }
+        }
+        Direction.toString = toString;
+    })(Direction = BinaryOption.Direction || (BinaryOption.Direction = {}));
 })(BinaryOption || (BinaryOption = {}));
 module.exports = BinaryOption;
