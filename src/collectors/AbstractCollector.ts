@@ -24,7 +24,7 @@ abstract class AbstractCollector {
 	abstract collect(): Q.Promise<{}>;
 	
 	run(): Q.Promise<{}> {
-		return Q.nfcall(MongoClient.connect, 'mongodb://localhost:27017/test')
+		return Q.nfcall(MongoClient.connect, 'mongodb://localhost:27017/dry-moose')
 		.then((db: mongodb.Db) => {
 			this.db = db;
 			return this.collect();

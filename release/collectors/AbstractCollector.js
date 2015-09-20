@@ -9,7 +9,7 @@ var AbstractCollector = (function () {
     }
     AbstractCollector.prototype.run = function () {
         var _this = this;
-        return Q.nfcall(MongoClient.connect, 'mongodb://localhost:27017/test')
+        return Q.nfcall(MongoClient.connect, 'mongodb://localhost:27017/dry-moose')
             .then(function (db) {
             _this.db = db;
             return _this.collect();

@@ -11,8 +11,8 @@ chai.should();
 describe('GenericASCIIM1', function () {
     describe('#collect()', function () {
         var rewards = [new Reward(moment({ minutes: 30 }), 0.75)];
-        it('should pass quotes to processor', function () {
-            return new GenericASCIIM1({ process: function (quote, rewards) {
+        it('should pass quotes to processor', function (done) {
+            new GenericASCIIM1({ process: function (quote, rewards) {
                     rewards.should.have.length(1);
                     var reward = rewards[0];
                     reward.payout.should.equal(0.75);
@@ -43,14 +43,15 @@ describe('GenericASCIIM1', function () {
                             quote.close.should.equal(1.095080);
                             quote.volume.should.equal(0);
                             reward.expiration.minutes().should.equal(35);
+                            done();
                             break;
                     }
                     this.count = (this.count || 0) + 1;
                     return null;
                 } }, { invest: function (option) { } }, 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
-        it('should pass actions to investor', function () {
-            return new GenericASCIIM1(new DummyProcessor(), { invest: function (option) {
+        it('should pass actions to investor', function (done) {
+            new GenericASCIIM1(new DummyProcessor(), { invest: function (option) {
                     switch (this.count) {
                         case undefined:
                             option.expiration.isSame('2015-06-01 00:34:00-0500').should.be.true;
@@ -61,6 +62,7 @@ describe('GenericASCIIM1', function () {
                             option.expiration.isSame('2015-06-01 00:35:00-0500').should.be.true;
                             option.amount.should.equal(10);
                             option.direction.should.equal(BinaryOption.Direction.Call);
+                            done();
                             break;
                     }
                     this.count = (this.count || 0) + 1;

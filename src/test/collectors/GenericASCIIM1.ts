@@ -21,8 +21,8 @@ describe('GenericASCIIM1', function() {
 		
 		var rewards: Reward[] = [ new Reward(moment({minutes: 30}), 0.75) ];
 		
-		it('should pass quotes to processor', function() {
-			return new GenericASCIIM1(
+		it('should pass quotes to processor', function(done) {
+			new GenericASCIIM1(
 				{ process: function(quote: ForexQuote, rewards: Reward[]): BinaryOption {
 					rewards.should.have.length(1);
 					var reward = rewards[0];
@@ -54,6 +54,7 @@ describe('GenericASCIIM1', function() {
 							quote.close.should.equal(1.095080);
 							quote.volume.should.equal(0);
 							reward.expiration.minutes().should.equal(35);
+							done();
 							break;
 					}
 					this.count = (this.count || 0) + 1;
@@ -64,8 +65,8 @@ describe('GenericASCIIM1', function() {
 				rewards
 			).run();
 		});
-		it('should pass actions to investor', function() {
-			return new GenericASCIIM1(
+		it('should pass actions to investor', function(done) {
+			new GenericASCIIM1(
 				new DummyProcessor(),
 				{ invest: function(option: BinaryOption) {
 					switch (this.count) {
@@ -78,6 +79,7 @@ describe('GenericASCIIM1', function() {
 							option.expiration.isSame('2015-06-01 00:35:00-0500').should.be.true;
 							option.amount.should.equal(10);
 							option.direction.should.equal(BinaryOption.Direction.Call);
+							done();
 							break;
 					}
 					this.count = (this.count || 0) + 1;
