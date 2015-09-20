@@ -1,5 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-interface IQuote { }
+import IDocument = require('../database/IDocument');
+
+interface IQuote extends IDocument { }
 
 export = IQuote;

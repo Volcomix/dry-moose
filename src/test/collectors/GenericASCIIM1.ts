@@ -19,10 +19,7 @@ chai.should();
 describe('GenericASCIIM1', function() {	
 	describe('#collect()', function() {
 		
-		var rewards: Reward[] = [{
-			expiration: moment({minutes: 30}),
-			payout: 0.75
-		}];
+		var rewards: Reward[] = [ new Reward(moment({minutes: 30}), 0.75) ];
 		
 		it('should pass quotes to processor', function() {
 			return new GenericASCIIM1(
@@ -65,7 +62,7 @@ describe('GenericASCIIM1', function() {
 				{ invest: function(option: IOption) { } },
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards
-			).collect();
+			).run();
 		});
 		it('should pass actions to investor', function() {
 			return new GenericASCIIM1(
@@ -87,7 +84,7 @@ describe('GenericASCIIM1', function() {
 				}},
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards
-			).collect();
+			).run();
 		});
 		it('should reject when input file not found', function() {
 			return new GenericASCIIM1(
@@ -95,7 +92,7 @@ describe('GenericASCIIM1', function() {
 				{ invest: function() { } },
 				'dummy',
 				rewards
-			).collect().should.be.rejected;
+			).run().should.be.rejected;
 		});
 	});
 });

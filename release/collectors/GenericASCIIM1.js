@@ -10,6 +10,7 @@ var Q = require('q');
 var moment = require('moment');
 var AbstractCollector = require('./AbstractCollector');
 var ForexQuote = require('../quotes/ForexQuote');
+var Reward = require('../options/Reward');
 var GenericASCIIM1 = (function (_super) {
     __extends(GenericASCIIM1, _super);
     function GenericASCIIM1(processor, investor, filename, rewards) {
@@ -36,13 +37,10 @@ var GenericASCIIM1 = (function (_super) {
                 var volume = parseFloat(arr[5]);
                 var quote = new ForexQuote(dateTime, open, high, low, close, volume);
                 var rewards = _this.rewards.map(function (reward) {
-                    return {
-                        expiration: dateTime.clone().add({
-                            hours: reward.expiration.hours(),
-                            minutes: reward.expiration.minutes()
-                        }),
-                        payout: reward.payout
-                    };
+                    return new Reward(dateTime.clone().add({
+                        hours: reward.expiration.hours(),
+                        minutes: reward.expiration.minutes()
+                    }), reward.payout);
                 });
                 _this.process(quote, rewards);
             });

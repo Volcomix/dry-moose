@@ -29,28 +29,39 @@ class ForexQuote implements IQuote {
         this._volume = volume;
     }
     
-    get dateTime(): moment.Moment {
+    get dateTime() {
         return this._dateTime;
     }
     
-    get open(): number {
+    get open() {
         return this._open;
     }
     
-    get high(): number {
+    get high() {
         return this._high;
     }
     
-    get low(): number {
+    get low() {
         return this._low;
     }
     
-    get close(): number {
+    get close() {
         return this._close;
     }
     
     get volume() {
         return this._volume;
+    }
+    
+    toDocument() {
+        return {
+            dateTime: this.dateTime.toDate(),
+            open: this.open,
+            high: this.high,
+            low: this.low,
+            close: this.close,
+            volume: this.volume
+        }
     }
 }
 

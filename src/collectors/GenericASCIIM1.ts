@@ -48,13 +48,13 @@ class GenericASCIIM1 extends AbstractCollector {
                 var quote = new ForexQuote(dateTime, open, high, low, close, volume);
                 
                 var rewards: Reward[] = this.rewards.map(function(reward: Reward) {
-                    return {
-                        expiration: dateTime.clone().add({
+                    return new Reward(
+                        dateTime.clone().add({
                             hours: reward.expiration.hours(),
                             minutes: reward.expiration.minutes()
                         }),
-                        payout: reward.payout
-                    }
+                        reward.payout
+                    );
                 });
                 
                 this.process(quote, rewards);

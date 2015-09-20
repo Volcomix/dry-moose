@@ -50,6 +50,16 @@ var ForexQuote = (function () {
         enumerable: true,
         configurable: true
     });
+    ForexQuote.prototype.toDocument = function () {
+        return {
+            dateTime: this.dateTime.toDate(),
+            open: this.open,
+            high: this.high,
+            low: this.low,
+            close: this.close,
+            volume: this.volume
+        };
+    };
     return ForexQuote;
 })();
 module.exports = ForexQuote;

@@ -3,15 +3,13 @@ var chai = require('chai');
 var moment = require('moment');
 var DummyProcessor = require('../../processors/DummyProcessor');
 var ForexQuote = require('../../quotes/ForexQuote');
+var Reward = require('../../options/Reward');
 var BinaryOption = require('../../options/BinaryOption');
 var should = chai.should();
 describe('DummyProcessor', function () {
     var processor = new DummyProcessor();
     describe('#process()', function () {
-        var rewards = [{
-                expiration: moment().add({ minutes: 30 }),
-                payout: 0.75
-            }];
+        var rewards = [new Reward(moment().add({ minutes: 30 }), 0.75)];
         context('when not enough quotes', function () {
             it('should not return an option', function () {
                 var quote = new ForexQuote(moment(), 1, 1, 1, 1, 0);

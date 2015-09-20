@@ -4,15 +4,13 @@ var chaiAsPromised = require("chai-as-promised");
 var moment = require('moment');
 var GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 var DummyProcessor = require('../../processors/DummyProcessor');
+var Reward = require('../../options/Reward');
 var BinaryOption = require('../../options/BinaryOption');
 chai.use(chaiAsPromised);
 chai.should();
 describe('GenericASCIIM1', function () {
     describe('#collect()', function () {
-        var rewards = [{
-                expiration: moment({ minutes: 30 }),
-                payout: 0.75
-            }];
+        var rewards = [new Reward(moment({ minutes: 30 }), 0.75)];
         it('should pass quotes to processor', function () {
             return new GenericASCIIM1({ process: function (quote, rewards) {
                     rewards.should.have.length(1);
@@ -49,7 +47,7 @@ describe('GenericASCIIM1', function () {
                     }
                     this.count = (this.count || 0) + 1;
                     return null;
-                } }, { invest: function (option) { } }, 'src/test/collectors/GenericASCIIM1.csv', rewards).collect();
+                } }, { invest: function (option) { } }, 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
         it('should pass actions to investor', function () {
             return new GenericASCIIM1(new DummyProcessor(), { invest: function (option) {
@@ -66,10 +64,10 @@ describe('GenericASCIIM1', function () {
                             break;
                     }
                     this.count = (this.count || 0) + 1;
-                } }, 'src/test/collectors/GenericASCIIM1.csv', rewards).collect();
+                } }, 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
         it('should reject when input file not found', function () {
-            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, 'dummy', rewards).collect().should.be.rejected;
+            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, 'dummy', rewards).run().should.be.rejected;
         });
     });
 });
