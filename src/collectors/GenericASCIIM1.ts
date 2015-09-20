@@ -57,10 +57,7 @@ class GenericASCIIM1 extends AbstractCollector {
                     }
                 });
                 
-                var option = this.processor.process(quote, rewards);
-                if (option) {
-                    this.investor.invest(option);
-                }
+                this.process(quote, rewards);
             });
             
             rl.on('close', resolve);
