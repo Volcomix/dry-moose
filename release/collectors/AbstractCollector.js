@@ -22,9 +22,11 @@ var AbstractCollector = (function () {
     };
     AbstractCollector.prototype.process = function (quote, rewards) {
         var _this = this;
-        this.pending = Q.ninvoke(this.db.collection('process'), 'insertOne', {
-            quote: quote.toDocument(),
-            rewards: rewards.map(function (reward) { return reward.toDocument(); })
+        this.pending = Q.when(this.pending, function () {
+            Q.ninvoke(_this.db.collection('process'), 'insertOne', {
+                quote: quote.toDocument(),
+                rewards: rewards.map(function (reward) { return reward.toDocument(); })
+            });
         })
             .then(function () {
             var option = _this.processor.process(quote, rewards);

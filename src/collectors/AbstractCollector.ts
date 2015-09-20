@@ -37,9 +37,11 @@ abstract class AbstractCollector {
 	}
 	
 	process(quote: IQuote, rewards: Reward[]) {
-		this.pending = Q.ninvoke(this.db.collection('process'), 'insertOne', {
-			quote: quote.toDocument(),
-			rewards: rewards.map((reward: Reward) => { return reward.toDocument(); })
+		this.pending = Q.when(this.pending, () => {
+			Q.ninvoke(this.db.collection('process'), 'insertOne', {
+				quote: quote.toDocument(),
+				rewards: rewards.map((reward: Reward) => { return reward.toDocument(); })
+			});
 		})
 		.then(() => {	
 			var option = this.processor.process(quote, rewards);
