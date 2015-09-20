@@ -44,10 +44,7 @@ var GenericASCIIM1 = (function (_super) {
                         payout: reward.payout
                     };
                 });
-                var option = _this.processor.process(quote, rewards);
-                if (option) {
-                    _this.investor.invest(option);
-                }
+                _this.process(quote, rewards);
             });
             rl.on('close', resolve);
         });
