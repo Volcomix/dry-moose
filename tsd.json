@@ -6,58 +6,58 @@
   "bundle": "typings/tsd.d.ts",
   "installed": {
     "gulp/gulp.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "orchestrator/orchestrator.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "node/node.d.ts": {
-      "commit": "273a567b0a0bcc34cbf2a2470b2febc95796b644"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "q/Q.d.ts": {
-      "commit": "6e60a9202e2edfaeb31d90964e7e9c0f9f02d993"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "gulp-typescript/gulp-typescript.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "gulp-mocha/gulp-mocha.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "mocha/mocha.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "chai/chai.d.ts": {
-      "commit": "a7cf77bd10fb07b77d16b966d7718055252ddf13"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "assertion-error/assertion-error.d.ts": {
-      "commit": "a7cf77bd10fb07b77d16b966d7718055252ddf13"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "del/del.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "glob/glob.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "minimatch/minimatch.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "through2/through2.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "moment/moment.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "moment/moment-node.d.ts": {
-      "commit": "2e85e74fae2de7de4ab4adea0b183d74e9f7d92a"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "chai-as-promised/chai-as-promised.d.ts": {
-      "commit": "a7cf77bd10fb07b77d16b966d7718055252ddf13"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "promises-a-plus/promises-a-plus.d.ts": {
-      "commit": "a7cf77bd10fb07b77d16b966d7718055252ddf13"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "mongodb/mongodb.d.ts": {
-      "commit": "273a567b0a0bcc34cbf2a2470b2febc95796b644"
+      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     }
   }
 }

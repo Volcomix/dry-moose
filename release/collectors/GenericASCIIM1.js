@@ -37,10 +37,12 @@ var GenericASCIIM1 = (function (_super) {
                 var volume = parseFloat(arr[5]);
                 var quote = new ForexQuote(dateTime, open, high, low, close, volume);
                 var rewards = _this.rewards.map(function (reward) {
-                    return new Reward(dateTime.clone().add({
-                        hours: reward.expiration.hours(),
-                        minutes: reward.expiration.minutes()
-                    }), reward.payout);
+                    var m = reward.expiration.minutes();
+                    var expiration = dateTime.clone()
+                        .set('minutes', m * Math.ceil(dateTime.minutes() / m))
+                        .set('seconds', 0)
+                        .add({ hours: reward.expiration.hours(), minutes: m });
+                    return new Reward(expiration, reward.payout);
                 });
                 _this.process(quote, rewards);
             });

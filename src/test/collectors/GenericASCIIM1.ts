@@ -35,7 +35,7 @@ describe('GenericASCIIM1', function() {
 							quote.low.should.equal(1.095050);
 							quote.close.should.equal(1.095060);
 							quote.volume.should.equal(0);
-							reward.expiration.minutes().should.equal(33);
+							reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							break;
 						case 1:
 							quote.dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
@@ -44,7 +44,7 @@ describe('GenericASCIIM1', function() {
 							quote.low.should.equal(1.095000);
 							quote.close.should.equal(1.095020);
 							quote.volume.should.equal(0);
-							reward.expiration.minutes().should.equal(34);
+							reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							break;
 						case 2:
 							quote.dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
@@ -53,7 +53,7 @@ describe('GenericASCIIM1', function() {
 							quote.low.should.equal(1.095020);
 							quote.close.should.equal(1.095080);
 							quote.volume.should.equal(0);
-							reward.expiration.minutes().should.equal(35);
+							reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							done();
 							break;
 					}
@@ -71,12 +71,12 @@ describe('GenericASCIIM1', function() {
 				{ invest: function(option: BinaryOption) {
 					switch (this.count) {
 						case undefined:
-							option.expiration.isSame('2015-06-01 00:34:00-0500').should.be.true;
+							option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							option.amount.should.equal(10);
 							option.direction.should.equal(BinaryOption.Direction.Put);
 							break;
 						case 1:
-							option.expiration.isSame('2015-06-01 00:35:00-0500').should.be.true;
+							option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							option.amount.should.equal(10);
 							option.direction.should.equal(BinaryOption.Direction.Call);
 							done();
