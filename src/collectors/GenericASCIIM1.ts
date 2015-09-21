@@ -55,7 +55,13 @@ class GenericASCIIM1 extends AbstractCollector {
                     .set('seconds', 0)
                     .add({ hours: reward.expiration.hours(), minutes: m });
                     
-                    return new Reward(expiration, reward.payout);
+                    var countdown = expiration.clone()
+                    .subtract({
+                        hours: reward.countdown.hours(),
+                        minutes: reward.countdown.minutes()
+                    });
+                    
+                    return new Reward(countdown, expiration, reward.payout);
                 });
                 
                 this.process(quote, rewards);

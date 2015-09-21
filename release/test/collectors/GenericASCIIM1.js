@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 chai.should();
 describe('GenericASCIIM1', function () {
     describe('#collect()', function () {
-        var rewards = [new Reward(moment({ minutes: 30 }), 0.75)];
+        var rewards = [new Reward(moment({ minutes: 10 }), moment({ minutes: 30 }), 0.75)];
         it('should pass quotes to processor', function (done) {
             new GenericASCIIM1({ process: function (quote, rewards) {
                     rewards.should.have.length(1);
@@ -24,6 +24,7 @@ describe('GenericASCIIM1', function () {
                             quote.low.should.equal(1.095050);
                             quote.close.should.equal(1.095060);
                             quote.volume.should.equal(0);
+                            reward.countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
                             reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             break;
                         case 1:
@@ -33,6 +34,7 @@ describe('GenericASCIIM1', function () {
                             quote.low.should.equal(1.095000);
                             quote.close.should.equal(1.095020);
                             quote.volume.should.equal(0);
+                            reward.countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
                             reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             break;
                         case 2:
@@ -42,6 +44,7 @@ describe('GenericASCIIM1', function () {
                             quote.low.should.equal(1.095020);
                             quote.close.should.equal(1.095080);
                             quote.volume.should.equal(0);
+                            reward.countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
                             reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             done();
                             break;

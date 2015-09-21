@@ -42,7 +42,12 @@ var GenericASCIIM1 = (function (_super) {
                         .set('minutes', m * Math.ceil(dateTime.minutes() / m))
                         .set('seconds', 0)
                         .add({ hours: reward.expiration.hours(), minutes: m });
-                    return new Reward(expiration, reward.payout);
+                    var countdown = expiration.clone()
+                        .subtract({
+                        hours: reward.countdown.hours(),
+                        minutes: reward.countdown.minutes()
+                    });
+                    return new Reward(countdown, expiration, reward.payout);
                 });
                 _this.process(quote, rewards);
             });
