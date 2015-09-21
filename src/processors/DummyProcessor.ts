@@ -5,6 +5,11 @@ import ForexQuote = require('../quotes/ForexQuote');
 import Reward = require('../options/Reward');
 import BinaryOption = require('../options/BinaryOption');
 
+/**
+ * Dummy quote processor :
+ * - if quotes increase, ask for a Call
+ * - if quotes decrease, ask for a Put
+ */
 class DummyProcessor implements IProcessor<ForexQuote, BinaryOption> {
 	
 	private lastQuote: ForexQuote;

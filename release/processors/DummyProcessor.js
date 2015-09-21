@@ -1,5 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
 var BinaryOption = require('../options/BinaryOption');
+/**
+ * Dummy quote processor :
+ * - if quotes increase, ask for a Call
+ * - if quotes decrease, ask for a Put
+ */
 var DummyProcessor = (function () {
     function DummyProcessor() {
     }
