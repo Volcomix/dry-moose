@@ -11,6 +11,9 @@ import IOption = require('../options/IOption');
 
 var MongoClient = mongodb.MongoClient;
 
+/**
+ * Collect trading quotes
+ */
 abstract class AbstractCollector {
 	
 	private db: mongodb.Db;

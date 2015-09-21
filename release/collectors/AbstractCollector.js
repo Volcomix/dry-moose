@@ -2,6 +2,9 @@
 var mongodb = require('mongodb');
 var Q = require('q');
 var MongoClient = mongodb.MongoClient;
+/**
+ * Collect trading quotes
+ */
 var AbstractCollector = (function () {
     function AbstractCollector(processor, investor) {
         this.processor = processor;
