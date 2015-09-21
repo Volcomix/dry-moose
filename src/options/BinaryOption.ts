@@ -31,6 +31,14 @@ class BinaryOption implements IOption {
 	get direction() {
 		return this._direction;
 	}
+	
+	toDocument() {
+		return {
+			expiration: this._expiration.toDate(),
+			amount: this._amount,
+			direction: this._direction
+		}
+	}
 }
 module BinaryOption {
 	export enum Direction { Call, Put };

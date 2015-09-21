@@ -3,7 +3,7 @@
 import IOption = require('../options/IOption');
 
 interface IInvestor {
-    invest(option: IOption);
+    invest(option: IOption): void;
 }
 
 export = IInvestor;

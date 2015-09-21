@@ -26,6 +26,13 @@ var BinaryOption = (function () {
         enumerable: true,
         configurable: true
     });
+    BinaryOption.prototype.toDocument = function () {
+        return {
+            expiration: this._expiration.toDate(),
+            amount: this._amount,
+            direction: this._direction
+        };
+    };
     return BinaryOption;
 })();
 var BinaryOption;

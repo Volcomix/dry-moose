@@ -5,7 +5,7 @@ import IOption = require('../options/IOption');
 import BinaryOption = require('../options/BinaryOption');
 
 class ConsoleInvestor implements IInvestor {
-	invest(option: IOption) {
+	invest(option: IOption): void {
 		if (option instanceof BinaryOption) {
 			console.log(
 				BinaryOption.Direction.toString(option.direction) +
