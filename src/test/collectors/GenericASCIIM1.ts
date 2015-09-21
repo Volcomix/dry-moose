@@ -103,5 +103,6 @@ describe('GenericASCIIM1', function() {
 				rewards
 			).run().should.be.rejected;
 		});
+		it('should insert everything into MongoDB');
 	});
 });

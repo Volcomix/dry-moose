@@ -74,5 +74,6 @@ describe('GenericASCIIM1', function () {
         it('should reject when input file not found', function () {
             return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, 'dummy', rewards).run().should.be.rejected;
         });
+        it('should insert everything into MongoDB');
     });
 });
