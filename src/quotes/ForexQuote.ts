@@ -2,11 +2,10 @@
 
 import moment = require('moment');
 
-import IQuote = require('./IQuote');
+import AbstractQuote = require('./AbstractQuote');
 
-class ForexQuote implements IQuote {
+class ForexQuote extends AbstractQuote {
     
-    private _dateTime: moment.Moment;
     private _open: number;
     private _high: number;
     private _low: number;
@@ -21,16 +20,12 @@ class ForexQuote implements IQuote {
         close: number,
         volume: number
     ) {
-        this._dateTime = dateTime;
+        super(dateTime);
         this._open = open;
         this._high = high;
         this._low = low;
         this._close = close;
         this._volume = volume;
-    }
-    
-    get dateTime() {
-        return this._dateTime;
     }
     
     get open() {
@@ -56,11 +51,11 @@ class ForexQuote implements IQuote {
     toDocument() {
         return {
             dateTime: this.dateTime.toDate(),
-            open: this.open,
-            high: this.high,
-            low: this.low,
-            close: this.close,
-            volume: this.volume
+            open: this._open,
+            high: this._high,
+            low: this._low,
+            close: this._close,
+            volume: this._volume
         }
     }
 }

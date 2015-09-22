@@ -12,11 +12,12 @@ var DummyProcessor = (function () {
         var option;
         if (this.lastQuote && this.lastQuote.close < quote.close) {
             var expiration = rewards[0].expiration;
-            option = new BinaryOption(expiration, 10, BinaryOption.Direction.Call);
+            var payout = rewards[0].payout;
+            option = new BinaryOption(expiration, 10, payout, BinaryOption.Direction.Call);
         }
         else if (this.lastQuote && this.lastQuote.close > quote.close) {
             var expiration = rewards[0].expiration;
-            option = new BinaryOption(expiration, 10, BinaryOption.Direction.Put);
+            option = new BinaryOption(expiration, 10, payout, BinaryOption.Direction.Put);
         }
         this.lastQuote = quote;
         return option;

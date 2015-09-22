@@ -2,30 +2,32 @@
 
 import moment = require('moment');
 
-import IOption = require('./IOption');
+import AbstractOption = require('./AbstractOption');
 
-class BinaryOption implements IOption {	
+class BinaryOption extends AbstractOption {	
 	
-	private _expiration: moment.Moment;
 	private _amount: number;
+	private _payout: number;
 	private _direction: BinaryOption.Direction;
 	
 	constructor(
 		expiration: moment.Moment,
 		amount: number,
+		payout: number,
 		direction: BinaryOption.Direction
 	) {
-		this._expiration = expiration;
+		super(expiration);
 		this._amount = amount;
+		this._payout = payout;
 		this._direction = direction;
-	}
-	
-	get expiration() {
-		return this._expiration;
 	}
 	
 	get amount() {
 		return this._amount;
+	}
+	
+	get payout() {
+		return this._payout;
 	}
 	
 	get direction() {
@@ -34,15 +36,17 @@ class BinaryOption implements IOption {
 	
 	toDocument() {
 		return {
-			expiration: this._expiration.toDate(),
+			expiration: this.expiration.toDate(),
 			amount: this._amount,
+			payout: this._payout,
 			direction: this._direction
 		}
 	}
 	
 	toString() {
-		return BinaryOption.Direction.toString(this.direction) +
-			' for ' + this.amount + '$ expiring at ' + this.expiration.format()
+		return BinaryOption.Direction.toString(this._direction) +
+			' for ' + this._amount + '(' + this._payout + ')' +
+			'$ expiring at ' + this.expiration.format()
 	}
 }
 module BinaryOption {

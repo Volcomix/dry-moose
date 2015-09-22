@@ -3,11 +3,12 @@
 import mongodb = require('mongodb');
 import Q = require('q');
 
+import DbManager = require('../database/DbManager');
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
-import IQuote = require('../quotes/IQuote');
+import AbstractQuote = require('../quotes/AbstractQuote');
 import Reward = require('../options/Reward');
-import IOption = require('../options/IOption');
+import AbstractOption = require('../options/AbstractOption');
 
 var MongoClient = mongodb.MongoClient;
 
@@ -17,17 +18,18 @@ var MongoClient = mongodb.MongoClient;
 abstract class AbstractCollector {
 	
 	private db: mongodb.Db;
-	private pending: Q.Promise<{}>;
+	private pendingDb: Q.Promise<any>;
+	private pendingOption: AbstractOption;
 	
 	constructor(
-		private processor: IProcessor<IQuote, IOption>,
+		private processor: IProcessor<AbstractQuote, AbstractOption>,
 		private investor: IInvestor
 	) { }
 	
 	abstract collect(): Q.Promise<{}>;
 	
 	run(): Q.Promise<{}> {
-		return Q.nfcall(MongoClient.connect, 'mongodb://localhost:27017/dry-moose')
+		return DbManager.db
 		.then((db: mongodb.Db) => {
 			this.db = db;
 			return [
@@ -43,20 +45,25 @@ abstract class AbstractCollector {
 			return this.collect();
 		})
 		.finally(() => {
-			return Q.when(this.pending, () => {
+			return Q.when(this.pendingDb, () => {
 				return Q.ninvoke(this.db, 'close');
 			});
 		})
 	}
 	
-	process(quote: IQuote, rewards: Reward[]) {
-		this.pending = Q.when(this.pending, () => {
-			Q.ninvoke(this.db.collection('quotes'), 'insertOne', {
+	process(quote: AbstractQuote, rewards: Reward[]) {
+		this.pendingDb = Q.when(this.pendingDb, () => {
+			return Q.ninvoke(this.db.collection('quotes'), 'insertOne', {
 				quote: quote.toDocument(),
 				rewards: rewards.map((reward: Reward) => { return reward.toDocument(); })
 			});
 		})
-		.then<{}>(() => {	
+		.then(() => {
+			if (this.pendingOption && quote.dateTime >= this.pendingOption.expiration) {
+				//var reward = 
+			}
+		})
+		.then(() => {	
 			var option = this.processor.process(quote, rewards);
 			if (option) {
 				return Q.ninvoke(this.db.collection('options'), 'insertOne',

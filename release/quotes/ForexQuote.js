@@ -1,20 +1,20 @@
 /// <reference path="../../typings/tsd.d.ts" />
-var ForexQuote = (function () {
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var AbstractQuote = require('./AbstractQuote');
+var ForexQuote = (function (_super) {
+    __extends(ForexQuote, _super);
     function ForexQuote(dateTime, open, high, low, close, volume) {
-        this._dateTime = dateTime;
+        _super.call(this, dateTime);
         this._open = open;
         this._high = high;
         this._low = low;
         this._close = close;
         this._volume = volume;
     }
-    Object.defineProperty(ForexQuote.prototype, "dateTime", {
-        get: function () {
-            return this._dateTime;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(ForexQuote.prototype, "open", {
         get: function () {
             return this._open;
@@ -53,13 +53,13 @@ var ForexQuote = (function () {
     ForexQuote.prototype.toDocument = function () {
         return {
             dateTime: this.dateTime.toDate(),
-            open: this.open,
-            high: this.high,
-            low: this.low,
-            close: this.close,
-            volume: this.volume
+            open: this._open,
+            high: this._high,
+            low: this._low,
+            close: this._close,
+            volume: this._volume
         };
     };
     return ForexQuote;
-})();
+})(AbstractQuote);
 module.exports = ForexQuote;

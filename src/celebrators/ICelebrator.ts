@@ -1,12 +1,13 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import IOption = require('../options/IOption');
+import AbstractQuote = require('../quotes/AbstractQuote');
+import AbstractOption = require('../options/AbstractOption');
 
 /**
  * Check option result and get reward
  */
-interface ICelebrator<Option extends IOption> {
-    getReward(option: Option);
+interface ICelebrator<Quote extends AbstractQuote, Option extends AbstractOption> {
+    getReward(quote: Quote, option: Option);
 }
 
 export = ICelebrator;

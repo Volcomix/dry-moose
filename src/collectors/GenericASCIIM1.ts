@@ -11,12 +11,12 @@ import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
 import ForexQuote = require('../quotes/ForexQuote');
 import Reward = require('../options/Reward');
-import IOption = require('../options/IOption');
+import AbstractOption = require('../options/AbstractOption');
 
 class GenericASCIIM1 extends AbstractCollector {
     
     constructor(
-        processor: IProcessor<ForexQuote, IOption>,
+        processor: IProcessor<ForexQuote, AbstractOption>,
         investor: IInvestor,
         private filename: string,
         private rewards: Reward[]

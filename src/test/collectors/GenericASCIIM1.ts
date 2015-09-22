@@ -10,7 +10,7 @@ import DummyProcessor = require('../../processors/DummyProcessor');
 import IInvestor = require('../../investors/IInvestor');
 import ForexQuote = require('../../quotes/ForexQuote');
 import Reward = require('../../options/Reward');
-import IOption = require('../../options/IOption');
+import AbstractOption = require('../../options/AbstractOption');
 import BinaryOption = require('../../options/BinaryOption');
 
 chai.use(chaiAsPromised);
@@ -67,7 +67,7 @@ describe('GenericASCIIM1', function() {
 					this.count = (this.count || 0) + 1;
 					return null;
 				}},
-				{ invest: function(option: IOption) { } },
+				{ invest: function(option: AbstractOption) { } },
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards
 			).run();
