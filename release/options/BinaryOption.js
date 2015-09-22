@@ -33,6 +33,10 @@ var BinaryOption = (function () {
             direction: this._direction
         };
     };
+    BinaryOption.prototype.toString = function () {
+        return BinaryOption.Direction.toString(this.direction) +
+            ' for ' + this.amount + '$ expiring at ' + this.expiration.format();
+    };
     return BinaryOption;
 })();
 var BinaryOption;

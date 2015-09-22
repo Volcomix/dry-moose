@@ -6,14 +6,7 @@ import BinaryOption = require('../options/BinaryOption');
 
 class ConsoleInvestor implements IInvestor {
 	invest(option: IOption): void {
-		if (option instanceof BinaryOption) {
-			console.log(
-				BinaryOption.Direction.toString(option.direction) +
-				' for ' + option.amount + '$ expiring at ' + option.expiration.format()
-			);
-		} else {
-			console.error('Unknown option type');
-		}
+		console.log(option.toString());
 	}
 }
 

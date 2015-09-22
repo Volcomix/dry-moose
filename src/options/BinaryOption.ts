@@ -39,6 +39,11 @@ class BinaryOption implements IOption {
 			direction: this._direction
 		}
 	}
+	
+	toString() {
+		return BinaryOption.Direction.toString(this.direction) +
+			' for ' + this.amount + '$ expiring at ' + this.expiration.format()
+	}
 }
 module BinaryOption {
 	export enum Direction { Call, Put };
