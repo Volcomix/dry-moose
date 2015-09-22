@@ -9,7 +9,7 @@ import ForexQuote = require('../quotes/ForexQuote');
 import BinaryOption = require('../options/BinaryOption');
 
 class DemoCelebrator implements ICelebrator<ForexQuote, BinaryOption> {
-	getReward(quote: ForexQuote, option: BinaryOption) {
+	getReward(quote: ForexQuote, option: BinaryOption): Q.Promise<number> {
 		return DbManager.db
 		.then((db: mongodb.Db) => {
 			var cursor = db.collection('quotes')

@@ -4,6 +4,7 @@ var chaiAsPromised = require("chai-as-promised");
 var moment = require('moment');
 var GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 var DummyProcessor = require('../../processors/DummyProcessor');
+var DemoCelebrator = require('../../celebrators/DemoCelebrator');
 var Reward = require('../../options/Reward');
 var BinaryOption = require('../../options/BinaryOption');
 chai.use(chaiAsPromised);
@@ -51,7 +52,7 @@ describe('GenericASCIIM1', function () {
                     }
                     this.count = (this.count || 0) + 1;
                     return null;
-                } }, { invest: function (option) { } }, 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
+                } }, { invest: function (option) { } }, new DemoCelebrator(), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
         it('should pass actions to investor', function (done) {
             new GenericASCIIM1(new DummyProcessor(), { invest: function (option) {
@@ -69,10 +70,10 @@ describe('GenericASCIIM1', function () {
                             break;
                     }
                     this.count = (this.count || 0) + 1;
-                } }, 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
+                } }, new DemoCelebrator(), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
         it('should reject when input file not found', function () {
-            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, 'dummy', rewards).run().should.be.rejected;
+            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, { getReward: function () { return null; } }, 'dummy', rewards).run().should.be.rejected;
         });
         it('should insert everything into MongoDB');
     });

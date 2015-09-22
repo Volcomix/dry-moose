@@ -9,6 +9,7 @@ import moment = require('moment');
 import AbstractCollector = require('./AbstractCollector');
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
+import ICelebrator = require('../celebrators/ICelebrator');
 import ForexQuote = require('../quotes/ForexQuote');
 import Reward = require('../options/Reward');
 import AbstractOption = require('../options/AbstractOption');
@@ -18,10 +19,11 @@ class GenericASCIIM1 extends AbstractCollector {
     constructor(
         processor: IProcessor<ForexQuote, AbstractOption>,
         investor: IInvestor,
+        celebrator: ICelebrator<ForexQuote, AbstractOption>,
         private filename: string,
         private rewards: Reward[]
     ){
-        super(processor, investor);
+        super(processor, investor, celebrator);
     }
     
     collect(): Q.Promise<{}> {

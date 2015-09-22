@@ -13,8 +13,8 @@ var ForexQuote = require('../quotes/ForexQuote');
 var Reward = require('../options/Reward');
 var GenericASCIIM1 = (function (_super) {
     __extends(GenericASCIIM1, _super);
-    function GenericASCIIM1(processor, investor, filename, rewards) {
-        _super.call(this, processor, investor);
+    function GenericASCIIM1(processor, investor, celebrator, filename, rewards) {
+        _super.call(this, processor, investor, celebrator);
         this.filename = filename;
         this.rewards = rewards;
     }

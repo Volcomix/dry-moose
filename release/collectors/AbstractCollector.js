@@ -7,9 +7,10 @@ var MongoClient = mongodb.MongoClient;
  * Collect trading quotes
  */
 var AbstractCollector = (function () {
-    function AbstractCollector(processor, investor) {
+    function AbstractCollector(processor, investor, celebrator) {
         this.processor = processor;
         this.investor = investor;
+        this.celebrator = celebrator;
     }
     AbstractCollector.prototype.run = function () {
         var _this = this;
@@ -44,13 +45,20 @@ var AbstractCollector = (function () {
         })
             .then(function () {
             if (_this.pendingOption && quote.dateTime >= _this.pendingOption.expiration) {
+                var reward = _this.celebrator.getReward(quote, _this.pendingOption);
+                _this.pendingOption = undefined;
+                return reward;
             }
         })
             .then(function () {
+            if (_this.pendingOption) {
+                return;
+            }
             var option = _this.processor.process(quote, rewards);
             if (option) {
                 return Q.ninvoke(_this.db.collection('options'), 'insertOne', option.toDocument())
                     .then(function () {
+                    _this.pendingOption = option;
                     _this.investor.invest(option);
                 });
             }

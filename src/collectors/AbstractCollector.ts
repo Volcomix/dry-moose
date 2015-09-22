@@ -6,6 +6,7 @@ import Q = require('q');
 import DbManager = require('../database/DbManager');
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
+import ICelebrator = require('../celebrators/ICelebrator');
 import AbstractQuote = require('../quotes/AbstractQuote');
 import Reward = require('../options/Reward');
 import AbstractOption = require('../options/AbstractOption');
@@ -23,7 +24,8 @@ abstract class AbstractCollector {
 	
 	constructor(
 		private processor: IProcessor<AbstractQuote, AbstractOption>,
-		private investor: IInvestor
+		private investor: IInvestor,
+		private celebrator: ICelebrator<AbstractQuote, AbstractOption>
 	) { }
 	
 	abstract collect(): Q.Promise<{}>;
@@ -60,16 +62,23 @@ abstract class AbstractCollector {
 		})
 		.then(() => {
 			if (this.pendingOption && quote.dateTime >= this.pendingOption.expiration) {
-				//var reward = 
+				var reward = this.celebrator.getReward(quote, this.pendingOption);
+				this.pendingOption = undefined;
+				return reward;
 			}
 		})
-		.then(() => {	
+		.then(() => {
+			if (this.pendingOption) {
+				return;
+			}
+			
 			var option = this.processor.process(quote, rewards);
 			if (option) {
 				return Q.ninvoke(this.db.collection('options'), 'insertOne',
 					option.toDocument()
 				)
 				.then(() => {
+					this.pendingOption = option;
 					this.investor.invest(option);
 				});
 			}

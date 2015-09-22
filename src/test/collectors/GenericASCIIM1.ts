@@ -8,6 +8,7 @@ import GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 import IProcessor = require('../../processors/IProcessor');
 import DummyProcessor = require('../../processors/DummyProcessor');
 import IInvestor = require('../../investors/IInvestor');
+import DemoCelebrator = require('../../celebrators/DemoCelebrator');
 import ForexQuote = require('../../quotes/ForexQuote');
 import Reward = require('../../options/Reward');
 import AbstractOption = require('../../options/AbstractOption');
@@ -68,6 +69,7 @@ describe('GenericASCIIM1', function() {
 					return null;
 				}},
 				{ invest: function(option: AbstractOption) { } },
+				new DemoCelebrator(),
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards
 			).run();
@@ -91,6 +93,7 @@ describe('GenericASCIIM1', function() {
 					}
 					this.count = (this.count || 0) + 1;
 				}},
+				new DemoCelebrator(),
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards
 			).run();
@@ -99,6 +102,7 @@ describe('GenericASCIIM1', function() {
 			return new GenericASCIIM1(
 				{ process: function() { return null; } },
 				{ invest: function() { } },
+				{ getReward: function() { return null; } },
 				'dummy',
 				rewards
 			).run().should.be.rejected;
