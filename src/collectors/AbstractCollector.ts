@@ -40,6 +40,9 @@ abstract class AbstractCollector {
 				}),
 				Q.ninvoke(this.db.collection('options'), 'createIndex', {
 					'expiration': 1
+				}),
+				Q.ninvoke(this.db.collection('rewards'), 'createIndex', {
+					'dateTime': 1
 				})
 			];
 		})
@@ -65,9 +68,15 @@ abstract class AbstractCollector {
 				this.pendingOption &&
 				!quote.dateTime.isBefore(this.pendingOption.expiration) // dateTime >= exp
 			) {
-				var reward = this.celebrator.getReward(quote, this.pendingOption);
+				var option = this.pendingOption;
 				this.pendingOption = undefined;
-				return reward;
+				return this.celebrator.getReward(quote, option)
+				.then((reward) => {
+					return Q.ninvoke(this.db.collection('rewards'), 'insertOne',  {
+						dateTime: option.expiration.toDate(),
+						reward: reward
+					});
+				});
 			}
 		})
 		.then(() => {

@@ -23,6 +23,9 @@ var AbstractCollector = (function () {
                 }),
                 Q.ninvoke(_this.db.collection('options'), 'createIndex', {
                     'expiration': 1
+                }),
+                Q.ninvoke(_this.db.collection('rewards'), 'createIndex', {
+                    'dateTime': 1
                 })
             ];
         })
@@ -47,9 +50,15 @@ var AbstractCollector = (function () {
             if (_this.pendingOption &&
                 !quote.dateTime.isBefore(_this.pendingOption.expiration) // dateTime >= exp
             ) {
-                var reward = _this.celebrator.getReward(quote, _this.pendingOption);
+                var option = _this.pendingOption;
                 _this.pendingOption = undefined;
-                return reward;
+                return _this.celebrator.getReward(quote, option)
+                    .then(function (reward) {
+                    return Q.ninvoke(_this.db.collection('rewards'), 'insertOne', {
+                        dateTime: option.expiration.toDate(),
+                        reward: reward
+                    });
+                });
             }
         })
             .then(function () {
