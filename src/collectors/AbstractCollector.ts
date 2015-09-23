@@ -61,7 +61,10 @@ abstract class AbstractCollector {
 			});
 		})
 		.then(() => {
-			if (this.pendingOption && quote.dateTime >= this.pendingOption.expiration) {
+			if (
+				this.pendingOption &&
+				!quote.dateTime.isBefore(this.pendingOption.expiration) // dateTime >= exp
+			) {
 				var reward = this.celebrator.getReward(quote, this.pendingOption);
 				this.pendingOption = undefined;
 				return reward;

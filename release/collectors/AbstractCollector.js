@@ -44,7 +44,9 @@ var AbstractCollector = (function () {
             });
         })
             .then(function () {
-            if (_this.pendingOption && quote.dateTime >= _this.pendingOption.expiration) {
+            if (_this.pendingOption &&
+                !quote.dateTime.isBefore(_this.pendingOption.expiration) // dateTime >= exp
+            ) {
                 var reward = _this.celebrator.getReward(quote, _this.pendingOption);
                 _this.pendingOption = undefined;
                 return reward;
