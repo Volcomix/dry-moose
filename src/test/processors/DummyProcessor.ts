@@ -46,7 +46,7 @@ describe('DummyProcessor', function() {
                     volume: 0
                 };
                 var option = processor.process(quote, rewards);
-                option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+                moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
                 option.amount.should.equal(10);
                 option.direction.should.equal(BinaryOption.Direction.Call);
             });
@@ -62,7 +62,7 @@ describe('DummyProcessor', function() {
                     volume: 0
                 };
                 var option = processor.process(quote, rewards);
-                option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+                moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
                 option.amount.should.equal(10);
                 option.direction.should.equal(BinaryOption.Direction.Put);
             });

@@ -82,14 +82,15 @@ describe('GenericASCIIM1', function() {
 			new GenericASCIIM1(
 				new DummyProcessor(),
 				{ invest: function(option: BinaryOption) {
+					var expiration = moment(option.expiration);
 					switch (this.count) {
 						case undefined:
-							option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							option.amount.should.equal(10);
 							option.direction.should.equal(BinaryOption.Direction.Put);
 							break;
 						case 1:
-							option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							option.amount.should.equal(10);
 							option.direction.should.equal(BinaryOption.Direction.Call);
 							done();

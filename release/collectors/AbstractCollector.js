@@ -56,7 +56,7 @@ var AbstractCollector = (function () {
                 return _this.celebrator.getGain(option)
                     .then(function (gain) {
                     return Q.ninvoke(_this.db.collection('rewards'), 'insertOne', {
-                        dateTime: option.expiration.toDate(),
+                        dateTime: option.expiration,
                         gain: gain
                     });
                 });
@@ -68,7 +68,7 @@ var AbstractCollector = (function () {
             }
             var option = _this.processor.process(quote, rewards);
             if (option) {
-                return Q.ninvoke(_this.db.collection('options'), 'insertOne', option.toDocument())
+                return Q.ninvoke(_this.db.collection('options'), 'insertOne', option)
                     .then(function () {
                     _this.pendingOption = option;
                     _this.investor.invest(option);

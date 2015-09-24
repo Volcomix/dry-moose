@@ -1,7 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import moment = require('moment');
-
 import IProcessor = require('./IProcessor');
 import Quote = require('../quotes/Quote');
 import Reward = require('../options/Reward');
@@ -21,22 +19,23 @@ class DummyProcessor implements IProcessor<BinaryOption> {
 		if (this.lastQuote && this.lastQuote.close < quote.close) {
 			var expiration = rewards[0].expiration;
 			var payout = rewards[0].payout;
-			option = new BinaryOption(
-				quote,
-				moment(expiration),
-				10,
-				payout,
-				BinaryOption.Direction.Call);
+			option = {
+				quote: quote,
+				expiration: expiration,
+				amount: 10,
+				payout: payout,
+				direction: BinaryOption.Direction.Call
+			};
 		} else if (this.lastQuote && this.lastQuote.close > quote.close) {
 			var expiration = rewards[0].expiration;
 			var payout = rewards[0].payout;
-			option = new BinaryOption(
-				quote,
-				moment(expiration),
-				10,
-				payout,
-				BinaryOption.Direction.Put
-			);
+			option = {
+				quote: quote,
+				expiration: expiration,
+				amount: 10,
+				payout: payout,
+				direction: BinaryOption.Direction.Put
+			};
 		}
 		this.lastQuote = quote;
 		return option;

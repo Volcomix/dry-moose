@@ -75,7 +75,7 @@ abstract class AbstractCollector {
 				return this.celebrator.getGain(option)
 				.then((gain) => {
 					return Q.ninvoke(this.db.collection('rewards'), 'insertOne',  {
-						dateTime: option.expiration.toDate(),
+						dateTime: option.expiration,
 						gain: gain
 					});
 				});
@@ -88,9 +88,7 @@ abstract class AbstractCollector {
 			
 			var option = this.processor.process(quote, rewards);
 			if (option) {
-				return Q.ninvoke(this.db.collection('options'), 'insertOne',
-					option.toDocument()
-				)
+				return Q.ninvoke(this.db.collection('options'), 'insertOne', option)
 				.then(() => {
 					this.pendingOption = option;
 					this.investor.invest(option);

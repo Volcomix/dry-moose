@@ -12,7 +12,7 @@ var DemoCelebrator = (function () {
                 .find({
                 'quote.dateTime': {
                     $gt: option.quote.dateTime,
-                    $lte: option.expiration.toDate()
+                    $lte: option.expiration
                 },
                 'quote.close': (option.direction == BinaryOption.Direction.Call ?
                     { $gte: option.quote.close } :
