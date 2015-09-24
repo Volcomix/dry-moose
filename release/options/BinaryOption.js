@@ -8,26 +8,10 @@ var AbstractOption = require('./AbstractOption');
 var BinaryOption = (function (_super) {
     __extends(BinaryOption, _super);
     function BinaryOption(quote, expiration, amount, payout, direction) {
-        _super.call(this, expiration);
-        this._quote = quote;
-        this._amount = amount;
+        _super.call(this, quote, expiration, amount);
         this._payout = payout;
         this._direction = direction;
     }
-    Object.defineProperty(BinaryOption.prototype, "quote", {
-        get: function () {
-            return this._quote;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(BinaryOption.prototype, "amount", {
-        get: function () {
-            return this._amount;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(BinaryOption.prototype, "payout", {
         get: function () {
             return this._payout;
@@ -46,14 +30,14 @@ var BinaryOption = (function (_super) {
         return {
             quote: this.quote.toDocument(),
             expiration: this.expiration.toDate(),
-            amount: this._amount,
+            amount: this.amount,
             payout: this._payout,
             direction: this._direction
         };
     };
     BinaryOption.prototype.toString = function () {
         return BinaryOption.Direction.toString(this._direction) +
-            ' for ' + this._amount + '(' + this._payout + ')' +
+            ' for ' + this.amount + '(' + this._payout + ')' +
             '$ expiring at ' + this.expiration.format();
     };
     return BinaryOption;
