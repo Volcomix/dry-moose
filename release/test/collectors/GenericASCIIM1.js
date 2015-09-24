@@ -14,12 +14,13 @@ describe('GenericASCIIM1', function () {
         var rewards = [new Reward(moment({ minutes: 10 }), moment({ minutes: 30 }), 0.75)];
         it('should pass quotes to processor', function (done) {
             new GenericASCIIM1({ process: function (quote, rewards) {
+                    var dateTime = moment(quote.dateTime);
                     rewards.should.have.length(1);
                     var reward = rewards[0];
                     reward.payout.should.equal(0.75);
                     switch (this.count) {
                         case undefined:
-                            quote.dateTime.isSame('2015-06-01 00:03:00-0500').should.be.true;
+                            dateTime.isSame('2015-06-01 00:03:00-0500').should.be.true;
                             quote.open.should.equal(1.095090);
                             quote.high.should.equal(1.095130);
                             quote.low.should.equal(1.095050);
@@ -29,7 +30,7 @@ describe('GenericASCIIM1', function () {
                             reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             break;
                         case 1:
-                            quote.dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
+                            dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
                             quote.open.should.equal(1.095060);
                             quote.high.should.equal(1.095060);
                             quote.low.should.equal(1.095000);
@@ -39,7 +40,7 @@ describe('GenericASCIIM1', function () {
                             reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             break;
                         case 2:
-                            quote.dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
+                            dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
                             quote.open.should.equal(1.095020);
                             quote.high.should.equal(1.095120);
                             quote.low.should.equal(1.095020);

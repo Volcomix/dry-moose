@@ -9,7 +9,6 @@ var readline = require('readline');
 var Q = require('q');
 var moment = require('moment');
 var AbstractCollector = require('./AbstractCollector');
-var Quote = require('../quotes/Quote');
 var Reward = require('../options/Reward');
 var GenericASCIIM1 = (function (_super) {
     __extends(GenericASCIIM1, _super);
@@ -35,7 +34,14 @@ var GenericASCIIM1 = (function (_super) {
                 var low = parseFloat(arr[3]);
                 var close = parseFloat(arr[4]);
                 var volume = parseFloat(arr[5]);
-                var quote = new Quote(dateTime, open, high, low, close, volume);
+                var quote = {
+                    dateTime: dateTime.toDate(),
+                    open: open,
+                    high: high,
+                    low: low,
+                    close: close,
+                    volume: volume
+                };
                 var rewards = _this.rewards.map(function (reward) {
                     var m = reward.expiration.minutes();
                     var expiration = dateTime.clone()

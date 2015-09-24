@@ -28,7 +28,7 @@ var BinaryOption = (function (_super) {
     });
     BinaryOption.prototype.toDocument = function () {
         return {
-            quote: this.quote.toDocument(),
+            quote: this.quote,
             expiration: this.expiration.toDate(),
             amount: this.amount,
             payout: this._payout,

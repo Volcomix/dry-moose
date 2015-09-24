@@ -47,7 +47,14 @@ class GenericASCIIM1 extends AbstractCollector {
                 var close = parseFloat(arr[4]);
                 var volume = parseFloat(arr[5]);
                 
-                var quote = new Quote(dateTime, open, high, low, close, volume);
+                var quote: Quote = {
+                    dateTime: dateTime.toDate(),
+                    open: open,
+                    high: high,
+                    low: low,
+                    close: close,
+                    volume: volume
+                };
                 
                 var rewards: Reward[] = this.rewards.map(function(reward: Reward) {
                     var m = reward.expiration.minutes();

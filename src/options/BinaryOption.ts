@@ -32,7 +32,7 @@ class BinaryOption extends AbstractOption {
 	
 	toDocument() {
 		return {
-			quote: this.quote.toDocument(),
+			quote: this.quote,
 			expiration: this.expiration.toDate(),
 			amount: this.amount,
 			payout: this._payout,

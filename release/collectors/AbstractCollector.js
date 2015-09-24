@@ -1,6 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 var mongodb = require('mongodb');
 var Q = require('q');
+var moment = require('moment');
 var DbManager = require('../database/DbManager');
 var MongoClient = mongodb.MongoClient;
 /**
@@ -42,14 +43,14 @@ var AbstractCollector = (function () {
         var _this = this;
         this.pendingDb = Q.when(this.pendingDb, function () {
             return Q.ninvoke(_this.db.collection('quotes'), 'insertOne', {
-                quote: quote.toDocument(),
+                quote: quote,
                 rewards: rewards.map(function (reward) { return reward.toDocument(); })
             });
         })
             .then(function () {
             if (_this.pendingOption &&
-                !quote.dateTime.isBefore(_this.pendingOption.expiration) // dateTime >= exp
-            ) {
+                // dateTime >= exp
+                !moment(quote.dateTime).isBefore(_this.pendingOption.expiration)) {
                 var option = _this.pendingOption;
                 _this.pendingOption = undefined;
                 return _this.celebrator.getGain(option)

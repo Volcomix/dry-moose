@@ -2,6 +2,7 @@
 
 import mongodb = require('mongodb');
 import Q = require('q');
+import moment = require('moment');
 
 import DbManager = require('../database/DbManager');
 import IProcessor = require('../processors/IProcessor');
@@ -59,14 +60,15 @@ abstract class AbstractCollector {
 	process(quote: Quote, rewards: Reward[]) {
 		this.pendingDb = Q.when(this.pendingDb, () => {
 			return Q.ninvoke(this.db.collection('quotes'), 'insertOne', {
-				quote: quote.toDocument(),
+				quote: quote,
 				rewards: rewards.map((reward: Reward) => { return reward.toDocument(); })
 			});
 		})
 		.then(() => {
 			if (
 				this.pendingOption &&
-				!quote.dateTime.isBefore(this.pendingOption.expiration) // dateTime >= exp
+				// dateTime >= exp
+				!moment(quote.dateTime).isBefore(this.pendingOption.expiration)
 			) {
 				var option = this.pendingOption;
 				this.pendingOption = undefined;

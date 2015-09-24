@@ -11,7 +11,7 @@ var DemoCelebrator = (function () {
             var cursor = db.collection('quotes')
                 .find({
                 'quote.dateTime': {
-                    $gt: option.quote.dateTime.toDate(),
+                    $gt: option.quote.dateTime,
                     $lte: option.expiration.toDate()
                 },
                 'quote.close': (option.direction == BinaryOption.Direction.Call ?
