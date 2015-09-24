@@ -5,16 +5,21 @@ var moment = require('moment');
 var GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 var DummyProcessor = require('../../processors/DummyProcessor');
 var DemoCelebrator = require('../../celebrators/DemoCelebrator');
-var Reward = require('../../options/Reward');
 var BinaryOption = require('../../options/BinaryOption');
 chai.use(chaiAsPromised);
 chai.should();
 describe('GenericASCIIM1', function () {
     describe('#collect()', function () {
-        var rewards = [new Reward(moment({ minutes: 10 }), moment({ minutes: 30 }), 0.75)];
+        var rewards = [{
+                countdown: moment({ minutes: 10 }).toDate(),
+                expiration: moment({ minutes: 30 }).toDate(),
+                payout: 0.75
+            }];
         it('should pass quotes to processor', function (done) {
             new GenericASCIIM1({ process: function (quote, rewards) {
                     var dateTime = moment(quote.dateTime);
+                    var countdown = moment(reward.countdown);
+                    var expiration = moment(reward.expiration);
                     rewards.should.have.length(1);
                     var reward = rewards[0];
                     reward.payout.should.equal(0.75);
@@ -26,8 +31,8 @@ describe('GenericASCIIM1', function () {
                             quote.low.should.equal(1.095050);
                             quote.close.should.equal(1.095060);
                             quote.volume.should.equal(0);
-                            reward.countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-                            reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+                            countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
+                            expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             break;
                         case 1:
                             dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
@@ -36,8 +41,8 @@ describe('GenericASCIIM1', function () {
                             quote.low.should.equal(1.095000);
                             quote.close.should.equal(1.095020);
                             quote.volume.should.equal(0);
-                            reward.countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-                            reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+                            countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
+                            expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             break;
                         case 2:
                             dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
@@ -46,8 +51,8 @@ describe('GenericASCIIM1', function () {
                             quote.low.should.equal(1.095020);
                             quote.close.should.equal(1.095080);
                             quote.volume.should.equal(0);
-                            reward.countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-                            reward.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+                            countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
+                            expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                             done();
                             break;
                     }

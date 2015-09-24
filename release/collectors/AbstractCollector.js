@@ -44,7 +44,7 @@ var AbstractCollector = (function () {
         this.pendingDb = Q.when(this.pendingDb, function () {
             return Q.ninvoke(_this.db.collection('quotes'), 'insertOne', {
                 quote: quote,
-                rewards: rewards.map(function (reward) { return reward.toDocument(); })
+                rewards: rewards
             });
         })
             .then(function () {

@@ -56,21 +56,28 @@ class GenericASCIIM1 extends AbstractCollector {
                     volume: volume
                 };
                 
-                var rewards: Reward[] = this.rewards.map(function(reward: Reward) {
-                    var m = reward.expiration.minutes();
+                var rewards: Reward[] = this.rewards.map<Reward>(function(reward: Reward) {
+                    var expirationOffset = moment(reward.expiration);
+                    var minutes = expirationOffset.minutes();
                     
                     var expiration = dateTime.clone()
-                    .set('minutes', m * Math.ceil(dateTime.minutes() / m))
+                    .set('minutes', minutes * Math.ceil(dateTime.minutes() / minutes))
                     .set('seconds', 0)
-                    .add({ hours: reward.expiration.hours(), minutes: m });
+                    .add({ hours: expirationOffset.hours(), minutes: minutes });
+                    
+                    var countdownOffset = moment(reward.countdown);
                     
                     var countdown = expiration.clone()
                     .subtract({
-                        hours: reward.countdown.hours(),
-                        minutes: reward.countdown.minutes()
+                        hours: countdownOffset.hours(),
+                        minutes: countdownOffset.minutes()
                     });
                     
-                    return new Reward(countdown, expiration, reward.payout);
+                    return {
+                        countdown: countdown.toDate(),
+                        expiration: expiration.toDate(),
+                        payout: reward.payout
+                    };
                 });
                 
                 this.process(quote, rewards);

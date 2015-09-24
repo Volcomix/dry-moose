@@ -2,13 +2,16 @@
 var chai = require('chai');
 var moment = require('moment');
 var DummyProcessor = require('../../processors/DummyProcessor');
-var Reward = require('../../options/Reward');
 var BinaryOption = require('../../options/BinaryOption');
 var should = chai.should();
 describe('DummyProcessor', function () {
     var processor = new DummyProcessor();
     describe('#process()', function () {
-        var rewards = [new Reward(moment('2015-06-01 00:50:00-0500'), moment('2015-06-01 01:00:00-0500'), 0.75)];
+        var rewards = [{
+                countdown: moment('2015-06-01 00:50:00-0500').toDate(),
+                expiration: moment('2015-06-01 01:00:00-0500').toDate(),
+                payout: 0.75
+            }];
         context('when not enough quotes', function () {
             it('should not return an option', function () {
                 var quote = {

@@ -61,7 +61,7 @@ abstract class AbstractCollector {
 		this.pendingDb = Q.when(this.pendingDb, () => {
 			return Q.ninvoke(this.db.collection('quotes'), 'insertOne', {
 				quote: quote,
-				rewards: rewards.map((reward: Reward) => { return reward.toDocument(); })
+				rewards: rewards
 			});
 		})
 		.then(() => {

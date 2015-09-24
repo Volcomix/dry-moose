@@ -15,11 +15,11 @@ describe('DummyProcessor', function() {
     
     describe('#process()', function() {
         
-        var rewards: Reward[] = [ new Reward(
-			moment('2015-06-01 00:50:00-0500'),
-			moment('2015-06-01 01:00:00-0500'),
-			0.75
-		) ];
+        var rewards: Reward[] = [{
+			countdown: moment('2015-06-01 00:50:00-0500').toDate(),
+			expiration: moment('2015-06-01 01:00:00-0500').toDate(),
+			payout: 0.75
+        }];
         
         context('when not enough quotes', function() {
             it('should not return an option', function() {
