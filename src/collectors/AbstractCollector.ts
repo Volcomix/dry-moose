@@ -24,9 +24,9 @@ abstract class AbstractCollector {
 	private pendingOption: AbstractOption;
 	
 	constructor(
-		private processor: IProcessor<AbstractOption>,
+		private processor: IProcessor,
 		private investor: IInvestor,
-		private celebrator: ICelebrator<AbstractOption>
+		private celebrator: ICelebrator
 	) { }
 	
 	abstract collect(): Q.Promise<{}>;

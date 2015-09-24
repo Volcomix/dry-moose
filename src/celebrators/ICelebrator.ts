@@ -7,8 +7,8 @@ import AbstractOption = require('../options/AbstractOption');
 /**
  * Check option result and get reward
  */
-interface ICelebrator<Option extends AbstractOption> {
-    getGain(option: Option): Q.Promise<number>;
+interface ICelebrator {
+    getGain(option: AbstractOption): Q.Promise<number>;
 }
 
 export = ICelebrator;

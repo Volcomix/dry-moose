@@ -9,8 +9,8 @@ import Reward = require('../options/Reward');
 /**
  * Process quote and decide what option should be bought if any
  */
-interface IProcessor<Option extends AbstractOption> {
-	process(quote: Quote, rewards: Reward[]): Option;
+interface IProcessor {
+	process(quote: Quote, rewards: Reward[]): AbstractOption;
 }
 
 export = IProcessor;

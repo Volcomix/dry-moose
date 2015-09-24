@@ -17,9 +17,9 @@ import AbstractOption = require('../options/AbstractOption');
 class GenericASCIIM1 extends AbstractCollector {
     
     constructor(
-        processor: IProcessor<AbstractOption>,
+        processor: IProcessor,
         investor: IInvestor,
-        celebrator: ICelebrator<AbstractOption>,
+        celebrator: ICelebrator,
         private filename: string,
         private rewards: Reward[]
     ){

@@ -10,7 +10,7 @@ import BinaryOption = require('../options/BinaryOption');
  * - if quotes increase, ask for a Call
  * - if quotes decrease, ask for a Put
  */
-class DummyProcessor implements IProcessor<BinaryOption> {
+class DummyProcessor implements IProcessor {
 	
 	private lastQuote: Quote;
 	

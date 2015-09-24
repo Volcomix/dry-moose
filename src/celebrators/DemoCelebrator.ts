@@ -7,7 +7,7 @@ import DbManager = require('../database/DbManager');
 import ICelebrator = require('./ICelebrator');
 import BinaryOption = require('../options/BinaryOption');
 
-class DemoCelebrator implements ICelebrator<BinaryOption> {
+class DemoCelebrator implements ICelebrator {
 	getGain(option: BinaryOption): Q.Promise<number> {
 		return DbManager.db
 		.then((db: mongodb.Db) => {
