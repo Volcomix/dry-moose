@@ -5,11 +5,11 @@ import Q = require('q');
 
 import DbManager = require('../database/DbManager');
 import ICelebrator = require('./ICelebrator');
-import ForexQuote = require('../quotes/ForexQuote');
+import Quote = require('../quotes/Quote');
 import BinaryOption = require('../options/BinaryOption');
 
-class DemoCelebrator implements ICelebrator<ForexQuote, BinaryOption> {
-	getGain(quote: ForexQuote, option: BinaryOption): Q.Promise<number> {
+class DemoCelebrator implements ICelebrator<BinaryOption> {
+	getGain(quote: Quote, option: BinaryOption): Q.Promise<number> {
 		return DbManager.db
 		.then((db: mongodb.Db) => {
 			var cursor = db.collection('quotes')

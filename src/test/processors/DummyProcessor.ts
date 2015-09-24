@@ -4,7 +4,7 @@ import chai = require('chai');
 import moment = require('moment');
 
 import DummyProcessor = require('../../processors/DummyProcessor');
-import ForexQuote = require('../../quotes/ForexQuote');
+import Quote = require('../../quotes/Quote');
 import Reward = require('../../options/Reward');
 import BinaryOption = require('../../options/BinaryOption');
 
@@ -23,14 +23,14 @@ describe('DummyProcessor', function() {
         
         context('when not enough quotes', function() {
             it('should not return an option', function() {
-                var quote = new ForexQuote(moment('2015-06-01 00:03:00-0500'), 1, 1, 1, 1, 0);
+                var quote = new Quote(moment('2015-06-01 00:03:00-0500'), 1, 1, 1, 1, 0);
                 var option = processor.process(quote, rewards);
                 should.not.exist(option);                
             });
         });
         context('when quotes increase', function() {
             it('should return a Call', function() {
-                var quote = new ForexQuote(moment('2015-06-01 00:04:00-0500'), 1, 1, 1, 3, 0);
+                var quote = new Quote(moment('2015-06-01 00:04:00-0500'), 1, 1, 1, 3, 0);
                 var option = processor.process(quote, rewards);
                 option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                 option.amount.should.equal(10);
@@ -39,7 +39,7 @@ describe('DummyProcessor', function() {
         });
         context('when quotes decrease', function() {
             it('should return a Put', function() {
-                var quote = new ForexQuote(moment('2015-06-01 00:05:00-0500'), 1, 1, 1, 2, 0);
+                var quote = new Quote(moment('2015-06-01 00:05:00-0500'), 1, 1, 1, 2, 0);
                 var option = processor.process(quote, rewards);
                 option.expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
                 option.amount.should.equal(10);
@@ -48,7 +48,7 @@ describe('DummyProcessor', function() {
         });
         context('when quotes are stable', function() {
             it('should not return an option', function() {
-                var quote = new ForexQuote(moment('2015-06-01 00:06:00-0500'), 1, 1, 1, 2, 0);
+                var quote = new Quote(moment('2015-06-01 00:06:00-0500'), 1, 1, 1, 2, 0);
                 var option = processor.process(quote, rewards);
                 should.not.exist(option);                
             });

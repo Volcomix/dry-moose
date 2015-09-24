@@ -9,7 +9,7 @@ import IProcessor = require('../../processors/IProcessor');
 import DummyProcessor = require('../../processors/DummyProcessor');
 import IInvestor = require('../../investors/IInvestor');
 import DemoCelebrator = require('../../celebrators/DemoCelebrator');
-import ForexQuote = require('../../quotes/ForexQuote');
+import Quote = require('../../quotes/Quote');
 import Reward = require('../../options/Reward');
 import AbstractOption = require('../../options/AbstractOption');
 import BinaryOption = require('../../options/BinaryOption');
@@ -28,7 +28,7 @@ describe('GenericASCIIM1', function() {
 		
 		it('should pass quotes to processor', function(done) {
 			new GenericASCIIM1(
-				{ process: function(quote: ForexQuote, rewards: Reward[]): BinaryOption {
+				{ process: function(quote: Quote, rewards: Reward[]): BinaryOption {
 					rewards.should.have.length(1);
 					var reward = rewards[0];
 					reward.payout.should.equal(0.75);

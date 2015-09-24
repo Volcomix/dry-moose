@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
 import IProcessor = require('./IProcessor');
-import ForexQuote = require('../quotes/ForexQuote');
+import Quote = require('../quotes/Quote');
 import Reward = require('../options/Reward');
 import BinaryOption = require('../options/BinaryOption');
 
@@ -10,11 +10,11 @@ import BinaryOption = require('../options/BinaryOption');
  * - if quotes increase, ask for a Call
  * - if quotes decrease, ask for a Put
  */
-class DummyProcessor implements IProcessor<ForexQuote, BinaryOption> {
+class DummyProcessor implements IProcessor<BinaryOption> {
 	
-	private lastQuote: ForexQuote;
+	private lastQuote: Quote;
 	
-	process(quote: ForexQuote, rewards: Reward[]): BinaryOption {
+	process(quote: Quote, rewards: Reward[]): BinaryOption {
 		var option: BinaryOption;
 		if (this.lastQuote && this.lastQuote.close < quote.close) {
 			var expiration = rewards[0].expiration;

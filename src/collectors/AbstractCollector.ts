@@ -7,7 +7,7 @@ import DbManager = require('../database/DbManager');
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
 import ICelebrator = require('../celebrators/ICelebrator');
-import AbstractQuote = require('../quotes/AbstractQuote');
+import Quote = require('../quotes/Quote');
 import Reward = require('../options/Reward');
 import AbstractOption = require('../options/AbstractOption');
 
@@ -23,9 +23,9 @@ abstract class AbstractCollector {
 	private pendingOption: AbstractOption;
 	
 	constructor(
-		private processor: IProcessor<AbstractQuote, AbstractOption>,
+		private processor: IProcessor<AbstractOption>,
 		private investor: IInvestor,
-		private celebrator: ICelebrator<AbstractQuote, AbstractOption>
+		private celebrator: ICelebrator<AbstractOption>
 	) { }
 	
 	abstract collect(): Q.Promise<{}>;
@@ -56,7 +56,7 @@ abstract class AbstractCollector {
 		})
 	}
 	
-	process(quote: AbstractQuote, rewards: Reward[]) {
+	process(quote: Quote, rewards: Reward[]) {
 		this.pendingDb = Q.when(this.pendingDb, () => {
 			return Q.ninvoke(this.db.collection('quotes'), 'insertOne', {
 				quote: quote.toDocument(),

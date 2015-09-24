@@ -10,16 +10,16 @@ import AbstractCollector = require('./AbstractCollector');
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
 import ICelebrator = require('../celebrators/ICelebrator');
-import ForexQuote = require('../quotes/ForexQuote');
+import Quote = require('../quotes/Quote');
 import Reward = require('../options/Reward');
 import AbstractOption = require('../options/AbstractOption');
 
 class GenericASCIIM1 extends AbstractCollector {
     
     constructor(
-        processor: IProcessor<ForexQuote, AbstractOption>,
+        processor: IProcessor<AbstractOption>,
         investor: IInvestor,
-        celebrator: ICelebrator<ForexQuote, AbstractOption>,
+        celebrator: ICelebrator<AbstractOption>,
         private filename: string,
         private rewards: Reward[]
     ){
@@ -47,7 +47,7 @@ class GenericASCIIM1 extends AbstractCollector {
                 var close = parseFloat(arr[4]);
                 var volume = parseFloat(arr[5]);
                 
-                var quote = new ForexQuote(dateTime, open, high, low, close, volume);
+                var quote = new Quote(dateTime, open, high, low, close, volume);
                 
                 var rewards: Reward[] = this.rewards.map(function(reward: Reward) {
                     var m = reward.expiration.minutes();

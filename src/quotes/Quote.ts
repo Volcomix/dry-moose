@@ -2,10 +2,9 @@
 
 import moment = require('moment');
 
-import AbstractQuote = require('./AbstractQuote');
-
-class ForexQuote extends AbstractQuote {
+class Quote {
     
+    private _dateTime: moment.Moment;
     private _open: number;
     private _high: number;
     private _low: number;
@@ -20,13 +19,17 @@ class ForexQuote extends AbstractQuote {
         close: number,
         volume: number
     ) {
-        super(dateTime);
+        this._dateTime = dateTime;
         this._open = open;
         this._high = high;
         this._low = low;
         this._close = close;
         this._volume = volume;
     }
+	
+	get dateTime() {
+		return this._dateTime;
+	}
     
     get open() {
         return this._open;
@@ -50,7 +53,7 @@ class ForexQuote extends AbstractQuote {
     
     toDocument() {
         return {
-            dateTime: this.dateTime.toDate(),
+            dateTime: this._dateTime.toDate(),
             open: this._open,
             high: this._high,
             low: this._low,
@@ -60,4 +63,4 @@ class ForexQuote extends AbstractQuote {
     }
 }
 
-export = ForexQuote;
+export = Quote;

@@ -2,13 +2,13 @@
 
 import Q = require('q');
 
-import AbstractQuote = require('../quotes/AbstractQuote');
+import Quote = require('../quotes/Quote');
 import AbstractOption = require('../options/AbstractOption');
 
 /**
  * Check option result and get reward
  */
-interface ICelebrator<Quote extends AbstractQuote, Option extends AbstractOption> {
+interface ICelebrator<Option extends AbstractOption> {
     getGain(quote: Quote, option: Option): Q.Promise<number>;
 }
 

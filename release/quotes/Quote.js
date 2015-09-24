@@ -1,58 +1,58 @@
 /// <reference path="../../typings/tsd.d.ts" />
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var AbstractQuote = require('./AbstractQuote');
-var ForexQuote = (function (_super) {
-    __extends(ForexQuote, _super);
-    function ForexQuote(dateTime, open, high, low, close, volume) {
-        _super.call(this, dateTime);
+var Quote = (function () {
+    function Quote(dateTime, open, high, low, close, volume) {
+        this._dateTime = dateTime;
         this._open = open;
         this._high = high;
         this._low = low;
         this._close = close;
         this._volume = volume;
     }
-    Object.defineProperty(ForexQuote.prototype, "open", {
+    Object.defineProperty(Quote.prototype, "dateTime", {
+        get: function () {
+            return this._dateTime;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Quote.prototype, "open", {
         get: function () {
             return this._open;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ForexQuote.prototype, "high", {
+    Object.defineProperty(Quote.prototype, "high", {
         get: function () {
             return this._high;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ForexQuote.prototype, "low", {
+    Object.defineProperty(Quote.prototype, "low", {
         get: function () {
             return this._low;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ForexQuote.prototype, "close", {
+    Object.defineProperty(Quote.prototype, "close", {
         get: function () {
             return this._close;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ForexQuote.prototype, "volume", {
+    Object.defineProperty(Quote.prototype, "volume", {
         get: function () {
             return this._volume;
         },
         enumerable: true,
         configurable: true
     });
-    ForexQuote.prototype.toDocument = function () {
+    Quote.prototype.toDocument = function () {
         return {
-            dateTime: this.dateTime.toDate(),
+            dateTime: this._dateTime.toDate(),
             open: this._open,
             high: this._high,
             low: this._low,
@@ -60,6 +60,6 @@ var ForexQuote = (function (_super) {
             volume: this._volume
         };
     };
-    return ForexQuote;
-})(AbstractQuote);
-module.exports = ForexQuote;
+    return Quote;
+})();
+module.exports = Quote;
