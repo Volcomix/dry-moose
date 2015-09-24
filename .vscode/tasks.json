@@ -7,6 +7,27 @@
 // ${cwd}: the current working directory of the spawned process
 
 {
+    "version": "0.1.0",
+    "command": "gulp",
+    "isShellCommand": true,
+    "showOutput": "always",
+    "tasks": [
+        {
+            "taskName": "build",
+            "showOutput": "silent",
+            "isBuildCommand": true,
+            "problemMatcher": "$tsc"
+        },
+        {
+            "taskName": "test",
+            "showOutput": "silent",
+            "isBuildCommand": true,
+            "problemMatcher": "$tsc"
+        }
+    ]
+}
+
+/*{
 	"version": "0.1.0",
 	"command": "node-gyp",
 	"isShellCommand": true,
@@ -26,4 +47,4 @@
             "message": 5
         }
     }
-}
+}*/
