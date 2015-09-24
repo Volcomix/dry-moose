@@ -7,12 +7,20 @@ var __extends = (this && this.__extends) || function (d, b) {
 var AbstractOption = require('./AbstractOption');
 var BinaryOption = (function (_super) {
     __extends(BinaryOption, _super);
-    function BinaryOption(expiration, amount, payout, direction) {
+    function BinaryOption(quote, expiration, amount, payout, direction) {
         _super.call(this, expiration);
+        this._quote = quote;
         this._amount = amount;
         this._payout = payout;
         this._direction = direction;
     }
+    Object.defineProperty(BinaryOption.prototype, "quote", {
+        get: function () {
+            return this._quote;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(BinaryOption.prototype, "amount", {
         get: function () {
             return this._amount;
@@ -36,6 +44,7 @@ var BinaryOption = (function (_super) {
     });
     BinaryOption.prototype.toDocument = function () {
         return {
+            quote: this.quote.toDocument(),
             expiration: this.expiration.toDate(),
             amount: this._amount,
             payout: this._payout,

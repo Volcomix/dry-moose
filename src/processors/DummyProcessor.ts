@@ -19,11 +19,22 @@ class DummyProcessor implements IProcessor<BinaryOption> {
 		if (this.lastQuote && this.lastQuote.close < quote.close) {
 			var expiration = rewards[0].expiration;
 			var payout = rewards[0].payout;
-			option = new BinaryOption(expiration, 10, payout, BinaryOption.Direction.Call);
+			option = new BinaryOption(
+				quote,
+				expiration,
+				10,
+				payout,
+				BinaryOption.Direction.Call);
 		} else if (this.lastQuote && this.lastQuote.close > quote.close) {
 			var expiration = rewards[0].expiration;
 			var payout = rewards[0].payout;
-			option = new BinaryOption(expiration, 10, payout, BinaryOption.Direction.Put);
+			option = new BinaryOption(
+				quote,
+				expiration,
+				10,
+				payout,
+				BinaryOption.Direction.Put
+			);
 		}
 		this.lastQuote = quote;
 		return option;

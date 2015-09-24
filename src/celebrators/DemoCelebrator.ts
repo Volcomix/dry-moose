@@ -5,23 +5,22 @@ import Q = require('q');
 
 import DbManager = require('../database/DbManager');
 import ICelebrator = require('./ICelebrator');
-import Quote = require('../quotes/Quote');
 import BinaryOption = require('../options/BinaryOption');
 
 class DemoCelebrator implements ICelebrator<BinaryOption> {
-	getGain(quote: Quote, option: BinaryOption): Q.Promise<number> {
+	getGain(option: BinaryOption): Q.Promise<number> {
 		return DbManager.db
 		.then((db: mongodb.Db) => {
 			var cursor = db.collection('quotes')
 			.find({
 				'quote.dateTime': {
-					$gt: quote.dateTime,
+					$gt: option.quote.dateTime.toDate(),
 					$lte: option.expiration.toDate()
 				},
 				'quote.close': (
 					option.direction == BinaryOption.Direction.Call ?
-					{ $gte: quote.close } :
-					{ $lte: quote.close }
+					{ $gte: option.quote.close } :
+					{ $lte: option.quote.close }
 				)
 			})
 			.sort({ 'quote.dateTime': -1 })

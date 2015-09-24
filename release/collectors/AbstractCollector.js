@@ -52,7 +52,7 @@ var AbstractCollector = (function () {
             ) {
                 var option = _this.pendingOption;
                 _this.pendingOption = undefined;
-                return _this.celebrator.getGain(quote, option)
+                return _this.celebrator.getGain(option)
                     .then(function (gain) {
                     return Q.ninvoke(_this.db.collection('rewards'), 'insertOne', {
                         dateTime: option.expiration.toDate(),

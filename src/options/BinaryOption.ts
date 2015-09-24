@@ -3,23 +3,31 @@
 import moment = require('moment');
 
 import AbstractOption = require('./AbstractOption');
+import Quote = require('../quotes/Quote');
 
 class BinaryOption extends AbstractOption {	
 	
+	private _quote: Quote;
 	private _amount: number;
 	private _payout: number;
 	private _direction: BinaryOption.Direction;
 	
 	constructor(
+		quote: Quote,
 		expiration: moment.Moment,
 		amount: number,
 		payout: number,
 		direction: BinaryOption.Direction
 	) {
 		super(expiration);
+		this._quote = quote;
 		this._amount = amount;
 		this._payout = payout;
 		this._direction = direction;
+	}
+	
+	get quote() {
+		return this._quote;
 	}
 	
 	get amount() {
@@ -36,6 +44,7 @@ class BinaryOption extends AbstractOption {
 	
 	toDocument() {
 		return {
+			quote: this.quote.toDocument(),
 			expiration: this.expiration.toDate(),
 			amount: this._amount,
 			payout: this._payout,

@@ -70,7 +70,7 @@ abstract class AbstractCollector {
 			) {
 				var option = this.pendingOption;
 				this.pendingOption = undefined;
-				return this.celebrator.getGain(quote, option)
+				return this.celebrator.getGain(option)
 				.then((gain) => {
 					return Q.ninvoke(this.db.collection('rewards'), 'insertOne',  {
 						dateTime: option.expiration.toDate(),

@@ -5,18 +5,18 @@ var BinaryOption = require('../options/BinaryOption');
 var DemoCelebrator = (function () {
     function DemoCelebrator() {
     }
-    DemoCelebrator.prototype.getGain = function (quote, option) {
+    DemoCelebrator.prototype.getGain = function (option) {
         return DbManager.db
             .then(function (db) {
             var cursor = db.collection('quotes')
                 .find({
                 'quote.dateTime': {
-                    $gt: quote.dateTime,
+                    $gt: option.quote.dateTime.toDate(),
                     $lte: option.expiration.toDate()
                 },
                 'quote.close': (option.direction == BinaryOption.Direction.Call ?
-                    { $gte: quote.close } :
-                    { $lte: quote.close })
+                    { $gte: option.quote.close } :
+                    { $lte: option.quote.close })
             })
                 .sort({ 'quote.dateTime': -1 })
                 .limit(1);
