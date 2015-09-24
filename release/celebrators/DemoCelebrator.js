@@ -5,7 +5,7 @@ var BinaryOption = require('../options/BinaryOption');
 var DemoCelebrator = (function () {
     function DemoCelebrator() {
     }
-    DemoCelebrator.prototype.getReward = function (quote, option) {
+    DemoCelebrator.prototype.getGain = function (quote, option) {
         return DbManager.db
             .then(function (db) {
             var cursor = db.collection('quotes')

@@ -70,11 +70,11 @@ abstract class AbstractCollector {
 			) {
 				var option = this.pendingOption;
 				this.pendingOption = undefined;
-				return this.celebrator.getReward(quote, option)
-				.then((reward) => {
+				return this.celebrator.getGain(quote, option)
+				.then((gain) => {
 					return Q.ninvoke(this.db.collection('rewards'), 'insertOne',  {
 						dateTime: option.expiration.toDate(),
-						reward: reward
+						gain: gain
 					});
 				});
 			}

@@ -102,7 +102,7 @@ describe('GenericASCIIM1', function() {
 			return new GenericASCIIM1(
 				{ process: function() { return null; } },
 				{ invest: function() { } },
-				{ getReward: function() { return null; } },
+				{ getGain: function() { return null; } },
 				'dummy',
 				rewards
 			).run().should.be.rejected;

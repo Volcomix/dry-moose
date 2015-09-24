@@ -52,11 +52,11 @@ var AbstractCollector = (function () {
             ) {
                 var option = _this.pendingOption;
                 _this.pendingOption = undefined;
-                return _this.celebrator.getReward(quote, option)
-                    .then(function (reward) {
+                return _this.celebrator.getGain(quote, option)
+                    .then(function (gain) {
                     return Q.ninvoke(_this.db.collection('rewards'), 'insertOne', {
                         dateTime: option.expiration.toDate(),
-                        reward: reward
+                        gain: gain
                     });
                 });
             }

@@ -73,7 +73,7 @@ describe('GenericASCIIM1', function () {
                 } }, new DemoCelebrator(), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
         it('should reject when input file not found', function () {
-            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, { getReward: function () { return null; } }, 'dummy', rewards).run().should.be.rejected;
+            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, { getGain: function () { return null; } }, 'dummy', rewards).run().should.be.rejected;
         });
         it('should insert everything into MongoDB');
     });
