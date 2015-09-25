@@ -8,7 +8,7 @@ import DbManager = require('../database/DbManager');
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
 import ICelebrator = require('../celebrators/ICelebrator');
-import Quote = require('../quotes/Quote');
+import Quote = require('../documents/Quote');
 import Reward = require('../options/Reward');
 import Option = require('../options/Option');
 

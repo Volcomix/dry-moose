@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
 import Option = require('./Option');
-import Quote = require('../quotes/Quote');
+import Quote = require('../documents/Quote');
 
 interface BinaryOption extends Option {
 	payout: number;

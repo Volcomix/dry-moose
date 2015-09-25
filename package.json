@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "gulp test",
-    "install": "node-gyp rebuild"
+    "test": "gulp test"
   },
   "author": "Volcomix & Bouh",
   "license": "ISC",
@@ -23,7 +22,6 @@
     "gulp-typescript": "^2.8.3",
     "through2": "^2.0.0"
   },
-  "gypfile": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Volcomix/dry-moose.git"

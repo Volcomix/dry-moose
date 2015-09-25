@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import Quote = require('../quotes/Quote');
+import Quote = require('../documents/Quote');
 
 interface Option {
 	quote: Quote;

@@ -4,7 +4,7 @@ import chai = require('chai');
 import moment = require('moment');
 
 import DummyProcessor = require('../../processors/DummyProcessor');
-import Quote = require('../../quotes/Quote');
+import Quote = require('../../documents/Quote');
 import Reward = require('../../options/Reward');
 import BinaryOption = require('../../options/BinaryOption');
 

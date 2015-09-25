@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 var chai = require('chai');
-var TA = require("../../../build/Release/ta-lib");
+var TA = require("..\..\..\build\Release\ta-lib");
 chai.should();
 describe('ta-lib', function () {
     describe('#SMA()', function () {
