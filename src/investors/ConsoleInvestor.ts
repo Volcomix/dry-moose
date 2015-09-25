@@ -1,10 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
 import IInvestor = require('./IInvestor');
-import AbstractOption = require('../options/AbstractOption');
+import Option = require('../options/Option');
 
 class ConsoleInvestor implements IInvestor {
-	invest(option: AbstractOption): void {
+	invest(option: Option): void {
 		console.log(option.toString());
 	}
 }

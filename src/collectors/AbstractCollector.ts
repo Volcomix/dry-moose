@@ -10,7 +10,7 @@ import IInvestor = require('../investors/IInvestor');
 import ICelebrator = require('../celebrators/ICelebrator');
 import Quote = require('../quotes/Quote');
 import Reward = require('../options/Reward');
-import AbstractOption = require('../options/AbstractOption');
+import Option = require('../options/Option');
 
 var MongoClient = mongodb.MongoClient;
 
@@ -21,7 +21,7 @@ abstract class AbstractCollector {
 	
 	private db: mongodb.Db;
 	private pendingDb: Q.Promise<any>;
-	private pendingOption: AbstractOption;
+	private pendingOption: Option;
 	
 	constructor(
 		private processor: IProcessor,

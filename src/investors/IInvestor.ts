@@ -1,12 +1,12 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import AbstractOption = require('../options/AbstractOption');
+import Option = require('../options/Option');
 
 /**
  * Buy options
  */
 interface IInvestor {
-    invest(option: AbstractOption): void;
+    invest(option: Option): void;
 }
 
 export = IInvestor;

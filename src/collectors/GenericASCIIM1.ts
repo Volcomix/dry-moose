@@ -12,7 +12,7 @@ import IInvestor = require('../investors/IInvestor');
 import ICelebrator = require('../celebrators/ICelebrator');
 import Quote = require('../quotes/Quote');
 import Reward = require('../options/Reward');
-import AbstractOption = require('../options/AbstractOption');
+import Option = require('../options/Option');
 
 class GenericASCIIM1 extends AbstractCollector {
     

@@ -2,13 +2,13 @@
 
 import Q = require('q');
 
-import AbstractOption = require('../options/AbstractOption');
+import Option = require('../options/Option');
 
 /**
  * Check option result and get reward
  */
 interface ICelebrator {
-    getGain(option: AbstractOption): Q.Promise<number>;
+    getGain(option: Option): Q.Promise<number>;
 }
 
 export = ICelebrator;

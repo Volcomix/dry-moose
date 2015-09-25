@@ -11,7 +11,7 @@ import IInvestor = require('../../investors/IInvestor');
 import DemoCelebrator = require('../../celebrators/DemoCelebrator');
 import Quote = require('../../quotes/Quote');
 import Reward = require('../../options/Reward');
-import AbstractOption = require('../../options/AbstractOption');
+import Option = require('../../options/Option');
 import BinaryOption = require('../../options/BinaryOption');
 
 chai.use(chaiAsPromised);
@@ -72,7 +72,7 @@ describe('GenericASCIIM1', function() {
 					this.count = (this.count || 0) + 1;
 					return null;
 				}},
-				{ invest: function(option: AbstractOption) { } },
+				{ invest: function(option: Option) { } },
 				new DemoCelebrator(),
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards

@@ -1,9 +1,9 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import AbstractOption = require('./AbstractOption');
+import Option = require('./Option');
 import Quote = require('../quotes/Quote');
 
-interface BinaryOption extends AbstractOption {
+interface BinaryOption extends Option {
 	payout: number;
 	direction: BinaryOption.Direction;
 }

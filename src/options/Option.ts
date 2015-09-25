@@ -2,10 +2,10 @@
 
 import Quote = require('../quotes/Quote');
 
-interface AbstractOption {
+interface Option {
 	quote: Quote;
 	expiration: Date;
 	amount: number;
 }
 
-export = AbstractOption;
+export = Option;
