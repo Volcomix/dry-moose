@@ -10,9 +10,9 @@ import DummyProcessor = require('../../processors/DummyProcessor');
 import IInvestor = require('../../investors/IInvestor');
 import DemoCelebrator = require('../../celebrators/DemoCelebrator');
 import Quote = require('../../documents/Quote');
-import Reward = require('../../options/Reward');
-import Option = require('../../options/Option');
-import BinaryOption = require('../../options/BinaryOption');
+import Reward = require('../../documents/Reward');
+import Option = require('../../documents/Option');
+import BinaryOption = require('../../documents/options/BinaryOption');
 
 chai.use(chaiAsPromised);
 chai.should();

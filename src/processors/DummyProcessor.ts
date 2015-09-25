@@ -2,8 +2,8 @@
 
 import IProcessor = require('./IProcessor');
 import Quote = require('../documents/Quote');
-import Reward = require('../options/Reward');
-import BinaryOption = require('../options/BinaryOption');
+import Reward = require('../documents/Reward');
+import BinaryOption = require('../documents/options/BinaryOption');
 
 /**
  * Dummy quote processor :

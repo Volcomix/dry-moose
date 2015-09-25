@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 var Q = require('q');
 var DbManager = require('../database/DbManager');
-var BinaryOption = require('../options/BinaryOption');
+var BinaryOption = require('../documents/options/BinaryOption');
 var DemoCelebrator = (function () {
     function DemoCelebrator() {
     }

@@ -5,7 +5,7 @@ var moment = require('moment');
 var GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 var DummyProcessor = require('../../processors/DummyProcessor');
 var DemoCelebrator = require('../../celebrators/DemoCelebrator');
-var BinaryOption = require('../../options/BinaryOption');
+var BinaryOption = require('../../documents/options/BinaryOption');
 chai.use(chaiAsPromised);
 chai.should();
 describe('GenericASCIIM1', function () {

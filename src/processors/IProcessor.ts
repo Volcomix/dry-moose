@@ -3,8 +3,8 @@
 import moment = require('moment');
 
 import Quote = require('../documents/Quote');
-import Option = require('../options/Option');
-import Reward = require('../options/Reward');
+import Option = require('../documents/Option');
+import Reward = require('../documents/Reward');
 
 /**
  * Process quote and decide what option should be bought if any

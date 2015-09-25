@@ -2,7 +2,7 @@
 var chai = require('chai');
 var moment = require('moment');
 var DummyProcessor = require('../../processors/DummyProcessor');
-var BinaryOption = require('../../options/BinaryOption');
+var BinaryOption = require('../../documents/options/BinaryOption');
 var should = chai.should();
 describe('DummyProcessor', function () {
     var processor = new DummyProcessor();

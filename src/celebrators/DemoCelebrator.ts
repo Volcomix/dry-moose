@@ -5,7 +5,7 @@ import Q = require('q');
 
 import DbManager = require('../database/DbManager');
 import ICelebrator = require('./ICelebrator');
-import BinaryOption = require('../options/BinaryOption');
+import BinaryOption = require('../documents/options/BinaryOption');
 
 class DemoCelebrator implements ICelebrator {
 	getGain(option: BinaryOption): Q.Promise<number> {

@@ -2,7 +2,7 @@
 
 import Q = require('q');
 
-import Option = require('../options/Option');
+import Option = require('../documents/Option');
 
 /**
  * Check option result and get reward

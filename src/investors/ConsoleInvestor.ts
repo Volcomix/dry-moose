@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
 import IInvestor = require('./IInvestor');
-import Option = require('../options/Option');
+import Option = require('../documents/Option');
 
 class ConsoleInvestor implements IInvestor {
 	invest(option: Option): void {

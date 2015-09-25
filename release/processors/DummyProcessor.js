@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-var BinaryOption = require('../options/BinaryOption');
+var BinaryOption = require('../documents/options/BinaryOption');
 /**
  * Dummy quote processor :
  * - if quotes increase, ask for a Call
