@@ -11,7 +11,7 @@ import IInvestor = require('../../investors/IInvestor');
 import DemoCelebrator = require('../../celebrators/DemoCelebrator');
 import Quote = require('../../documents/Quote');
 import Reward = require('../../documents/Reward');
-import Option = require('../../documents/Option');
+import Option = require('../../documents/options/Option');
 import BinaryOption = require('../../documents/options/BinaryOption');
 
 chai.use(chaiAsPromised);

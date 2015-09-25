@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import Option = require('../documents/Option');
+import Option = require('../documents/options/Option');
 
 /**
  * Buy options

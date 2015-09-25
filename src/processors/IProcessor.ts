@@ -3,7 +3,7 @@
 import moment = require('moment');
 
 import Quote = require('../documents/Quote');
-import Option = require('../documents/Option');
+import Option = require('../documents/options/Option');
 import Reward = require('../documents/Reward');
 
 /**

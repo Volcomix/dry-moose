@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
-import Option = require('../Option');
+import Option = require('./Option');
 import Quote = require('../Quote');
 
 interface BinaryOption extends Option {

@@ -10,7 +10,7 @@ import IInvestor = require('../investors/IInvestor');
 import ICelebrator = require('../celebrators/ICelebrator');
 import Quote = require('../documents/Quote');
 import Reward = require('../documents/Reward');
-import Option = require('../documents/Option');
+import Option = require('../documents/options/Option');
 
 var MongoClient = mongodb.MongoClient;
 
