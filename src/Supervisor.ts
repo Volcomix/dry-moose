@@ -4,7 +4,7 @@ import mongodb = require('mongodb');
 import Q = require('q');
 
 import DbManager = require('./database/DbManager');
-import AbstractCollector = require('./collectors/AbstractCollector');
+import ICollector = require('./collectors/ICollector');
 import IProcessor = require('./processors/IProcessor');
 import IInvestor = require('./investors/IInvestor');
 import ICelebrator = require('./celebrators/ICelebrator');
@@ -24,7 +24,7 @@ class Supervisor {
 	private innerPortfolio: number;
 	
 	constructor(
-		private collector: AbstractCollector,
+		private collector: ICollector,
 		private processor: IProcessor,
 		private investor: IInvestor,
 		private celebrator: ICelebrator,

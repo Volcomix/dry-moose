@@ -1,18 +1,10 @@
 /// <reference path="../../typings/tsd.d.ts" />
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var fs = require('fs');
 var readline = require('readline');
 var Q = require('q');
 var moment = require('moment');
-var AbstractCollector = require('./AbstractCollector');
-var GenericASCIIM1 = (function (_super) {
-    __extends(GenericASCIIM1, _super);
+var GenericASCIIM1 = (function () {
     function GenericASCIIM1(filename, rewards) {
-        _super.call(this);
         this.filename = filename;
         this.rewards = rewards;
     }
@@ -69,5 +61,5 @@ var GenericASCIIM1 = (function (_super) {
         });
     };
     return GenericASCIIM1;
-})(AbstractCollector);
+})();
 module.exports = GenericASCIIM1;

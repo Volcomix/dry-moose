@@ -6,23 +6,16 @@ import readline = require('readline');
 import Q = require('q');
 import moment = require('moment');
 
-import AbstractCollector = require('./AbstractCollector');
-import IProcessor = require('../processors/IProcessor');
-import IInvestor = require('../investors/IInvestor');
-import ICelebrator = require('../celebrators/ICelebrator');
-import ICapacitor = require('../capacitors/ICapacitor');
+import ICollector = require('./ICollector');
 import Quote = require('../documents/Quote');
 import Reward = require('../documents/Reward');
-import Option = require('../documents/options/Option');
 
-class GenericASCIIM1 extends AbstractCollector {
+class GenericASCIIM1 implements ICollector {
     
     constructor(
         private filename: string,
         private rewards: Reward[]
-    ){
-        super();
-    }
+    ){ }
     
     collect(): Q.Promise<{}> {
         return Q.Promise((resolve, reject, notify) => {
