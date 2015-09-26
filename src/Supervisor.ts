@@ -10,7 +10,6 @@ import IInvestor = require('./investors/IInvestor');
 import ICelebrator = require('./celebrators/ICelebrator');
 import ICapacitor = require('./capacitors/ICapacitor');
 import Quote = require('./documents/Quote');
-import Reward = require('./documents/Reward');
 import Option = require('./documents/options/Option');
 
 /**
@@ -42,7 +41,7 @@ class Supervisor {
 				Q.ninvoke(this.db.collection('options'), 'createIndex', {
 					'expiration': 1
 				}),
-				Q.ninvoke(this.db.collection('rewards'), 'createIndex', {
+				Q.ninvoke(this.db.collection('gains'), 'createIndex', {
 					'dateTime': 1
 				}),
 				Q.ninvoke(this.db.collection('portfolio'), 'createIndex', {
@@ -63,15 +62,15 @@ class Supervisor {
 		.then(() => {
 			return this.collector.collect();
 		})
-		.progress((progress: { quote: Quote, rewards: Reward[] }) => {
+		.progress((quote: Quote) => {
 			this.pendingDb = Q.when(this.pendingDb, () => {
-				return Q.ninvoke(this.db.collection('quotes'), 'insertOne', progress);
+				return Q.ninvoke(this.db.collection('quotes'), 'insertOne', quote);
 			})
 			.then(() => {
 				if (
 					this.pendingOption &&
 					// dateTime >= exp
-					!moment(progress.quote.dateTime).isBefore(this.pendingOption.expiration)
+					!moment(quote.dateTime).isBefore(this.pendingOption.expiration)
 				) {
 					var option = this.pendingOption;
 					this.pendingOption = undefined;
@@ -83,7 +82,7 @@ class Supervisor {
 								dateTime: option.expiration,
 								portfolio: this.innerPortfolio
 							}),
-							Q.ninvoke(this.db.collection('rewards'), 'insertOne',  {
+							Q.ninvoke(this.db.collection('gains'), 'insertOne',  {
 								dateTime: option.expiration,
 								gain: gain
 							})
@@ -103,11 +102,7 @@ class Supervisor {
 					return;
 				}
 				
-				var option = this.processor.process(
-					portfolio,
-					progress.quote,
-					progress.rewards
-				);
+				var option = this.processor.process(portfolio, quote);
 				if (option) {
 					return Q.ninvoke(this.db.collection('options'), 'insertOne', option)
 					.then(() => {

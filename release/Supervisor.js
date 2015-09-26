@@ -24,7 +24,7 @@ var Supervisor = (function () {
                 Q.ninvoke(_this.db.collection('options'), 'createIndex', {
                     'expiration': 1
                 }),
-                Q.ninvoke(_this.db.collection('rewards'), 'createIndex', {
+                Q.ninvoke(_this.db.collection('gains'), 'createIndex', {
                     'dateTime': 1
                 }),
                 Q.ninvoke(_this.db.collection('portfolio'), 'createIndex', {
@@ -45,14 +45,14 @@ var Supervisor = (function () {
             .then(function () {
             return _this.collector.collect();
         })
-            .progress(function (progress) {
+            .progress(function (quote) {
             _this.pendingDb = Q.when(_this.pendingDb, function () {
-                return Q.ninvoke(_this.db.collection('quotes'), 'insertOne', progress);
+                return Q.ninvoke(_this.db.collection('quotes'), 'insertOne', quote);
             })
                 .then(function () {
                 if (_this.pendingOption &&
                     // dateTime >= exp
-                    !moment(progress.quote.dateTime).isBefore(_this.pendingOption.expiration)) {
+                    !moment(quote.dateTime).isBefore(_this.pendingOption.expiration)) {
                     var option = _this.pendingOption;
                     _this.pendingOption = undefined;
                     return _this.celebrator.getGain(option)
@@ -63,7 +63,7 @@ var Supervisor = (function () {
                                 dateTime: option.expiration,
                                 portfolio: _this.innerPortfolio
                             }),
-                            Q.ninvoke(_this.db.collection('rewards'), 'insertOne', {
+                            Q.ninvoke(_this.db.collection('gains'), 'insertOne', {
                                 dateTime: option.expiration,
                                 gain: gain
                             })
@@ -81,7 +81,7 @@ var Supervisor = (function () {
                 if (_this.pendingOption) {
                     return;
                 }
-                var option = _this.processor.process(portfolio, progress.quote, progress.rewards);
+                var option = _this.processor.process(portfolio, quote);
                 if (option) {
                     return Q.ninvoke(_this.db.collection('options'), 'insertOne', option)
                         .then(function () {

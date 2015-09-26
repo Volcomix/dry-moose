@@ -31,31 +31,28 @@ var GenericASCIIM1 = (function () {
                     high: high,
                     low: low,
                     close: close,
-                    volume: volume
+                    volume: volume,
+                    rewards: _this.rewards.map(function (reward) {
+                        var expirationOffset = moment(reward.expiration);
+                        var minutes = expirationOffset.minutes();
+                        var expiration = dateTime.clone()
+                            .set('minutes', minutes * Math.ceil(dateTime.minutes() / minutes))
+                            .set('seconds', 0)
+                            .add({ hours: expirationOffset.hours(), minutes: minutes });
+                        var countdownOffset = moment(reward.countdown);
+                        var countdown = expiration.clone()
+                            .subtract({
+                            hours: countdownOffset.hours(),
+                            minutes: countdownOffset.minutes()
+                        });
+                        return {
+                            countdown: countdown.toDate(),
+                            expiration: expiration.toDate(),
+                            payout: reward.payout
+                        };
+                    })
                 };
-                var rewards = _this.rewards.map(function (reward) {
-                    var expirationOffset = moment(reward.expiration);
-                    var minutes = expirationOffset.minutes();
-                    var expiration = dateTime.clone()
-                        .set('minutes', minutes * Math.ceil(dateTime.minutes() / minutes))
-                        .set('seconds', 0)
-                        .add({ hours: expirationOffset.hours(), minutes: minutes });
-                    var countdownOffset = moment(reward.countdown);
-                    var countdown = expiration.clone()
-                        .subtract({
-                        hours: countdownOffset.hours(),
-                        minutes: countdownOffset.minutes()
-                    });
-                    return {
-                        countdown: countdown.toDate(),
-                        expiration: expiration.toDate(),
-                        payout: reward.payout
-                    };
-                });
-                notify({
-                    quote: quote,
-                    rewards: rewards
-                });
+                notify(quote);
             });
             rl.on('close', resolve);
         });

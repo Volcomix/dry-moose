@@ -8,27 +8,23 @@ var BinaryOption = require('../documents/options/BinaryOption');
 var DummyProcessor = (function () {
     function DummyProcessor() {
     }
-    DummyProcessor.prototype.process = function (portfolio, quote, rewards) {
+    DummyProcessor.prototype.process = function (portfolio, quote) {
         var option;
         if (this.lastQuote && this.lastQuote.close < quote.close) {
-            var expiration = rewards[0].expiration;
-            var payout = rewards[0].payout;
             option = {
                 quote: quote,
-                expiration: expiration,
+                expiration: quote.rewards[0].expiration,
                 amount: 10,
-                payout: payout,
+                payout: quote.rewards[0].payout,
                 direction: BinaryOption.Direction.Call
             };
         }
         else if (this.lastQuote && this.lastQuote.close > quote.close) {
-            var expiration = rewards[0].expiration;
-            var payout = rewards[0].payout;
             option = {
                 quote: quote,
-                expiration: expiration,
+                expiration: quote.rewards[0].expiration,
                 amount: 10,
-                payout: payout,
+                payout: quote.rewards[0].payout,
                 direction: BinaryOption.Direction.Put
             };
         }

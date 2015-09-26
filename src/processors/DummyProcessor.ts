@@ -2,7 +2,6 @@
 
 import IProcessor = require('./IProcessor');
 import Quote = require('../documents/Quote');
-import Reward = require('../documents/Reward');
 import BinaryOption = require('../documents/options/BinaryOption');
 
 /**
@@ -14,26 +13,22 @@ class DummyProcessor implements IProcessor {
 	
 	private lastQuote: Quote;
 	
-	process(portfolio: number, quote: Quote, rewards: Reward[]): BinaryOption {
+	process(portfolio: number, quote: Quote): BinaryOption {
 		var option: BinaryOption;
 		if (this.lastQuote && this.lastQuote.close < quote.close) {
-			var expiration = rewards[0].expiration;
-			var payout = rewards[0].payout;
 			option = {
 				quote: quote,
-				expiration: expiration,
+				expiration: quote.rewards[0].expiration,
 				amount: 10,
-				payout: payout,
+				payout: quote.rewards[0].payout,
 				direction: BinaryOption.Direction.Call
 			};
 		} else if (this.lastQuote && this.lastQuote.close > quote.close) {
-			var expiration = rewards[0].expiration;
-			var payout = rewards[0].payout;
 			option = {
 				quote: quote,
-				expiration: expiration,
+				expiration: quote.rewards[0].expiration,
 				amount: 10,
-				payout: payout,
+				payout: quote.rewards[0].payout,
 				direction: BinaryOption.Direction.Put
 			};
 		}

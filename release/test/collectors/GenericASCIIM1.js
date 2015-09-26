@@ -19,7 +19,7 @@ describe('GenericASCIIM1', function () {
             }];
         it('should pass quotes to processor', function (done) {
             new Supervisor(new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards), {
-                process: function (portfolio, quote, rewards) {
+                process: function (portfolio, quote) {
                     var dateTime = moment(quote.dateTime);
                     var countdown = moment(reward.countdown);
                     var expiration = moment(reward.expiration);

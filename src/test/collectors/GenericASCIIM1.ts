@@ -32,11 +32,7 @@ describe('GenericASCIIM1', function() {
 			new Supervisor(
 				new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards),
 				{
-					process: function(
-						portfolio: number,
-						quote: Quote,
-						rewards: Reward[]
-					): BinaryOption {
+					process: function(portfolio: number, quote: Quote): BinaryOption {
 						
 						var dateTime = moment(quote.dateTime);
 						var countdown = moment(reward.countdown);
