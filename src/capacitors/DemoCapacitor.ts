@@ -14,9 +14,12 @@ class DemoCapacitor implements ICapacitor {
 	getPortfolio(): Q.Promise<number> {
 		return DbManager.db
 		.then((db: mongodb.Db) => {
-			var cursor = db.collection('portfolio').find().sort({ 'dateTime': -1 });
+			var cursor = db.collection('portfolio')
+			.find()
+			.sort({ 'dateTime': -1 })
+			.limit(1);
 			
-			return Q.ninvoke(cursor, 'limit', 1);
+			return Q.ninvoke(cursor, 'next');
 		})
 		.then((portfolio: Portfolio) => {
 			return portfolio ? portfolio.value : this.initialValue;

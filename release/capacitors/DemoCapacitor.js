@@ -9,8 +9,11 @@ var DemoCapacitor = (function () {
         var _this = this;
         return DbManager.db
             .then(function (db) {
-            var cursor = db.collection('portfolio').find().sort({ 'dateTime': -1 });
-            return Q.ninvoke(cursor, 'limit', 1);
+            var cursor = db.collection('portfolio')
+                .find()
+                .sort({ 'dateTime': -1 })
+                .limit(1);
+            return Q.ninvoke(cursor, 'next');
         })
             .then(function (portfolio) {
             return portfolio ? portfolio.value : _this.initialValue;

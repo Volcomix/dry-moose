@@ -10,15 +10,15 @@ var DemoCelebrator = (function () {
             .then(function (db) {
             var cursor = db.collection('quotes')
                 .find({
-                'quote.dateTime': {
+                'dateTime': {
                     $gt: option.quote.dateTime,
                     $lte: option.expiration
                 },
-                'quote.close': (option.direction == BinaryOption.Direction.Call ?
+                'close': (option.direction == BinaryOption.Direction.Call ?
                     { $gte: option.quote.close } :
                     { $lte: option.quote.close })
             })
-                .sort({ 'quote.dateTime': -1 })
+                .sort({ 'dateTime': -1 })
                 .limit(1);
             return Q.ninvoke(cursor, 'count', true);
         })

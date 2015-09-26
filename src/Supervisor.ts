@@ -2,6 +2,7 @@
 
 import mongodb = require('mongodb');
 import Q = require('q');
+import moment = require('moment');
 
 import DbManager = require('./database/DbManager');
 import ICollector = require('./collectors/ICollector');
@@ -36,6 +37,9 @@ class Supervisor {
 			this.db = db;
 			return [
 				Q.ninvoke(this.db.collection('quotes'), 'createIndex', {
+					'dateTime': 1
+				}),
+				Q.ninvoke(this.db.collection('options'), 'createIndex', {
 					'quote.dateTime': 1
 				}),
 				Q.ninvoke(this.db.collection('options'), 'createIndex', {
@@ -80,11 +84,11 @@ class Supervisor {
 						return Q.all([
 							Q.ninvoke(this.db.collection('portfolio'), 'insertOne', {
 								dateTime: option.expiration,
-								portfolio: this.innerPortfolio
+								value: this.innerPortfolio
 							}),
 							Q.ninvoke(this.db.collection('gains'), 'insertOne',  {
 								dateTime: option.expiration,
-								gain: gain
+								value: gain
 							})
 						]);
 					});
@@ -95,7 +99,13 @@ class Supervisor {
 			})
 			.then((portfolio) => {
 				if (this.innerPortfolio != portfolio) {
-					throw new Error('Estimated portfolio and real portfolio are different');
+					throw new Error(
+						'Estimated portfolio and real portfolio are different ' +
+						JSON.stringify({
+							estimated: this.innerPortfolio,
+							real: portfolio
+						})
+					);
 				}
 				
 				if (this.pendingOption) {
@@ -104,7 +114,14 @@ class Supervisor {
 				
 				var option = this.processor.process(portfolio, quote);
 				if (option) {
-					return Q.ninvoke(this.db.collection('options'), 'insertOne', option)
+					this.innerPortfolio -= option.amount;
+					return Q.all([
+						Q.ninvoke(this.db.collection('options'), 'insertOne', option),
+						Q.ninvoke(this.db.collection('portfolio'), 'insertOne', {
+							dateTime: quote.dateTime,
+							value: this.innerPortfolio
+						})
+					])
 					.then(() => {
 						this.pendingOption = option;
 						this.investor.invest(option);

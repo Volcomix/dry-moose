@@ -3,7 +3,7 @@ var ConsoleInvestor = (function () {
     function ConsoleInvestor() {
     }
     ConsoleInvestor.prototype.invest = function (option) {
-        console.log(option.toString());
+        console.log(option);
     };
     return ConsoleInvestor;
 })();

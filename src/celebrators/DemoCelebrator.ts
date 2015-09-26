@@ -13,17 +13,17 @@ class DemoCelebrator implements ICelebrator {
 		.then((db: mongodb.Db) => {
 			var cursor = db.collection('quotes')
 			.find({
-				'quote.dateTime': {
+				'dateTime': {
 					$gt: option.quote.dateTime,
 					$lte: option.expiration
 				},
-				'quote.close': (
+				'close': (
 					option.direction == BinaryOption.Direction.Call ?
 					{ $gte: option.quote.close } :
 					{ $lte: option.quote.close }
 				)
 			})
-			.sort({ 'quote.dateTime': -1 })
+			.sort({ 'dateTime': -1 })
 			.limit(1);
 			
 			return Q.ninvoke<number>(cursor, 'count', true);

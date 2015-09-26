@@ -1,5 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 var Q = require('q');
+var moment = require('moment');
 var DbManager = require('./database/DbManager');
 /**
  * Main class which supervises everything
@@ -19,6 +20,9 @@ var Supervisor = (function () {
             _this.db = db;
             return [
                 Q.ninvoke(_this.db.collection('quotes'), 'createIndex', {
+                    'dateTime': 1
+                }),
+                Q.ninvoke(_this.db.collection('options'), 'createIndex', {
                     'quote.dateTime': 1
                 }),
                 Q.ninvoke(_this.db.collection('options'), 'createIndex', {
@@ -61,11 +65,11 @@ var Supervisor = (function () {
                         return Q.all([
                             Q.ninvoke(_this.db.collection('portfolio'), 'insertOne', {
                                 dateTime: option.expiration,
-                                portfolio: _this.innerPortfolio
+                                value: _this.innerPortfolio
                             }),
                             Q.ninvoke(_this.db.collection('gains'), 'insertOne', {
                                 dateTime: option.expiration,
-                                gain: gain
+                                value: gain
                             })
                         ]);
                     });
@@ -76,14 +80,25 @@ var Supervisor = (function () {
             })
                 .then(function (portfolio) {
                 if (_this.innerPortfolio != portfolio) {
-                    throw new Error('Estimated portfolio and real portfolio are different');
+                    throw new Error('Estimated portfolio and real portfolio are different ' +
+                        JSON.stringify({
+                            estimated: _this.innerPortfolio,
+                            real: portfolio
+                        }));
                 }
                 if (_this.pendingOption) {
                     return;
                 }
                 var option = _this.processor.process(portfolio, quote);
                 if (option) {
-                    return Q.ninvoke(_this.db.collection('options'), 'insertOne', option)
+                    _this.innerPortfolio -= option.amount;
+                    return Q.all([
+                        Q.ninvoke(_this.db.collection('options'), 'insertOne', option),
+                        Q.ninvoke(_this.db.collection('portfolio'), 'insertOne', {
+                            dateTime: quote.dateTime,
+                            value: _this.innerPortfolio
+                        })
+                    ])
                         .then(function () {
                         _this.pendingOption = option;
                         _this.investor.invest(option);
