@@ -8,6 +8,7 @@ import DbManager = require('../database/DbManager');
 import IProcessor = require('../processors/IProcessor');
 import IInvestor = require('../investors/IInvestor');
 import ICelebrator = require('../celebrators/ICelebrator');
+import ICapacitor = require('../capacitors/ICapacitor');
 import Quote = require('../documents/Quote');
 import Reward = require('../documents/Reward');
 import Option = require('../documents/options/Option');
@@ -22,11 +23,13 @@ abstract class AbstractCollector {
 	private db: mongodb.Db;
 	private pendingDb: Q.Promise<any>;
 	private pendingOption: Option;
+	private innerPortfolio: number;
 	
 	constructor(
 		private processor: IProcessor,
 		private investor: IInvestor,
-		private celebrator: ICelebrator
+		private celebrator: ICelebrator,
+		private capacitor: ICapacitor
 	) { }
 	
 	abstract collect(): Q.Promise<{}>;
@@ -44,10 +47,19 @@ abstract class AbstractCollector {
 				}),
 				Q.ninvoke(this.db.collection('rewards'), 'createIndex', {
 					'dateTime': 1
+				}),
+				Q.ninvoke(this.db.collection('portfolio'), 'createIndex', {
+					'dateTime': 1
 				})
 			];
 		})
 		.spread(() => {
+			return this.capacitor.getPortfolio();
+		})
+		.then((portfolio) => {
+			this.innerPortfolio = portfolio;
+			
+			// Main loop
 			return this.collect();
 		})
 		.finally(() => {
@@ -74,19 +86,33 @@ abstract class AbstractCollector {
 				this.pendingOption = undefined;
 				return this.celebrator.getGain(option)
 				.then((gain) => {
-					return Q.ninvoke(this.db.collection('rewards'), 'insertOne',  {
-						dateTime: option.expiration,
-						gain: gain
-					});
+					this.innerPortfolio += gain;
+					return Q.all([
+						Q.ninvoke(this.db.collection('portfolio'), 'insertOne', {
+							dateTime: option.expiration,
+							portfolio: this.innerPortfolio
+						}),
+						Q.ninvoke(this.db.collection('rewards'), 'insertOne',  {
+							dateTime: option.expiration,
+							gain: gain
+						})
+					]);
 				});
 			}
 		})
 		.then(() => {
+			return this.capacitor.getPortfolio();
+		})
+		.then((portfolio) => {
+			if (this.innerPortfolio != portfolio) {
+				throw new Error('Estimated portfolio and real portfolio are different');
+			}
+			
 			if (this.pendingOption) {
 				return;
 			}
 			
-			var option = this.processor.process(quote, rewards);
+			var option = this.processor.process(portfolio, quote, rewards);
 			if (option) {
 				return Q.ninvoke(this.db.collection('options'), 'insertOne', option)
 				.then(() => {

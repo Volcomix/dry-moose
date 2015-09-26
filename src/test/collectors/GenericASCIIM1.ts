@@ -9,6 +9,7 @@ import IProcessor = require('../../processors/IProcessor');
 import DummyProcessor = require('../../processors/DummyProcessor');
 import IInvestor = require('../../investors/IInvestor');
 import DemoCelebrator = require('../../celebrators/DemoCelebrator');
+import DemoCapacitor = require('../../capacitors/DemoCapacitor');
 import Quote = require('../../documents/Quote');
 import Reward = require('../../documents/Reward');
 import Option = require('../../documents/options/Option');
@@ -28,52 +29,60 @@ describe('GenericASCIIM1', function() {
 		
 		it('should pass quotes to processor', function(done) {
 			new GenericASCIIM1(
-				{ process: function(quote: Quote, rewards: Reward[]): BinaryOption {
-					var dateTime = moment(quote.dateTime);
-					var countdown = moment(reward.countdown);
-					var expiration = moment(reward.expiration);
-					
-					rewards.should.have.length(1);
-					var reward = rewards[0];
-					reward.payout.should.equal(0.75);
-					switch (this.count) {
-						case undefined:
-							dateTime.isSame('2015-06-01 00:03:00-0500').should.be.true;
-							quote.open.should.equal(1.095090);
-							quote.high.should.equal(1.095130);
-							quote.low.should.equal(1.095050);
-							quote.close.should.equal(1.095060);
-							quote.volume.should.equal(0);
-							countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-							break;
-						case 1:
-							dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
-							quote.open.should.equal(1.095060);
-							quote.high.should.equal(1.095060);
-							quote.low.should.equal(1.095000);
-							quote.close.should.equal(1.095020);
-							quote.volume.should.equal(0);
-							countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-							break;
-						case 2:
-							dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
-							quote.open.should.equal(1.095020);
-							quote.high.should.equal(1.095120);
-							quote.low.should.equal(1.095020);
-							quote.close.should.equal(1.095080);
-							quote.volume.should.equal(0);
-							countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-							done();
-							break;
+				{
+					process: function(
+						portfolio: number,
+						quote: Quote,
+						rewards: Reward[]
+					): BinaryOption {
+						
+						var dateTime = moment(quote.dateTime);
+						var countdown = moment(reward.countdown);
+						var expiration = moment(reward.expiration);
+						
+						rewards.should.have.length(1);
+						var reward = rewards[0];
+						reward.payout.should.equal(0.75);
+						switch (this.count) {
+							case undefined:
+								dateTime.isSame('2015-06-01 00:03:00-0500').should.be.true;
+								quote.open.should.equal(1.095090);
+								quote.high.should.equal(1.095130);
+								quote.low.should.equal(1.095050);
+								quote.close.should.equal(1.095060);
+								quote.volume.should.equal(0);
+								countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
+								expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+								break;
+							case 1:
+								dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
+								quote.open.should.equal(1.095060);
+								quote.high.should.equal(1.095060);
+								quote.low.should.equal(1.095000);
+								quote.close.should.equal(1.095020);
+								quote.volume.should.equal(0);
+								countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
+								expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+								break;
+							case 2:
+								dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
+								quote.open.should.equal(1.095020);
+								quote.high.should.equal(1.095120);
+								quote.low.should.equal(1.095020);
+								quote.close.should.equal(1.095080);
+								quote.volume.should.equal(0);
+								countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
+								expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
+								done();
+								break;
+						}
+						this.count = (this.count || 0) + 1;
+						return null;
 					}
-					this.count = (this.count || 0) + 1;
-					return null;
-				}},
+				},
 				{ invest: function(option: Option) { } },
 				new DemoCelebrator(),
+				new DemoCapacitor(100),
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards
 			).run();
@@ -99,6 +108,7 @@ describe('GenericASCIIM1', function() {
 					this.count = (this.count || 0) + 1;
 				}},
 				new DemoCelebrator(),
+				new DemoCapacitor(100),
 				'src/test/collectors/GenericASCIIM1.csv',
 				rewards
 			).run();
@@ -108,6 +118,7 @@ describe('GenericASCIIM1', function() {
 				{ process: function() { return null; } },
 				{ invest: function() { } },
 				{ getGain: function() { return null; } },
+				{ getPortfolio: function() { return null; } },
 				'dummy',
 				rewards
 			).run().should.be.rejected;

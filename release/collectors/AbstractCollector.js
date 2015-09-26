@@ -8,10 +8,11 @@ var MongoClient = mongodb.MongoClient;
  * Collect trading quotes
  */
 var AbstractCollector = (function () {
-    function AbstractCollector(processor, investor, celebrator) {
+    function AbstractCollector(processor, investor, celebrator, capacitor) {
         this.processor = processor;
         this.investor = investor;
         this.celebrator = celebrator;
+        this.capacitor = capacitor;
     }
     AbstractCollector.prototype.run = function () {
         var _this = this;
@@ -27,10 +28,18 @@ var AbstractCollector = (function () {
                 }),
                 Q.ninvoke(_this.db.collection('rewards'), 'createIndex', {
                     'dateTime': 1
+                }),
+                Q.ninvoke(_this.db.collection('portfolio'), 'createIndex', {
+                    'dateTime': 1
                 })
             ];
         })
             .spread(function () {
+            return _this.capacitor.getPortfolio();
+        })
+            .then(function (portfolio) {
+            _this.innerPortfolio = portfolio;
+            // Main loop
             return _this.collect();
         })
             .finally(function () {
@@ -55,18 +64,31 @@ var AbstractCollector = (function () {
                 _this.pendingOption = undefined;
                 return _this.celebrator.getGain(option)
                     .then(function (gain) {
-                    return Q.ninvoke(_this.db.collection('rewards'), 'insertOne', {
-                        dateTime: option.expiration,
-                        gain: gain
-                    });
+                    _this.innerPortfolio += gain;
+                    return Q.all([
+                        Q.ninvoke(_this.db.collection('portfolio'), 'insertOne', {
+                            dateTime: option.expiration,
+                            portfolio: _this.innerPortfolio
+                        }),
+                        Q.ninvoke(_this.db.collection('rewards'), 'insertOne', {
+                            dateTime: option.expiration,
+                            gain: gain
+                        })
+                    ]);
                 });
             }
         })
             .then(function () {
+            return _this.capacitor.getPortfolio();
+        })
+            .then(function (portfolio) {
+            if (_this.innerPortfolio != portfolio) {
+                throw new Error('Estimated portfolio and real portfolio are different');
+            }
             if (_this.pendingOption) {
                 return;
             }
-            var option = _this.processor.process(quote, rewards);
+            var option = _this.processor.process(portfolio, quote, rewards);
             if (option) {
                 return Q.ninvoke(_this.db.collection('options'), 'insertOne', option)
                     .then(function () {

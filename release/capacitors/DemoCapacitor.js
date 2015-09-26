@@ -2,17 +2,20 @@
 var Q = require('q');
 var DbManager = require('../database/DbManager');
 var DemoCapacitor = (function () {
-    function DemoCapacitor() {
+    function DemoCapacitor(initialValue) {
+        this.initialValue = initialValue;
     }
     DemoCapacitor.prototype.getPortfolio = function () {
+        var _this = this;
         return DbManager.db
             .then(function (db) {
             var cursor = db.collection('portfolio').find().sort({ 'dateTime': -1 });
             return Q.ninvoke(cursor, 'limit', 1);
         })
             .then(function (portfolio) {
-            return portfolio.value;
+            return portfolio ? portfolio.value : _this.initialValue;
         });
     };
     return DemoCapacitor;
 })();
+module.exports = DemoCapacitor;

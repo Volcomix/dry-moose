@@ -8,7 +8,7 @@ var BinaryOption = require('../documents/options/BinaryOption');
 var DummyProcessor = (function () {
     function DummyProcessor() {
     }
-    DummyProcessor.prototype.process = function (quote, rewards) {
+    DummyProcessor.prototype.process = function (portfolio, quote, rewards) {
         var option;
         if (this.lastQuote && this.lastQuote.close < quote.close) {
             var expiration = rewards[0].expiration;

@@ -14,7 +14,7 @@ class DummyProcessor implements IProcessor {
 	
 	private lastQuote: Quote;
 	
-	process(quote: Quote, rewards: Reward[]): BinaryOption {
+	process(portfolio: number, quote: Quote, rewards: Reward[]): BinaryOption {
 		var option: BinaryOption;
 		if (this.lastQuote && this.lastQuote.close < quote.close) {
 			var expiration = rewards[0].expiration;

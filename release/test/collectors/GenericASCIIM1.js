@@ -5,6 +5,7 @@ var moment = require('moment');
 var GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 var DummyProcessor = require('../../processors/DummyProcessor');
 var DemoCelebrator = require('../../celebrators/DemoCelebrator');
+var DemoCapacitor = require('../../capacitors/DemoCapacitor');
 var BinaryOption = require('../../documents/options/BinaryOption');
 chai.use(chaiAsPromised);
 chai.should();
@@ -16,7 +17,8 @@ describe('GenericASCIIM1', function () {
                 payout: 0.75
             }];
         it('should pass quotes to processor', function (done) {
-            new GenericASCIIM1({ process: function (quote, rewards) {
+            new GenericASCIIM1({
+                process: function (portfolio, quote, rewards) {
                     var dateTime = moment(quote.dateTime);
                     var countdown = moment(reward.countdown);
                     var expiration = moment(reward.expiration);
@@ -58,7 +60,8 @@ describe('GenericASCIIM1', function () {
                     }
                     this.count = (this.count || 0) + 1;
                     return null;
-                } }, { invest: function (option) { } }, new DemoCelebrator(), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
+                }
+            }, { invest: function (option) { } }, new DemoCelebrator(), new DemoCapacitor(100), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
         it('should pass actions to investor', function (done) {
             new GenericASCIIM1(new DummyProcessor(), { invest: function (option) {
@@ -77,10 +80,10 @@ describe('GenericASCIIM1', function () {
                             break;
                     }
                     this.count = (this.count || 0) + 1;
-                } }, new DemoCelebrator(), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
+                } }, new DemoCelebrator(), new DemoCapacitor(100), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
         });
         it('should reject when input file not found', function () {
-            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, { getGain: function () { return null; } }, 'dummy', rewards).run().should.be.rejected;
+            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, { getGain: function () { return null; } }, { getPortfolio: function () { return null; } }, 'dummy', rewards).run().should.be.rejected;
         });
         it('should insert everything into MongoDB');
     });

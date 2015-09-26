@@ -10,7 +10,7 @@ import Reward = require('../documents/Reward');
  * Process quote and decide what option should be bought if any
  */
 interface IProcessor {
-	process(quote: Quote, rewards: Reward[]): Option;
+	process(portfolio: number, quote: Quote, rewards: Reward[]): Option;
 }
 
 export = IProcessor;

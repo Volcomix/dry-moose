@@ -11,8 +11,8 @@ var moment = require('moment');
 var AbstractCollector = require('./AbstractCollector');
 var GenericASCIIM1 = (function (_super) {
     __extends(GenericASCIIM1, _super);
-    function GenericASCIIM1(processor, investor, celebrator, filename, rewards) {
-        _super.call(this, processor, investor, celebrator);
+    function GenericASCIIM1(processor, investor, celebrator, capacitor, filename, rewards) {
+        _super.call(this, processor, investor, celebrator, capacitor);
         this.filename = filename;
         this.rewards = rewards;
     }
