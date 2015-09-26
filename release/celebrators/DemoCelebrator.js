@@ -8,22 +8,20 @@ var DemoCelebrator = (function () {
     DemoCelebrator.prototype.getGain = function (option) {
         return DbManager.db
             .then(function (db) {
-            var cursor = db.collection('quotes')
-                .find({
-                'dateTime': {
-                    $gt: option.quote.dateTime,
-                    $lte: option.expiration
-                },
-                'close': (option.direction == BinaryOption.Direction.Call ?
-                    { $gte: option.quote.close } :
-                    { $lte: option.quote.close })
-            })
-                .sort({ 'dateTime': -1 })
-                .limit(1);
-            return Q.ninvoke(cursor, 'count', true);
+            return Q.ninvoke(db.collection('quotes'), 'aggregate', [
+                { $match: { dateTime: {
+                            $gt: option.quote.dateTime,
+                            $lte: option.expiration
+                        } } },
+                { $sort: { dateTime: -1 } },
+                { $limit: 1 },
+                { $match: { close: (option.direction == BinaryOption.Direction.Call ?
+                            { $gte: option.quote.close } :
+                            { $lte: option.quote.close }) } }
+            ]);
         })
-            .then(function (count) {
-            return count * option.amount * (1 + option.payout);
+            .then(function (quotes) {
+            return quotes.length * option.amount * (1 + option.payout);
         });
     };
     return DemoCelebrator;

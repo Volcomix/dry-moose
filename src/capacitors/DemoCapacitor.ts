@@ -16,7 +16,7 @@ class DemoCapacitor implements ICapacitor {
 		.then((db: mongodb.Db) => {
 			var cursor = db.collection('portfolio')
 			.find()
-			.sort({ 'dateTime': -1 })
+			.sort({ dateTime: -1 })
 			.limit(1);
 			
 			return Q.ninvoke(cursor, 'next');

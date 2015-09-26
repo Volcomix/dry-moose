@@ -11,7 +11,7 @@ var DemoCapacitor = (function () {
             .then(function (db) {
             var cursor = db.collection('portfolio')
                 .find()
-                .sort({ 'dateTime': -1 })
+                .sort({ dateTime: -1 })
                 .limit(1);
             return Q.ninvoke(cursor, 'next');
         })
