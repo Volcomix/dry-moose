@@ -2,6 +2,7 @@
 var chai = require('chai');
 var chaiAsPromised = require("chai-as-promised");
 var moment = require('moment');
+var Supervisor = require('../../Supervisor');
 var GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 var DummyProcessor = require('../../processors/DummyProcessor');
 var DemoCelebrator = require('../../celebrators/DemoCelebrator');
@@ -17,7 +18,7 @@ describe('GenericASCIIM1', function () {
                 payout: 0.75
             }];
         it('should pass quotes to processor', function (done) {
-            new GenericASCIIM1({
+            new Supervisor(new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards), {
                 process: function (portfolio, quote, rewards) {
                     var dateTime = moment(quote.dateTime);
                     var countdown = moment(reward.countdown);
@@ -61,10 +62,10 @@ describe('GenericASCIIM1', function () {
                     this.count = (this.count || 0) + 1;
                     return null;
                 }
-            }, { invest: function (option) { } }, new DemoCelebrator(), new DemoCapacitor(100), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
+            }, { invest: function (option) { } }, new DemoCelebrator(), new DemoCapacitor(100)).run();
         });
         it('should pass actions to investor', function (done) {
-            new GenericASCIIM1(new DummyProcessor(), { invest: function (option) {
+            new Supervisor(new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards), new DummyProcessor(), { invest: function (option) {
                     var expiration = moment(option.expiration);
                     switch (this.count) {
                         case undefined:
@@ -80,10 +81,10 @@ describe('GenericASCIIM1', function () {
                             break;
                     }
                     this.count = (this.count || 0) + 1;
-                } }, new DemoCelebrator(), new DemoCapacitor(100), 'src/test/collectors/GenericASCIIM1.csv', rewards).run();
+                } }, new DemoCelebrator(), new DemoCapacitor(100)).run();
         });
         it('should reject when input file not found', function () {
-            return new GenericASCIIM1({ process: function () { return null; } }, { invest: function () { } }, { getGain: function () { return null; } }, { getPortfolio: function () { return null; } }, 'dummy', rewards).run().should.be.rejected;
+            return new Supervisor(new GenericASCIIM1('dummy', rewards), { process: function () { return null; } }, { invest: function () { } }, { getGain: function () { return null; } }, { getPortfolio: function () { return null; } }).run().should.be.rejected;
         });
         it('should insert everything into MongoDB');
     });

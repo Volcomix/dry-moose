@@ -11,8 +11,8 @@ var moment = require('moment');
 var AbstractCollector = require('./AbstractCollector');
 var GenericASCIIM1 = (function (_super) {
     __extends(GenericASCIIM1, _super);
-    function GenericASCIIM1(processor, investor, celebrator, capacitor, filename, rewards) {
-        _super.call(this, processor, investor, celebrator, capacitor);
+    function GenericASCIIM1(filename, rewards) {
+        _super.call(this);
         this.filename = filename;
         this.rewards = rewards;
     }
@@ -60,7 +60,10 @@ var GenericASCIIM1 = (function (_super) {
                         payout: reward.payout
                     };
                 });
-                _this.process(quote, rewards);
+                notify({
+                    quote: quote,
+                    rewards: rewards
+                });
             });
             rl.on('close', resolve);
         });

@@ -4,6 +4,7 @@ import chai = require('chai');
 import chaiAsPromised = require("chai-as-promised");
 import moment = require('moment');
 
+import Supervisor = require('../../Supervisor');
 import GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
 import IProcessor = require('../../processors/IProcessor');
 import DummyProcessor = require('../../processors/DummyProcessor');
@@ -28,7 +29,8 @@ describe('GenericASCIIM1', function() {
 		}];
 		
 		it('should pass quotes to processor', function(done) {
-			new GenericASCIIM1(
+			new Supervisor(
+				new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards),
 				{
 					process: function(
 						portfolio: number,
@@ -82,13 +84,12 @@ describe('GenericASCIIM1', function() {
 				},
 				{ invest: function(option: Option) { } },
 				new DemoCelebrator(),
-				new DemoCapacitor(100),
-				'src/test/collectors/GenericASCIIM1.csv',
-				rewards
+				new DemoCapacitor(100)
 			).run();
 		});
 		it('should pass actions to investor', function(done) {
-			new GenericASCIIM1(
+			new Supervisor(
+				new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards),
 				new DummyProcessor(),
 				{ invest: function(option: BinaryOption) {
 					var expiration = moment(option.expiration);
@@ -108,19 +109,16 @@ describe('GenericASCIIM1', function() {
 					this.count = (this.count || 0) + 1;
 				}},
 				new DemoCelebrator(),
-				new DemoCapacitor(100),
-				'src/test/collectors/GenericASCIIM1.csv',
-				rewards
+				new DemoCapacitor(100)
 			).run();
 		});
 		it('should reject when input file not found', function() {
-			return new GenericASCIIM1(
+			return new Supervisor(
+				new GenericASCIIM1('dummy', rewards),
 				{ process: function() { return null; } },
 				{ invest: function() { } },
 				{ getGain: function() { return null; } },
-				{ getPortfolio: function() { return null; } },
-				'dummy',
-				rewards
+				{ getPortfolio: function() { return null; } }
 			).run().should.be.rejected;
 		});
 		it('should insert everything into MongoDB');

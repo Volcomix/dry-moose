@@ -18,14 +18,10 @@ import Option = require('../documents/options/Option');
 class GenericASCIIM1 extends AbstractCollector {
     
     constructor(
-        processor: IProcessor,
-        investor: IInvestor,
-        celebrator: ICelebrator,
-        capacitor: ICapacitor,
         private filename: string,
         private rewards: Reward[]
     ){
-        super(processor, investor, celebrator, capacitor);
+        super();
     }
     
     collect(): Q.Promise<{}> {
@@ -82,7 +78,10 @@ class GenericASCIIM1 extends AbstractCollector {
                     };
                 });
                 
-                this.process(quote, rewards);
+                notify({
+                    quote: quote,
+                    rewards: rewards
+                });
             });
             
             rl.on('close', resolve);
