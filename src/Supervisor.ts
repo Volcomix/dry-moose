@@ -31,7 +31,14 @@ class Supervisor {
 		private capacitor: ICapacitor
 	) { }
 	
-	private init(): Q.Promise<number> {
+	run(): Q.Promise<any> {
+		return this.init()
+		.then(this.collector.collect.bind(this.collector))
+		.progress(this.handleQuote.bind(this))
+		.finally(this.done.bind(this))
+	}
+	
+	private init(): Q.Promise<any> {
 		return DbManager.db
 		.then((db: mongodb.Db) => {
 			this.db = db;
@@ -57,83 +64,78 @@ class Supervisor {
 			return this.capacitor.getPortfolio();
 		})
 		.then((portfolio) => {
-			return this.innerPortfolio = portfolio;
+			this.innerPortfolio = portfolio;
 		});
 	}
 	
-	run(): Q.Promise<{}> {
-		return this.init()
+	private handleQuote(quote: Quote) {
+		this.pendingDb = Q.when(this.pendingDb, () => {
+			return Q.ninvoke(this.db.collection('quotes'), 'insertOne', quote);
+		})
 		.then(() => {
-			return this.collector.collect();
-		})
-		.progress((quote: Quote) => {
-			this.pendingDb = Q.when(this.pendingDb, () => {
-				return Q.ninvoke(this.db.collection('quotes'), 'insertOne', quote);
-			})
-			.then(() => {
-				if (
-					this.pendingOption &&
-					// dateTime >= exp
-					!moment(quote.dateTime).isBefore(this.pendingOption.expiration)
-				) {
-					var option = this.pendingOption;
-					this.pendingOption = undefined;
-					return this.celebrator.getGain(option)
-					.then((gain) => {
-						this.innerPortfolio += gain;
-						return Q.all([
-							Q.ninvoke(this.db.collection('portfolio'), 'insertOne', {
-								dateTime: option.expiration,
-								value: this.innerPortfolio
-							}),
-							Q.ninvoke(this.db.collection('gains'), 'insertOne',  {
-								dateTime: option.expiration,
-								value: gain
-							})
-						]);
-					});
-				}
-			})
-			.then(() => {
-				return this.capacitor.getPortfolio();
-			})
-			.then((portfolio) => {
-				if (this.innerPortfolio != portfolio) {
-					throw new Error(
-						'Estimated portfolio and real portfolio are different ' +
-						JSON.stringify({
-							estimated: this.innerPortfolio,
-							real: portfolio
-						})
-					);
-				}
-				
-				if (this.pendingOption) {
-					return;
-				}
-				
-				var option = this.processor.process(portfolio, quote);
-				if (option) {
-					this.innerPortfolio -= option.amount;
+			if (
+				this.pendingOption &&
+				// dateTime >= exp
+				!moment(quote.dateTime).isBefore(this.pendingOption.expiration)
+			) {
+				var option = this.pendingOption;
+				this.pendingOption = undefined;
+				return this.celebrator.getGain(option)
+				.then((gain) => {
+					this.innerPortfolio += gain;
 					return Q.all([
-						Q.ninvoke(this.db.collection('options'), 'insertOne', option),
 						Q.ninvoke(this.db.collection('portfolio'), 'insertOne', {
-							dateTime: quote.dateTime,
+							dateTime: option.expiration,
 							value: this.innerPortfolio
+						}),
+						Q.ninvoke(this.db.collection('gains'), 'insertOne',  {
+							dateTime: option.expiration,
+							value: gain
 						})
-					])
-					.then(() => {
-						this.pendingOption = option;
-						this.investor.invest(option);
-					});
-				}
-			});
+					]);
+				});
+			}
 		})
-		.finally(() => {
-			return Q.when(this.pendingDb, () => {
-				return Q.ninvoke(this.db, 'close');
-			});
+		.then(() => {
+			return this.capacitor.getPortfolio();
 		})
+		.then((portfolio) => {
+			if (this.innerPortfolio != portfolio) {
+				throw new Error(
+					'Estimated portfolio and real portfolio are different ' +
+					JSON.stringify({
+						estimated: this.innerPortfolio,
+						real: portfolio
+					})
+				);
+			}
+			
+			if (this.pendingOption) {
+				return;
+			}
+			
+			var option = this.processor.process(portfolio, quote);
+			if (option) {
+				this.innerPortfolio -= option.amount;
+				return Q.all([
+					Q.ninvoke(this.db.collection('options'), 'insertOne', option),
+					Q.ninvoke(this.db.collection('portfolio'), 'insertOne', {
+						dateTime: quote.dateTime,
+						value: this.innerPortfolio
+					})
+				])
+				.then(() => {
+					this.pendingOption = option;
+					this.investor.invest(option);
+				});
+			}
+		});
+	}
+	
+	private done(): Q.Promise<any> {
+		return Q.when(this.pendingDb, () => {
+			return Q.ninvoke(this.db, 'close');
+		});
 	}
 }
 

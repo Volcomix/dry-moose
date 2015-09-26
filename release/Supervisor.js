@@ -13,6 +13,12 @@ var Supervisor = (function () {
         this.celebrator = celebrator;
         this.capacitor = capacitor;
     }
+    Supervisor.prototype.run = function () {
+        return this.init()
+            .then(this.collector.collect.bind(this.collector))
+            .progress(this.handleQuote.bind(this))
+            .finally(this.done.bind(this));
+    };
     Supervisor.prototype.init = function () {
         var _this = this;
         return DbManager.db
@@ -40,76 +46,71 @@ var Supervisor = (function () {
             return _this.capacitor.getPortfolio();
         })
             .then(function (portfolio) {
-            return _this.innerPortfolio = portfolio;
+            _this.innerPortfolio = portfolio;
         });
     };
-    Supervisor.prototype.run = function () {
+    Supervisor.prototype.handleQuote = function (quote) {
         var _this = this;
-        return this.init()
+        this.pendingDb = Q.when(this.pendingDb, function () {
+            return Q.ninvoke(_this.db.collection('quotes'), 'insertOne', quote);
+        })
             .then(function () {
-            return _this.collector.collect();
-        })
-            .progress(function (quote) {
-            _this.pendingDb = Q.when(_this.pendingDb, function () {
-                return Q.ninvoke(_this.db.collection('quotes'), 'insertOne', quote);
-            })
-                .then(function () {
-                if (_this.pendingOption &&
-                    // dateTime >= exp
-                    !moment(quote.dateTime).isBefore(_this.pendingOption.expiration)) {
-                    var option = _this.pendingOption;
-                    _this.pendingOption = undefined;
-                    return _this.celebrator.getGain(option)
-                        .then(function (gain) {
-                        _this.innerPortfolio += gain;
-                        return Q.all([
-                            Q.ninvoke(_this.db.collection('portfolio'), 'insertOne', {
-                                dateTime: option.expiration,
-                                value: _this.innerPortfolio
-                            }),
-                            Q.ninvoke(_this.db.collection('gains'), 'insertOne', {
-                                dateTime: option.expiration,
-                                value: gain
-                            })
-                        ]);
-                    });
-                }
-            })
-                .then(function () {
-                return _this.capacitor.getPortfolio();
-            })
-                .then(function (portfolio) {
-                if (_this.innerPortfolio != portfolio) {
-                    throw new Error('Estimated portfolio and real portfolio are different ' +
-                        JSON.stringify({
-                            estimated: _this.innerPortfolio,
-                            real: portfolio
-                        }));
-                }
-                if (_this.pendingOption) {
-                    return;
-                }
-                var option = _this.processor.process(portfolio, quote);
-                if (option) {
-                    _this.innerPortfolio -= option.amount;
+            if (_this.pendingOption &&
+                // dateTime >= exp
+                !moment(quote.dateTime).isBefore(_this.pendingOption.expiration)) {
+                var option = _this.pendingOption;
+                _this.pendingOption = undefined;
+                return _this.celebrator.getGain(option)
+                    .then(function (gain) {
+                    _this.innerPortfolio += gain;
                     return Q.all([
-                        Q.ninvoke(_this.db.collection('options'), 'insertOne', option),
                         Q.ninvoke(_this.db.collection('portfolio'), 'insertOne', {
-                            dateTime: quote.dateTime,
+                            dateTime: option.expiration,
                             value: _this.innerPortfolio
+                        }),
+                        Q.ninvoke(_this.db.collection('gains'), 'insertOne', {
+                            dateTime: option.expiration,
+                            value: gain
                         })
-                    ])
-                        .then(function () {
-                        _this.pendingOption = option;
-                        _this.investor.invest(option);
-                    });
-                }
-            });
+                    ]);
+                });
+            }
         })
-            .finally(function () {
-            return Q.when(_this.pendingDb, function () {
-                return Q.ninvoke(_this.db, 'close');
-            });
+            .then(function () {
+            return _this.capacitor.getPortfolio();
+        })
+            .then(function (portfolio) {
+            if (_this.innerPortfolio != portfolio) {
+                throw new Error('Estimated portfolio and real portfolio are different ' +
+                    JSON.stringify({
+                        estimated: _this.innerPortfolio,
+                        real: portfolio
+                    }));
+            }
+            if (_this.pendingOption) {
+                return;
+            }
+            var option = _this.processor.process(portfolio, quote);
+            if (option) {
+                _this.innerPortfolio -= option.amount;
+                return Q.all([
+                    Q.ninvoke(_this.db.collection('options'), 'insertOne', option),
+                    Q.ninvoke(_this.db.collection('portfolio'), 'insertOne', {
+                        dateTime: quote.dateTime,
+                        value: _this.innerPortfolio
+                    })
+                ])
+                    .then(function () {
+                    _this.pendingOption = option;
+                    _this.investor.invest(option);
+                });
+            }
+        });
+    };
+    Supervisor.prototype.done = function () {
+        var _this = this;
+        return Q.when(this.pendingDb, function () {
+            return Q.ninvoke(_this.db, 'close');
         });
     };
     return Supervisor;
