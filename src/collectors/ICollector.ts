@@ -6,7 +6,7 @@ import Q = require('q');
  * Collect trading quotes
  */
 interface ICollector {
-	collect(): Q.Promise<any>;
+	collect(): Q.Promise<void>;
 }
 
 export = ICollector;

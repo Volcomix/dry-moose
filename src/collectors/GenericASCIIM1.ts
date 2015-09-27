@@ -17,8 +17,8 @@ class GenericASCIIM1 implements ICollector {
         private rewards: Reward[]
     ){ }
     
-    collect(): Q.Promise<any> {
-        return Q.Promise((resolve, reject, notify) => {
+    collect(): Q.Promise<void> {
+        return Q.Promise<void>((resolve, reject, notify) => {
             var rs = fs.createReadStream(this.filename);
         
             rs.on('error', reject);

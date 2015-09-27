@@ -20,7 +20,7 @@ import Gain = require('./documents/Gain');
  */
 class Supervisor {
 	
-	private pendingDb: Q.Promise<any>;
+	private pendingDb: Q.Promise<void>;
 	private pendingOption: Option;
 	private innerPortfolio: number;
 	
@@ -33,14 +33,14 @@ class Supervisor {
 		private db?: mongodb.Db
 	) { }
 	
-	run(): Q.Promise<any> {
+	run(): Q.Promise<void> {
 		return this.init()
-		.then(this.collector.collect.bind(this.collector))
+		.then<void>(this.collector.collect.bind(this.collector))
 		.progress(this.handleQuote.bind(this))
 		.finally(this.done.bind(this))
 	}
 	
-	private init(): Q.Promise<any> {
+	private init(): Q.Promise<void> {
 		return Q.when(
 			this.db ||
 			DbManager.connect().then((db) => { return this.db = db; }))
@@ -117,10 +117,10 @@ class Supervisor {
 		});
 	}
 	
-	private done(): Q.Promise<any> {
+	private done(): Q.Promise<void> {
 		return Q.when(this.pendingDb)
 		.then(() => {
-			return Q.ninvoke(this.db, 'close');
+			return Q.ninvoke<void>(this.db, 'close');
 		});
 	}
 }
