@@ -2,24 +2,17 @@
 
 import chai = require('chai');
 import chaiAsPromised = require("chai-as-promised");
+import Q = require('q');
 import moment = require('moment');
 
-import Supervisor = require('../../Supervisor');
 import GenericASCIIM1 = require('../../collectors/GenericASCIIM1');
-import IProcessor = require('../../processors/IProcessor');
-import DummyProcessor = require('../../processors/DummyProcessor');
-import IInvestor = require('../../investors/IInvestor');
-import DemoCelebrator = require('../../celebrators/DemoCelebrator');
-import DemoCapacitor = require('../../capacitors/DemoCapacitor');
-import Quote = require('../../documents/Quote');
 import Reward = require('../../documents/Reward');
-import Option = require('../../documents/options/Option');
-import BinaryOption = require('../../documents/options/BinaryOption');
+import Quote = require('../../documents/Quote');
 
 chai.use(chaiAsPromised);
 chai.should();
 
-describe.skip('GenericASCIIM1', function() {	
+describe('GenericASCIIM1', function() {	
 	describe('#collect()', function() {
 		
 		var rewards: Reward[] = [{
@@ -28,95 +21,67 @@ describe.skip('GenericASCIIM1', function() {
 			payout: 0.75
 		}];
 		
-		it('should pass quotes to processor', function(done) {
-			new Supervisor(
-				new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards),
-				{
-					process: function(portfolio: number, quote: Quote): BinaryOption {
-						
-						var dateTime = moment(quote.dateTime);
-						var countdown = moment(reward.countdown);
-						var expiration = moment(reward.expiration);
-						
-						rewards.should.have.length(1);
-						var reward = rewards[0];
-						reward.payout.should.equal(0.75);
-						switch (this.count) {
-							case undefined:
-								dateTime.isSame('2015-06-01 00:03:00-0500').should.be.true;
-								quote.open.should.equal(1.095090);
-								quote.high.should.equal(1.095130);
-								quote.low.should.equal(1.095050);
-								quote.close.should.equal(1.095060);
-								quote.volume.should.equal(0);
-								countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-								expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-								break;
-							case 1:
-								dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
-								quote.open.should.equal(1.095060);
-								quote.high.should.equal(1.095060);
-								quote.low.should.equal(1.095000);
-								quote.close.should.equal(1.095020);
-								quote.volume.should.equal(0);
-								countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-								expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-								break;
-							case 2:
-								dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
-								quote.open.should.equal(1.095020);
-								quote.high.should.equal(1.095120);
-								quote.low.should.equal(1.095020);
-								quote.close.should.equal(1.095080);
-								quote.volume.should.equal(0);
-								countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
-								expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-								done();
-								break;
-						}
-						this.count = (this.count || 0) + 1;
-						return null;
-					}
-				},
-				{ invest: function(option: Option) { } },
-				new DemoCelebrator(),
-				new DemoCapacitor(100)
-			).run();
+		it('should reject when input file not found', function() {
+			return new GenericASCIIM1('dummy', rewards).collect().should.be.rejected;
 		});
-		it('should pass actions to investor', function(done) {
-			new Supervisor(
-				new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards),
-				new DummyProcessor(),
-				{ invest: function(option: BinaryOption) {
-					var expiration = moment(option.expiration);
-					switch (this.count) {
-						case undefined:
+		
+		it('should collect quotes', function() {
+			var count = 0;
+			var inProgress = Q<void>(null);
+			return new GenericASCIIM1('src/test/collectors/GenericASCIIM1.csv', rewards)
+			.collect()
+			.progress(function(quote: Quote) {
+				inProgress = inProgress.then(function() {
+					
+					var dateTime = moment(quote.dateTime);
+					
+					quote.rewards.should.have.length(1);
+					var reward = quote.rewards[0];
+					var countdown = moment(reward.countdown);
+					var expiration = moment(reward.expiration);
+					reward.payout.should.equal(0.75);
+					
+					switch (count) {
+						case 0:
+							dateTime.isSame('2015-06-01 00:03:00-0500').should.be.true;
+							quote.open.should.equal(1.095090);
+							quote.high.should.equal(1.095130);
+							quote.low.should.equal(1.095050);
+							quote.close.should.equal(1.095060);
+							quote.volume.should.equal(0);
+							countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
 							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-							option.amount.should.equal(10);
-							option.direction.should.equal(BinaryOption.Direction.Put);
 							break;
 						case 1:
+							dateTime.isSame('2015-06-01 00:04:00-0500').should.be.true;
+							quote.open.should.equal(1.095060);
+							quote.high.should.equal(1.095060);
+							quote.low.should.equal(1.095000);
+							quote.close.should.equal(1.095020);
+							quote.volume.should.equal(0);
+							countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
 							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
-							option.amount.should.equal(10);
-							option.direction.should.equal(BinaryOption.Direction.Call);
-							done();
+							break;
+						case 2:
+							dateTime.isSame('2015-06-01 00:05:00-0500').should.be.true;
+							quote.open.should.equal(1.095020);
+							quote.high.should.equal(1.095120);
+							quote.low.should.equal(1.095020);
+							quote.close.should.equal(1.095080);
+							quote.volume.should.equal(0);
+							countdown.isSame('2015-06-01 00:50:00-0500').should.be.true;
+							expiration.isSame('2015-06-01 01:00:00-0500').should.be.true;
 							break;
 					}
-					this.count = (this.count || 0) + 1;
-				}},
-				new DemoCelebrator(),
-				new DemoCapacitor(100)
-			).run();
+					
+					count++;
+				});
+			})
+			.then(function() {
+				return inProgress.then(function() {
+					count.should.equal(3);
+				});
+			});
 		});
-		it('should reject when input file not found', function() {
-			return new Supervisor(
-				new GenericASCIIM1('dummy', rewards),
-				{ process: function() { return null; } },
-				{ invest: function() { } },
-				{ getGain: function() { return null; } },
-				{ getPortfolio: function() { return null; } }
-			).run().should.be.rejected;
-		});
-		it('should insert everything into MongoDB');
 	});
 });
