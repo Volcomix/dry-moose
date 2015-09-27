@@ -9,11 +9,14 @@ import Portfolio = require('../documents/Portfolio');
 
 class DemoCapacitor implements ICapacitor {
 	
-	constructor(private initialValue: number) { }
+	constructor(private initialValue: number, private db?: mongodb.Db) { }
 	
 	getPortfolio(): Q.Promise<number> {
-		return DbManager.db
-		.then((db: mongodb.Db) => {
+		return Q.when(
+			this.db ||
+			DbManager.connect().then((db) => { return this.db = db; })
+		)
+		.then((db) => {
 			var cursor = db.collection('portfolio')
 			.find()
 			.sort({ dateTime: -1 })

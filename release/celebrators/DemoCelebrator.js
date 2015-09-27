@@ -3,10 +3,13 @@ var Q = require('q');
 var DbManager = require('../database/DbManager');
 var BinaryOption = require('../documents/options/BinaryOption');
 var DemoCelebrator = (function () {
-    function DemoCelebrator() {
+    function DemoCelebrator(db) {
+        this.db = db;
     }
     DemoCelebrator.prototype.getGain = function (option) {
-        return DbManager.db
+        var _this = this;
+        return Q.when(this.db ||
+            DbManager.connect().then(function (db) { return _this.db = db; }))
             .then(function (db) {
             return Q.ninvoke(db.collection('quotes'), 'aggregate', [
                 { $match: { dateTime: {

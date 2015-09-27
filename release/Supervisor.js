@@ -6,12 +6,13 @@ var DbManager = require('./database/DbManager');
  * Main class which supervises everything
  */
 var Supervisor = (function () {
-    function Supervisor(collector, processor, investor, celebrator, capacitor) {
+    function Supervisor(collector, processor, investor, celebrator, capacitor, db) {
         this.collector = collector;
         this.processor = processor;
         this.investor = investor;
         this.celebrator = celebrator;
         this.capacitor = capacitor;
+        this.db = db;
     }
     Supervisor.prototype.run = function () {
         return this.init()
@@ -21,28 +22,9 @@ var Supervisor = (function () {
     };
     Supervisor.prototype.init = function () {
         var _this = this;
-        return DbManager.db
+        return Q.when(this.db ||
+            DbManager.connect().then(function (db) { return _this.db = db; }))
             .then(function (db) {
-            _this.db = db;
-            return [
-                Q.ninvoke(_this.db.collection('quotes'), 'createIndex', {
-                    'dateTime': 1
-                }),
-                Q.ninvoke(_this.db.collection('options'), 'createIndex', {
-                    'quote.dateTime': 1
-                }),
-                Q.ninvoke(_this.db.collection('options'), 'createIndex', {
-                    'expiration': 1
-                }),
-                Q.ninvoke(_this.db.collection('gains'), 'createIndex', {
-                    'dateTime': 1
-                }),
-                Q.ninvoke(_this.db.collection('portfolio'), 'createIndex', {
-                    'dateTime': 1
-                })
-            ];
-        })
-            .spread(function () {
             return _this.capacitor.getPortfolio();
         })
             .then(function (portfolio) {
@@ -51,7 +33,8 @@ var Supervisor = (function () {
     };
     Supervisor.prototype.handleQuote = function (quote) {
         var _this = this;
-        this.pendingDb = Q.when(this.pendingDb, function () {
+        this.pendingDb = Q.when(this.pendingDb)
+            .then(function () {
             return Q.ninvoke(_this.db.collection('quotes'), 'insertOne', quote);
         })
             .then(function () {
@@ -109,7 +92,8 @@ var Supervisor = (function () {
     };
     Supervisor.prototype.done = function () {
         var _this = this;
-        return Q.when(this.pendingDb, function () {
+        return Q.when(this.pendingDb)
+            .then(function () {
             return Q.ninvoke(_this.db, 'close');
         });
     };

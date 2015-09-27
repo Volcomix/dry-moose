@@ -2,12 +2,14 @@
 var Q = require('q');
 var DbManager = require('../database/DbManager');
 var DemoCapacitor = (function () {
-    function DemoCapacitor(initialValue) {
+    function DemoCapacitor(initialValue, db) {
         this.initialValue = initialValue;
+        this.db = db;
     }
     DemoCapacitor.prototype.getPortfolio = function () {
         var _this = this;
-        return DbManager.db
+        return Q.when(this.db ||
+            DbManager.connect().then(function (db) { return _this.db = db; }))
             .then(function (db) {
             var cursor = db.collection('portfolio')
                 .find()

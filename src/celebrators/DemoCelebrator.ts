@@ -9,9 +9,15 @@ import Quote = require('../documents/Quote');
 import BinaryOption = require('../documents/options/BinaryOption');
 
 class DemoCelebrator implements ICelebrator {
+	
+	constructor(private db?: mongodb.Db) { }
+	
 	getGain(option: BinaryOption): Q.Promise<number> {
-		return DbManager.db
-		.then((db: mongodb.Db) => {
+		return Q.when(
+			this.db ||
+			DbManager.connect().then((db) => { return this.db = db; })
+		)
+		.then((db) => {
 			return Q.ninvoke(db.collection('quotes'), 'aggregate', [
 				{ $match: { dateTime: {
 					$gt: option.quote.dateTime,
