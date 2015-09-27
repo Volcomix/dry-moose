@@ -61,7 +61,7 @@ describe('DemoCapacitor', function() {
 	after(function() {
 		return Q.ninvoke(DbManager.db, 'dropDatabase')
 		.then(function() {
-			return DbManager.db.close();
+			return DbManager.close();
 		});
 	});
 });

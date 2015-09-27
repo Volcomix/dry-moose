@@ -129,7 +129,7 @@ class Supervisor {
 	}
 	
 	private done(): Q.Promise<void> {
-		return Q.ninvoke<void>(DbManager.db, 'close');
+		return DbManager.close();
 	}
 }
 

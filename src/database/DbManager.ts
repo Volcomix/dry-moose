@@ -8,8 +8,12 @@ import mongodb = require('mongodb');
  */
 export var db: mongodb.Db;
 
+/**
+ * Connect to mongodb and init indexes. Return any existing
+ * db if already connected.
+ */
 export function connect(dbName: string = 'dry-moose') {
-	return Q.nfcall<mongodb.Db>(
+	return (db && Q(db)) || Q.nfcall<mongodb.Db>(
 		mongodb.MongoClient.connect,
 		'mongodb://localhost:27017/'  + dbName
 	)
@@ -36,4 +40,10 @@ export function connect(dbName: string = 'dry-moose') {
 	.spread(function() {
 		return db;
 	});
+}
+
+export function close() {
+	var closingDb = db;
+	db = undefined;
+	return Q.ninvoke<void>(closingDb, 'close');
 }

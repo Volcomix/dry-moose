@@ -1,9 +1,13 @@
 /// <reference path="../../typings/tsd.d.ts" />
 var Q = require('q');
 var mongodb = require('mongodb');
+/**
+ * Connect to mongodb and init indexes. Return any existing
+ * db if already connected.
+ */
 function connect(dbName) {
     if (dbName === void 0) { dbName = 'dry-moose'; }
-    return Q.nfcall(mongodb.MongoClient.connect, 'mongodb://localhost:27017/' + dbName)
+    return (exports.db && Q(exports.db)) || Q.nfcall(mongodb.MongoClient.connect, 'mongodb://localhost:27017/' + dbName)
         .then(function (connectedDb) {
         exports.db = connectedDb;
         return [
@@ -29,3 +33,9 @@ function connect(dbName) {
     });
 }
 exports.connect = connect;
+function close() {
+    var closingDb = exports.db;
+    exports.db = undefined;
+    return Q.ninvoke(closingDb, 'close');
+}
+exports.close = close;

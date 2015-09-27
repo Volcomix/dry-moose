@@ -98,7 +98,7 @@ var Supervisor = (function () {
         });
     };
     Supervisor.prototype.done = function () {
-        return Q.ninvoke(DbManager.db, 'close');
+        return DbManager.close();
     };
     return Supervisor;
 })();
