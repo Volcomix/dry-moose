@@ -10,7 +10,7 @@ var DemoCapacitor = require('../../capacitors/DemoCapacitor');
 var BinaryOption = require('../../documents/options/BinaryOption');
 chai.use(chaiAsPromised);
 chai.should();
-describe('GenericASCIIM1', function () {
+describe.skip('GenericASCIIM1', function () {
     describe('#collect()', function () {
         var rewards = [{
                 countdown: moment({ minutes: 10 }).toDate(),
