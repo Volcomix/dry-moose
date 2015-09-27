@@ -25,20 +25,26 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:04:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 3, volume: 0, rewards: rewards
             };
-            var option = processor.process(100, quote);
-            moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
-            option.amount.should.equal(10);
-            option.direction.should.equal(BinaryOption.Direction.Call);
+            processor.process(100, quote).should.deep.equal({
+                quote: quote,
+                expiration: new Date('2015-06-01 01:00:00-0500'),
+                payout: 0.75,
+                amount: 10,
+                direction: BinaryOption.Direction.Call
+            });
         });
         it('should return a Put when quotes decrease', function () {
             var quote = {
                 dateTime: moment('2015-06-01 00:05:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 2, volume: 0, rewards: rewards
             };
-            var option = processor.process(100, quote);
-            moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
-            option.amount.should.equal(10);
-            option.direction.should.equal(BinaryOption.Direction.Put);
+            processor.process(100, quote).should.deep.equal({
+                quote: quote,
+                expiration: new Date('2015-06-01 01:00:00-0500'),
+                payout: 0.75,
+                amount: 10,
+                direction: BinaryOption.Direction.Put
+            });
         });
         it('should return no option when quotes are stable', function () {
             var quote = {
