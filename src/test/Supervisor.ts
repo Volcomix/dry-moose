@@ -39,6 +39,7 @@ describe('Supervisor', function() {
 	});
 	
 	after(function() {
+		// Supervisor close db so reconnect to drop database
 		return DbManager.connect('test-Supervisor')
 		.then(function() {
 			return Q.ninvoke(DbManager.db, 'dropDatabase');
