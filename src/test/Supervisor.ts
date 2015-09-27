@@ -13,6 +13,7 @@ import DemoCelebrator = require('../celebrators/DemoCelebrator');
 import DemoCapacitor = require('../capacitors/DemoCapacitor');
 import Reward = require('../documents/Reward');
 import Quote = require('../documents/Quote');
+import BinaryOption = require('../documents/options/BinaryOption');
 
 var should = chai.should();
 
@@ -41,13 +42,11 @@ describe('Supervisor', function() {
 			// Supervisor close db so reconnect to continue tests
 			return DbManager.connect('test-Supervisor')
 			.then(function() {
-				var cursor = DbManager.db.collection('quotes').find();
-				return Q.ninvoke(cursor, 'count');
+				return Q.ninvoke(DbManager.db.collection('quotes'), 'count');
 			})
 			.then(function(count: number) {
 				count.should.equal(1439);
-			})
-			.then(function() {
+				
 				var cursor = DbManager.db.collection('quotes')
 				.find({dateTime: new Date('2015-06-01 12:00:00-0500')});
 				return Q.ninvoke(cursor, 'next');
@@ -65,7 +64,24 @@ describe('Supervisor', function() {
 					}]
 				});
 			});
-		})
+		});
+		it('should buy options', function() {
+			return Q.ninvoke(DbManager.db.collection('options'), 'count')
+			.then(function(count: number) {
+				count.should.equal(47);
+				
+				return Q.ninvoke(DbManager.db.collection('options'), 'aggregate', [
+					{ $group: { "_id": "$direction", "count": { $sum: 1 } } }
+				]);
+			})
+			.then(function(result) {
+				result.should.deep.equal([
+					{ _id: BinaryOption.Direction.Call, count: 25 },
+					{ _id: BinaryOption.Direction.Put, count: 22 }
+				]);
+			});
+		});
+		it('should be one more test on options ^^ (check 12:00)');
 	});
 	
 	after(function() {
