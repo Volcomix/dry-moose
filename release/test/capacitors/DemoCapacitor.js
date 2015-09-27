@@ -5,14 +5,9 @@ var DbManager = require('../../database/DbManager');
 var DemoCapacitor = require('../../capacitors/DemoCapacitor');
 var should = chai.should();
 describe('DemoCapacitor', function () {
-    var db;
-    var capacitor;
+    var capacitor = new DemoCapacitor(100);
     before(function () {
-        return DbManager.connect('test-DemoCapacitor')
-            .then(function (testDb) {
-            db = testDb;
-            capacitor = new DemoCapacitor(100, db);
-        });
+        return DbManager.connect('test-DemoCapacitor');
     });
     describe('#getPortfolio()', function () {
         context('when database empty', function () {
@@ -25,7 +20,7 @@ describe('DemoCapacitor', function () {
         });
         context('when database contains 1 value', function () {
             before(function () {
-                return Q.ninvoke(db.collection('portfolio'), 'insertOne', {
+                return Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne', {
                     dateTime: new Date(),
                     value: 50
                 });
@@ -39,7 +34,7 @@ describe('DemoCapacitor', function () {
         });
         context('when database contains 2 values', function () {
             before(function () {
-                return Q.ninvoke(db.collection('portfolio'), 'insertOne', {
+                return Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne', {
                     dateTime: new Date(),
                     value: 80
                 });
@@ -53,9 +48,9 @@ describe('DemoCapacitor', function () {
         });
     });
     after(function () {
-        return Q.ninvoke(db, 'dropDatabase')
+        return Q.ninvoke(DbManager.db, 'dropDatabase')
             .then(function () {
-            return db.close();
+            return DbManager.db.close();
         });
     });
 });

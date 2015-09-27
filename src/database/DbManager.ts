@@ -3,13 +3,19 @@
 import Q = require('q');
 import mongodb = require('mongodb');
 
+/**
+ * Be sure to call connect() before getting db
+ */
+export var db: mongodb.Db;
+
 export function connect(dbName: string = 'dry-moose') {
 	return Q.nfcall<mongodb.Db>(
 		mongodb.MongoClient.connect,
 		'mongodb://localhost:27017/'  + dbName
 	)
-	.then(function(db) {
-		return Q.all([
+	.then(function(connectedDb) {
+		db = connectedDb;
+		return [
 			Q.ninvoke(db.collection('quotes'), 'createIndex', {
 				'dateTime': 1
 			}),
@@ -25,9 +31,9 @@ export function connect(dbName: string = 'dry-moose') {
 			Q.ninvoke(db.collection('portfolio'), 'createIndex', {
 				'dateTime': 1
 			})
-		])
-		.then(function() {
-			return db;
-		});
+		];
+	})
+	.spread(function() {
+		return db;
 	});
 }

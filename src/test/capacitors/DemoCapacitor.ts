@@ -13,15 +13,10 @@ var should = chai.should();
 
 describe('DemoCapacitor', function() {
 	
-	var db: mongodb.Db;
-	var capacitor: ICapacitor;
+	var capacitor = new DemoCapacitor(100);
 	
 	before(function() {
-		return DbManager.connect('test-DemoCapacitor')
-		.then(function(testDb) {
-			db = testDb;
-			capacitor = new DemoCapacitor(100, db);
-		});
+		return DbManager.connect('test-DemoCapacitor');
 	});
 	
 	describe('#getPortfolio()', function() {
@@ -35,10 +30,12 @@ describe('DemoCapacitor', function() {
 		});
 		context('when database contains 1 value', function() {
 			before(function() {
-				return Q.ninvoke(db.collection('portfolio'), 'insertOne', <Portfolio>{
-					dateTime: new Date(),
-					value: 50
-				});
+				return Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
+					<Portfolio> {
+						dateTime: new Date(),
+						value: 50
+					}
+				);
 			});
 			it('should return this value', function() {
 				return capacitor.getPortfolio()
@@ -49,10 +46,12 @@ describe('DemoCapacitor', function() {
 		});
 		context('when database contains 2 values', function() {
 			before(function() {
-				return Q.ninvoke(db.collection('portfolio'), 'insertOne', <Portfolio>{
-					dateTime: new Date(),
-					value: 80
-				});
+				return Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
+					<Portfolio> {
+						dateTime: new Date(),
+						value: 80
+					}
+				);
 			});
 			it('should return last value', function() {
 				return capacitor.getPortfolio()
@@ -64,9 +63,9 @@ describe('DemoCapacitor', function() {
 	});
 	
 	after(function() {
-		return Q.ninvoke(db, 'dropDatabase')
+		return Q.ninvoke(DbManager.db, 'dropDatabase')
 		.then(function() {
-			return db.close();
+			return DbManager.db.close();
 		});
 	});
 });

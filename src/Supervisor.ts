@@ -20,7 +20,6 @@ import Gain = require('./documents/Gain');
  */
 class Supervisor {
 	
-	private pendingDb: Q.Promise<void>;
 	private pendingOption: Option;
 	private innerPortfolio: number;
 	
@@ -29,22 +28,31 @@ class Supervisor {
 		private processor: IProcessor,
 		private investor: IInvestor,
 		private celebrator: ICelebrator,
-		private capacitor: ICapacitor,
-		private db?: mongodb.Db
+		private capacitor: ICapacitor
 	) { }
 	
 	run(): Q.Promise<void> {
+		var inProgress = Q<void>(null);
+		
 		return this.init()
-		.then<void>(this.collector.collect.bind(this.collector))
-		.progress(this.handleQuote.bind(this))
-		.finally(this.done.bind(this))
+		.then(() => {
+			return this.collector.collect();
+		})
+		.progress((quote: Quote) => {
+			inProgress = inProgress.then(() => {
+				return this.handleQuote(quote);
+			});
+		})
+		.finally(() => {
+			return inProgress.then(() => {
+				return this.done();
+			});
+		})
 	}
 	
 	private init(): Q.Promise<void> {
-		return Q.when(
-			this.db ||
-			DbManager.connect().then((db) => { return this.db = db; }))
-		.then((db) => {
+		return DbManager.connect()
+		.then(() => {
 			return this.capacitor.getPortfolio();
 		})
 		.then((portfolio) => {
@@ -52,11 +60,8 @@ class Supervisor {
 		});
 	}
 	
-	private handleQuote(quote: Quote) {
-		this.pendingDb = Q.when(this.pendingDb)
-		.then(() => {
-			return Q.ninvoke(this.db.collection('quotes'), 'insertOne', quote);
-		})
+	private handleQuote(quote: Quote): Q.Promise<void> {
+		return Q.ninvoke(DbManager.db.collection('quotes'), 'insertOne', quote)
 		.then(() => {
 			if (
 				this.pendingOption &&
@@ -69,14 +74,18 @@ class Supervisor {
 				.then((gain) => {
 					this.innerPortfolio += gain;
 					return Q.all([
-						Q.ninvoke(this.db.collection('portfolio'), 'insertOne', <Portfolio>{
-							dateTime: option.expiration,
-							value: this.innerPortfolio
-						}),
-						Q.ninvoke(this.db.collection('gains'), 'insertOne', <Gain>{
-							dateTime: option.expiration,
-							value: gain
-						})
+						Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
+							<Portfolio> {
+								dateTime: option.expiration,
+								value: this.innerPortfolio
+							}
+						),
+						Q.ninvoke(DbManager.db.collection('gains'), 'insertOne',
+							<Gain> {
+								dateTime: option.expiration,
+								value: gain
+							}
+						)
 					]);
 				});
 			}
@@ -103,11 +112,13 @@ class Supervisor {
 			if (option) {
 				this.innerPortfolio -= option.amount;
 				return Q.all([
-					Q.ninvoke(this.db.collection('options'), 'insertOne', option),
-					Q.ninvoke(this.db.collection('portfolio'), 'insertOne', {
-						dateTime: quote.dateTime,
-						value: this.innerPortfolio
-					})
+					Q.ninvoke(DbManager.db.collection('options'), 'insertOne', option),
+					Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
+						<Portfolio> {
+							dateTime: quote.dateTime,
+							value: this.innerPortfolio
+						}
+					)
 				])
 				.then(() => {
 					this.pendingOption = option;
@@ -118,10 +129,7 @@ class Supervisor {
 	}
 	
 	private done(): Q.Promise<void> {
-		return Q.when(this.pendingDb)
-		.then(() => {
-			return Q.ninvoke<void>(this.db, 'close');
-		});
+		return Q.ninvoke<void>(DbManager.db, 'close');
 	}
 }
 

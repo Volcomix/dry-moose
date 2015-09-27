@@ -4,27 +4,28 @@ var mongodb = require('mongodb');
 function connect(dbName) {
     if (dbName === void 0) { dbName = 'dry-moose'; }
     return Q.nfcall(mongodb.MongoClient.connect, 'mongodb://localhost:27017/' + dbName)
-        .then(function (db) {
-        return Q.all([
-            Q.ninvoke(db.collection('quotes'), 'createIndex', {
+        .then(function (connectedDb) {
+        exports.db = connectedDb;
+        return [
+            Q.ninvoke(exports.db.collection('quotes'), 'createIndex', {
                 'dateTime': 1
             }),
-            Q.ninvoke(db.collection('options'), 'createIndex', {
+            Q.ninvoke(exports.db.collection('options'), 'createIndex', {
                 'quote.dateTime': 1
             }),
-            Q.ninvoke(db.collection('options'), 'createIndex', {
+            Q.ninvoke(exports.db.collection('options'), 'createIndex', {
                 'expiration': 1
             }),
-            Q.ninvoke(db.collection('gains'), 'createIndex', {
+            Q.ninvoke(exports.db.collection('gains'), 'createIndex', {
                 'dateTime': 1
             }),
-            Q.ninvoke(db.collection('portfolio'), 'createIndex', {
+            Q.ninvoke(exports.db.collection('portfolio'), 'createIndex', {
                 'dateTime': 1
             })
-        ])
-            .then(function () {
-            return db;
-        });
+        ];
+    })
+        .spread(function () {
+        return exports.db;
     });
 }
 exports.connect = connect;
