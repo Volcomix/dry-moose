@@ -1,11 +1,9 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
 import chai = require('chai');
-import mongodb = require('mongodb');
 import Q = require('q');
 
 import DbManager = require('../../database/DbManager');
-import ICapacitor = require('../../capacitors/ICapacitor');
 import DemoCapacitor = require('../../capacitors/DemoCapacitor');
 import Portfolio = require('../../documents/Portfolio');
 
@@ -28,33 +26,31 @@ describe('DemoCapacitor', function() {
 				});
 			});
 		});
-		context('when database contains 1 value', function() {
-			before(function() {
+		context('when database contains portfolio', function() {
+			it('should return 1st value', function() {
 				return Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
 					<Portfolio> {
 						dateTime: new Date(),
 						value: 50
 					}
-				);
-			});
-			it('should return this value', function() {
-				return capacitor.getPortfolio()
+				)
+				.then(function() {
+					return capacitor.getPortfolio();
+				})
 				.then(function(portfolio) {
 					portfolio.should.equal(50);
 				});
 			});
-		});
-		context('when database contains 2 values', function() {
-			before(function() {
+			it('should return 2nd value', function() {
 				return Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
 					<Portfolio> {
 						dateTime: new Date(),
 						value: 80
 					}
-				);
-			});
-			it('should return last value', function() {
-				return capacitor.getPortfolio()
+				)
+				.then(function() {
+					return capacitor.getPortfolio();
+				})
 				.then(function(portfolio) {
 					portfolio.should.equal(80);
 				});

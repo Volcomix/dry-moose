@@ -21,69 +21,61 @@ describe('DummyProcessor', function() {
 			payout: 0.75
         }];
         
-        context('when not enough quotes', function() {
-            it('should not return an option', function() {
-                var quote: Quote = {
-                    dateTime: moment('2015-06-01 00:03:00-0500').toDate(),
-                    open: 1,
-                    high: 1,
-                    low: 1,
-                    close: 1,
-                    volume: 0,
-                    rewards: rewards
-                };
-                var option = processor.process(100, quote);
-                should.not.exist(option);                
-            });
+        it('should return no option if not enough quotes', function() {
+            var quote: Quote = {
+                dateTime: moment('2015-06-01 00:03:00-0500').toDate(),
+                open: 1,
+                high: 1,
+                low: 1,
+                close: 1,
+                volume: 0,
+                rewards: rewards
+            };
+            var option = processor.process(100, quote);
+            should.not.exist(option);                
         });
-        context('when quotes increase', function() {
-            it('should return a Call', function() {
-                var quote: Quote = {
-                    dateTime: moment('2015-06-01 00:04:00-0500').toDate(),
-                    open: 1,
-                    high: 1,
-                    low: 1,
-                    close: 3,
-                    volume: 0,
-                    rewards: rewards
-                };
-                var option = processor.process(100, quote);
-                moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
-                option.amount.should.equal(10);
-                option.direction.should.equal(BinaryOption.Direction.Call);
-            });
+        it('should return a Call if quotes increase', function() {
+            var quote: Quote = {
+                dateTime: moment('2015-06-01 00:04:00-0500').toDate(),
+                open: 1,
+                high: 1,
+                low: 1,
+                close: 3,
+                volume: 0,
+                rewards: rewards
+            };
+            var option = processor.process(100, quote);
+            moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
+            option.amount.should.equal(10);
+            option.direction.should.equal(BinaryOption.Direction.Call);
         });
-        context('when quotes decrease', function() {
-            it('should return a Put', function() {
-                var quote: Quote = {
-                    dateTime: moment('2015-06-01 00:05:00-0500').toDate(),
-                    open: 1,
-                    high: 1,
-                    low: 1,
-                    close: 2,
-                    volume: 0,
-                    rewards: rewards
-                };
-                var option = processor.process(100, quote);
-                moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
-                option.amount.should.equal(10);
-                option.direction.should.equal(BinaryOption.Direction.Put);
-            });
+        it('should return a Put if quotes decrease', function() {
+            var quote: Quote = {
+                dateTime: moment('2015-06-01 00:05:00-0500').toDate(),
+                open: 1,
+                high: 1,
+                low: 1,
+                close: 2,
+                volume: 0,
+                rewards: rewards
+            };
+            var option = processor.process(100, quote);
+            moment(option.expiration).isSame('2015-06-01 01:00:00-0500').should.be.true;
+            option.amount.should.equal(10);
+            option.direction.should.equal(BinaryOption.Direction.Put);
         });
-        context('when quotes are stable', function() {
-            it('should not return an option', function() {
-                var quote: Quote = {
-                    dateTime: moment('2015-06-01 00:06:00-0500').toDate(),
-                    open: 1,
-                    high: 1,
-                    low: 1,
-                    close: 2,
-                    volume: 0,
-                    rewards: rewards
-                };
-                var option = processor.process(100, quote);
-                should.not.exist(option);                
-            });
+        it('should return no option if quotes are stable', function() {
+            var quote: Quote = {
+                dateTime: moment('2015-06-01 00:06:00-0500').toDate(),
+                open: 1,
+                high: 1,
+                low: 1,
+                close: 2,
+                volume: 0,
+                rewards: rewards
+            };
+            var option = processor.process(100, quote);
+            should.not.exist(option);                
         });
-    })
+    });
 });
