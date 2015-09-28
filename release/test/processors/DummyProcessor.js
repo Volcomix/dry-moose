@@ -46,14 +46,21 @@ describe('DummyProcessor', function () {
                 direction: BinaryOption.Direction.Put
             });
         });
-        it('should return no option when quotes are stable', function () {
+        it('should return no option when an option is pending', function () {
             var quote = {
                 dateTime: moment('2015-06-01 00:06:00-0500').toDate(),
-                open: 1, high: 1, low: 1, close: 2, volume: 0, rewards: rewards
+                open: 1, high: 1, low: 1, close: 3, volume: 0, rewards: rewards
+            };
+            var option = processor.process(100, quote, true);
+            should.not.exist(option);
+        });
+        it('should return no option when quotes are stable', function () {
+            var quote = {
+                dateTime: moment('2015-06-01 00:07:00-0500').toDate(),
+                open: 1, high: 1, low: 1, close: 3, volume: 0, rewards: rewards
             };
             var option = processor.process(100, quote, false);
             should.not.exist(option);
         });
-        it('should return no option when an option is pending');
     });
 });

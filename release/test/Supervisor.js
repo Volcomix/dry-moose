@@ -81,6 +81,7 @@ describe('Supervisor', function () {
                 });
             });
         });
+        it('should be (quotes.count / 30) options');
         it('should get gains');
         it('should update portfolio');
     });
