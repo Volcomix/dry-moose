@@ -87,12 +87,10 @@ describe('Supervisor', function () {
                     { _id: 0, count: 22 }
                 ]);
                 var cursor = DbManager.db.collection('gains')
-                    .find({ 'dateTime': {
-                        $in: [
+                    .find({ 'dateTime': { $in: [
                             new Date('2015-06-01 12:00:00-0500'),
                             new Date('2015-06-01 12:30:00-0500')
-                        ]
-                    } });
+                        ] } });
                 return Q.ninvoke(cursor, 'toArray');
             })
                 .then(function (gains) {
@@ -106,6 +104,7 @@ describe('Supervisor', function () {
                 ]);
             });
         });
+        it('should get last gain if needed');
         it('should update portfolio');
     });
     after(function () {
