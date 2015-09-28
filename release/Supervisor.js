@@ -77,10 +77,7 @@ var Supervisor = (function () {
                         real: portfolio
                     }));
             }
-            if (_this.pendingOption) {
-                return;
-            }
-            var option = _this.processor.process(portfolio, quote);
+            var option = _this.processor.process(portfolio, quote, !!_this.pendingOption);
             if (option) {
                 _this.innerPortfolio -= option.amount;
                 return Q.all([

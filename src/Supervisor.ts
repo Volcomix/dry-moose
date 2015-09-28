@@ -104,11 +104,7 @@ class Supervisor {
 				);
 			}
 			
-			if (this.pendingOption) {
-				return;
-			}
-			
-			var option = this.processor.process(portfolio, quote);
+			var option = this.processor.process(portfolio, quote, !!this.pendingOption);
 			if (option) {
 				this.innerPortfolio -= option.amount;
 				return Q.all([

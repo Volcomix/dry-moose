@@ -17,7 +17,7 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:03:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 1, volume: 0, rewards: rewards
             };
-            var option = processor.process(100, quote);
+            var option = processor.process(100, quote, false);
             should.not.exist(option);
         });
         it('should return a Call when quotes increase', function () {
@@ -25,7 +25,7 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:04:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 3, volume: 0, rewards: rewards
             };
-            processor.process(100, quote).should.deep.equal({
+            processor.process(100, quote, false).should.deep.equal({
                 quote: quote,
                 expiration: new Date('2015-06-01 01:00:00-0500'),
                 payout: 0.75,
@@ -38,7 +38,7 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:05:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 2, volume: 0, rewards: rewards
             };
-            processor.process(100, quote).should.deep.equal({
+            processor.process(100, quote, false).should.deep.equal({
                 quote: quote,
                 expiration: new Date('2015-06-01 01:00:00-0500'),
                 payout: 0.75,
@@ -51,8 +51,9 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:06:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 2, volume: 0, rewards: rewards
             };
-            var option = processor.process(100, quote);
+            var option = processor.process(100, quote, false);
             should.not.exist(option);
         });
+        it('should return no option when an option is pending');
     });
 });
