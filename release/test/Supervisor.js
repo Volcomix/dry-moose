@@ -83,7 +83,7 @@ describe('Supervisor', function () {
             ])
                 .then(function (result) {
                 result.should.deep.equal([
-                    { _id: 17.5, count: 23 },
+                    { _id: 17.5, count: 24 },
                     { _id: 0, count: 22 }
                 ]);
                 var cursor = DbManager.db.collection('gains')
@@ -104,7 +104,6 @@ describe('Supervisor', function () {
                 ]);
             });
         });
-        it('should get last gain if needed');
         it('should update portfolio');
     });
     after(function () {

@@ -68,31 +68,59 @@ class Supervisor {
 				// dateTime >= exp
 				!moment(quote.dateTime).isBefore(this.pendingOption.expiration)
 			) {
-				var option = this.pendingOption;
-				this.pendingOption = undefined;
-				return this.celebrator.getGain(option)
-				.then((gain) => {
-					this.innerPortfolio += gain;
-					return Q.all([
-						Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
-							<Portfolio> {
-								dateTime: option.expiration,
-								value: this.innerPortfolio
-							}
-						),
-						Q.ninvoke(DbManager.db.collection('gains'), 'insertOne',
-							<Gain> {
-								dateTime: option.expiration,
-								value: gain
-							}
-						)
-					]);
-				});
+				return this.getGain();
 			}
 		})
 		.then(() => {
-			return this.capacitor.getPortfolio();
+			return this.getPortfolio();
 		})
+		.then((portfolio) => {			
+			var option = this.process(portfolio, quote);
+			if (option) {
+				return this.invest(quote, option);
+			}
+		});
+	}
+	
+	private done(): Q.Promise<void> {
+		return Q(this.pendingOption)
+		.then((pendingOption: Option) => {
+			if (pendingOption) {
+				return this.getGain();
+			}
+		})
+		.then(() => {
+			return DbManager.close();
+		});
+	}
+	
+	private getGain(): Q.Promise<void[]> {
+		var option = this.pendingOption;
+		this.pendingOption = undefined;
+		
+		return this.celebrator.getGain(option)
+		.then((gain) => {
+			this.innerPortfolio += gain;
+			
+			return Q.all([
+				Q.ninvoke<void>(DbManager.db.collection('portfolio'), 'insertOne',
+					<Portfolio> {
+						dateTime: option.expiration,
+						value: this.innerPortfolio
+					}
+				),
+				Q.ninvoke<void>(DbManager.db.collection('gains'), 'insertOne',
+					<Gain> {
+						dateTime: option.expiration,
+						value: gain
+					}
+				)
+			]);
+		});
+	}
+	
+	private getPortfolio(): Q.Promise<number> {
+		return this.capacitor.getPortfolio()
 		.then((portfolio) => {
 			if (this.innerPortfolio != portfolio) {
 				throw new Error(
@@ -104,28 +132,30 @@ class Supervisor {
 				);
 			}
 			
-			var option = this.processor.process(portfolio, quote, !!this.pendingOption);
-			if (option) {
-				this.innerPortfolio -= option.amount;
-				return Q.all([
-					Q.ninvoke(DbManager.db.collection('options'), 'insertOne', option),
-					Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
-						<Portfolio> {
-							dateTime: quote.dateTime,
-							value: this.innerPortfolio
-						}
-					)
-				])
-				.then(() => {
-					this.pendingOption = option;
-					this.investor.invest(option);
-				});
-			}
+			return portfolio;
 		});
 	}
 	
-	private done(): Q.Promise<void> {
-		return DbManager.close();
+	private process(portfolio: number, quote: Quote): Option {
+		return this.processor.process(portfolio, quote, !!this.pendingOption);
+	}
+	
+	private invest(quote: Quote, option: Option): Q.Promise<void> {
+		this.innerPortfolio -= option.amount;
+		
+		return Q.all([
+			Q.ninvoke(DbManager.db.collection('options'), 'insertOne', option),
+			Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne',
+				<Portfolio> {
+					dateTime: quote.dateTime,
+					value: this.innerPortfolio
+				}
+			)
+		])
+		.then(() => {
+			this.pendingOption = option;
+			this.investor.invest(option);
+		});
 	}
 }
 

@@ -48,27 +48,53 @@ var Supervisor = (function () {
             if (_this.pendingOption &&
                 // dateTime >= exp
                 !moment(quote.dateTime).isBefore(_this.pendingOption.expiration)) {
-                var option = _this.pendingOption;
-                _this.pendingOption = undefined;
-                return _this.celebrator.getGain(option)
-                    .then(function (gain) {
-                    _this.innerPortfolio += gain;
-                    return Q.all([
-                        Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne', {
-                            dateTime: option.expiration,
-                            value: _this.innerPortfolio
-                        }),
-                        Q.ninvoke(DbManager.db.collection('gains'), 'insertOne', {
-                            dateTime: option.expiration,
-                            value: gain
-                        })
-                    ]);
-                });
+                return _this.getGain();
             }
         })
             .then(function () {
-            return _this.capacitor.getPortfolio();
+            return _this.getPortfolio();
         })
+            .then(function (portfolio) {
+            var option = _this.process(portfolio, quote);
+            if (option) {
+                return _this.invest(quote, option);
+            }
+        });
+    };
+    Supervisor.prototype.done = function () {
+        var _this = this;
+        return Q(this.pendingOption)
+            .then(function (pendingOption) {
+            if (pendingOption) {
+                return _this.getGain();
+            }
+        })
+            .then(function () {
+            return DbManager.close();
+        });
+    };
+    Supervisor.prototype.getGain = function () {
+        var _this = this;
+        var option = this.pendingOption;
+        this.pendingOption = undefined;
+        return this.celebrator.getGain(option)
+            .then(function (gain) {
+            _this.innerPortfolio += gain;
+            return Q.all([
+                Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne', {
+                    dateTime: option.expiration,
+                    value: _this.innerPortfolio
+                }),
+                Q.ninvoke(DbManager.db.collection('gains'), 'insertOne', {
+                    dateTime: option.expiration,
+                    value: gain
+                })
+            ]);
+        });
+    };
+    Supervisor.prototype.getPortfolio = function () {
+        var _this = this;
+        return this.capacitor.getPortfolio()
             .then(function (portfolio) {
             if (_this.innerPortfolio != portfolio) {
                 throw new Error('Estimated portfolio and real portfolio are different ' +
@@ -77,25 +103,26 @@ var Supervisor = (function () {
                         real: portfolio
                     }));
             }
-            var option = _this.processor.process(portfolio, quote, !!_this.pendingOption);
-            if (option) {
-                _this.innerPortfolio -= option.amount;
-                return Q.all([
-                    Q.ninvoke(DbManager.db.collection('options'), 'insertOne', option),
-                    Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne', {
-                        dateTime: quote.dateTime,
-                        value: _this.innerPortfolio
-                    })
-                ])
-                    .then(function () {
-                    _this.pendingOption = option;
-                    _this.investor.invest(option);
-                });
-            }
+            return portfolio;
         });
     };
-    Supervisor.prototype.done = function () {
-        return DbManager.close();
+    Supervisor.prototype.process = function (portfolio, quote) {
+        return this.processor.process(portfolio, quote, !!this.pendingOption);
+    };
+    Supervisor.prototype.invest = function (quote, option) {
+        var _this = this;
+        this.innerPortfolio -= option.amount;
+        return Q.all([
+            Q.ninvoke(DbManager.db.collection('options'), 'insertOne', option),
+            Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne', {
+                dateTime: quote.dateTime,
+                value: this.innerPortfolio
+            })
+        ])
+            .then(function () {
+            _this.pendingOption = option;
+            _this.investor.invest(option);
+        });
     };
     return Supervisor;
 })();
