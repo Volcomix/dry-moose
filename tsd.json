@@ -12,7 +12,7 @@
       "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
     },
     "node/node.d.ts": {
-      "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
+      "commit": "ffceea9dd124d277c4597c7bd12930666ec074c5"
     },
     "q/Q.d.ts": {
       "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
@@ -58,6 +58,18 @@
     },
     "mongodb/mongodb.d.ts": {
       "commit": "09e37435ffb2c56a6f908081194a74756f24f99d"
+    },
+    "serve-static/serve-static.d.ts": {
+      "commit": "ffceea9dd124d277c4597c7bd12930666ec074c5"
+    },
+    "mime/mime.d.ts": {
+      "commit": "ffceea9dd124d277c4597c7bd12930666ec074c5"
+    },
+    "express/express.d.ts": {
+      "commit": "ffceea9dd124d277c4597c7bd12930666ec074c5"
+    },
+    "gulp-nodemon/gulp-nodemon.d.ts": {
+      "commit": "ffceea9dd124d277c4597c7bd12930666ec074c5"
     }
   }
 }
