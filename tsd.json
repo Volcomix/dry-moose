@@ -70,6 +70,9 @@
     },
     "gulp-nodemon/gulp-nodemon.d.ts": {
       "commit": "ffceea9dd124d277c4597c7bd12930666ec074c5"
+    },
+    "d3/d3.d.ts": {
+      "commit": "ffceea9dd124d277c4597c7bd12930666ec074c5"
     }
   }
 }
