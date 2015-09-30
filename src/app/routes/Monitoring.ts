@@ -9,7 +9,7 @@ import Quote = require('../../documents/Quote');
 var router = express.Router();
 
 router.get('/quotes', function(req, res, next) {
-	var cursor = DbManager.db.collection('quotes').find();
+	var cursor = DbManager.db.collection('quotes').find().sort({dateTime: 1}).limit(1000);
 	Q.ninvoke(cursor, 'toArray')
 	.then(function(quotes: Quote[]) {
 		res.send(quotes);
