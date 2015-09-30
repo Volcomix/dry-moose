@@ -59,9 +59,9 @@ gulp.task('watch', function () {
 	gulp.watch('src/**/*.ts', ['build:src']);
 });
 
-gulp.task('monitor', ['build:src', 'watch'], function () {
+gulp.task('app', ['build:src', 'watch'], function () {
 	nodemon({
-		script: 'release/monitoring/Monitoring.js',
-		watch: ['release/monitoring/Monitoring.js']
+		script: 'release/app/App.js',
+		watch: ['release/app/App.js']
 	});
 });

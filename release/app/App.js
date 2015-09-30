@@ -1,11 +1,11 @@
 /// <reference path="../../typings/tsd.d.ts" />
 var express = require('express');
 var DbManager = require('../database/DbManager');
-var Routes = require('./Routes');
+var Monitoring = require('./routes/Monitoring');
 var app = express();
-app.use('/', Routes);
+app.use('/monitoring', Monitoring);
 app.use(express.static('www'));
-app.use('/javascripts', express.static('release/www'));
+app.use('/javascripts', express.static('release/app/www'));
 DbManager.connect()
     .then(function () {
     var server = app.listen(8080, function () {

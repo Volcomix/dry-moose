@@ -1,7 +1,7 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../../typings/tsd.d.ts" />
 var express = require('express');
 var Q = require('q');
-var DbManager = require('../database/DbManager');
+var DbManager = require('../../database/DbManager');
 var router = express.Router();
 router.get('/quotes', function (req, res, next) {
     var cursor = DbManager.db.collection('quotes').find();

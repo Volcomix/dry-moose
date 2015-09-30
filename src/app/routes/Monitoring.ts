@@ -1,10 +1,10 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../../typings/tsd.d.ts" />
 
 import express = require('express');
 import Q = require('q');
 
-import DbManager = require('../database/DbManager');
-import Quote = require('../documents/Quote');
+import DbManager = require('../../database/DbManager');
+import Quote = require('../../documents/Quote');
 
 var router = express.Router();
 
