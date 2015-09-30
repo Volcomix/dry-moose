@@ -1,26 +1,55 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
-var body = d3.select("body");
+var margin = { top: 20, right: 50, bottom: 30, left: 20 },
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-d3.json('/monitoring/quotes', function(err, data) {
+var x = d3.time.scale()
+    .range([0, width]);
+    
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient('bottom');
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient('right');
+
+var line = d3.svg.line()
+    .x(function(d: any) { return x(d.dateTime); })
+    .y(function(d: any) { return y(d.close); });
+
+var svg = d3.select('body').append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+.append('g')
+    .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+d3.json('/monitoring/quotes', function(error, data: any[]) {
+    if (error) throw error;
     
     data.forEach(function(d) {
         d.dateTime = new Date(d.dateTime);
     });
     
-    var x = d3.time.scale().range([0, 800]),
-        y = d3.scale.linear().range([600, 0]);
-    
-    x.domain([data[0].dateTime, data[data.length - 1].dateTime]);
+    x.domain(d3.extent(data, function(d: any) { return d.dateTime; }));
     y.domain(d3.extent(data, function(d: any) { return d.close; }));
     
-    var line = d3.svg.line()
-    .x(function(d: any) { return x(d.dateTime); })
-    .y(function(d: any) { return y(d.close); })
-    .interpolate("basis");
+    svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0, ' + height + ')')
+        .call(xAxis);
+
+    svg.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate(' + width + ', 0)')
+        .call(yAxis);
     
-    d3.select('svg')
+    svg.append('path')
         .datum(data)
-    .append('path')
-        .attr("d", line);
+        .attr('class', 'line')
+        .attr('d', line);
 });
