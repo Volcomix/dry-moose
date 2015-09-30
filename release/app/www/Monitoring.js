@@ -1,2 +1,8 @@
 /// <reference path="../../../typings/tsd.d.ts" />
-console.log('Test');
+var body = d3.select("body");
+body
+    .transition()
+    .style("background-color", "lightgrey");
+body
+    .append("div")
+    .html("Hello, world!");
