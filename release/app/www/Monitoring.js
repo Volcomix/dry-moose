@@ -16,6 +16,7 @@ var line = d3.svg.line()
     .x(function (d) { return x(d.dateTime); })
     .y(function (d) { return y(d.close); });
 var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 50])
     .on('zoom', draw);
 var svg = d3.select('body').append('svg')
     .attr('width', width + margin.left + margin.right)

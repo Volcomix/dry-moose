@@ -25,6 +25,7 @@ var line = d3.svg.line()
     .y(function(d: any) { return y(d.close); });
 
 var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 50])
     .on('zoom', draw);
 
 var svg = d3.select('body').append('svg')
