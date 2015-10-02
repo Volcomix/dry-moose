@@ -5,16 +5,24 @@ body {
 .axis path,
 .axis line {
 	fill: none;
-	stroke: #000;
 	shape-rendering: crispEdges;
 }
 
-.x.axis path {
-	display: none;
+.axis path {
+	stroke: #000;
 }
 
-.line {
+.axis line {
+	stroke: #e0e0e0;
+}
+
+path.line {
 	fill: none;
 	stroke: steelblue;
-	stroke-width: 1.5px;
+}
+
+rect.pane {
+	cursor: move;
+	fill: none;
+	pointer-events: all;
 }

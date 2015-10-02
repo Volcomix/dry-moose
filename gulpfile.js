@@ -60,7 +60,7 @@ gulp.task('watch', function () {
 	gulp.watch('src/**/*.ts', ['build:src']);
 });
 
-gulp.task('app', ['build:src', 'watch'], function () {
+gulp.task('nodemon', ['build:src', 'watch'], function () {
 	nodemon({
 		script: 'release/app/App.js',
 		watch: ['release/app/App.js']
