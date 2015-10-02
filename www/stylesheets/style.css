@@ -4,16 +4,13 @@ body {
 
 .axis path,
 .axis line {
+	stroke: #000;
 	fill: none;
 	shape-rendering: crispEdges;
 }
 
-.axis path {
-	stroke: #000;
-}
-
 .axis line {
-	stroke: #e0e0e0;
+	stroke-opacity: 0.1;
 }
 
 path.line {
