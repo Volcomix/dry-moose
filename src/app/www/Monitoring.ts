@@ -68,7 +68,7 @@ d3.json('/monitoring/quotes', function(error, data: any[]) {
     });
     
     x.domain(d3.extent(data, function(d: any) { return d.dateTime; }));
-    y.domain(d3.extent(data, function(d: any) { return d.close; }));
+    y.domain(d3.extent(data, function(d: any) { return d.close; })).nice();
     zoom.x(<any>x);
     
     svg.select('path.line').data([data]);
