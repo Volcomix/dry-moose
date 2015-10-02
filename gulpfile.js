@@ -30,12 +30,11 @@ gulp.task('build', ['clean'], function () {
 	return gulp.src(['src/**/*.ts', 'addon/**/*.d.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(through2.obj(function (chunk, enc, callback) {
-			chunk.contents = new Buffer(
-				chunk.contents.toString().replace(
-					/require\s*\(\s*['"]ta-lib['"]\s*\)/g,
-					'require("' + path.relative(chunk.relative, 'build/Release/ta-lib') + '")'
-				)
-			);
+			chunk.contents = new Buffer(chunk.contents.toString().replace(
+				/require\s*\(\s*['"]ta-lib['"]\s*\)/g,
+				'require("' + path.relative(chunk.relative, './build/Release/ta-lib')
+				.split(path.sep).join(path.posix.sep) + '")'
+			));
 
 			this.push(chunk);
 			callback();
