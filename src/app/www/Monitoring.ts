@@ -1,5 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
+import Quote = require('../../documents/Quote');
+
 var margin = { top: 20, right: 50, bottom: 30, left: 20 },
     width = 900 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -31,8 +33,8 @@ var yAxis = d3.svg.axis()
     .tickSize(-width, 0);
 
 var line = d3.svg.line()
-    .x(function(d: any) { return x(d.dateTime); })
-    .y(function(d: any) { return y(d.close); });
+    .x(<any>function(d: Quote) { return x(d.dateTime); })
+    .y(<any>function(d: Quote) { return y(d.close); });
 
 var zoom = d3.behavior.zoom()
     .scaleExtent([1, 50])
@@ -70,15 +72,15 @@ svg.append('rect')
     .attr('height', height)
     .call(zoom);
 
-d3.json('/monitoring/quotes', function(error, data: any[]) {
+d3.json('/monitoring/quotes', function(error, data: Quote[]) {
     if (error) throw error;
     
     data.forEach(function(d) {
-        d.dateTime = new Date(d.dateTime);
+        d.dateTime = new Date(<any>d.dateTime);
     });
     
-    x.domain(d3.extent(data, function(d: any) { return d.dateTime; }));
-    y.domain(d3.extent(data, function(d: any) { return d.close; })).nice();
+    x.domain(d3.extent(data, function(d: Quote) { return +d.dateTime; }));
+    y.domain(d3.extent(data, function(d: Quote) { return d.close; })).nice();
     zoom.x(<any>x);
     
     svg.select('path.line').data([data]);

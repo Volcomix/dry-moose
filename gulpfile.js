@@ -51,9 +51,9 @@ gulp.task('build:app', function () {
 });
 
 gulp.task('build:www', function () {
-	return gulp.src('src/app/www/**/*.ts')
+	return gulp.src(['src/app/www/**/*.ts', 'src/documents/**/*.ts'])
 		.pipe(tsc(tsProject))
-		.js.pipe(gulp.dest('release/app/www'));
+		.js.pipe(gulp.dest('release'));
 });
 
 gulp.task('build:test', function () {
@@ -83,7 +83,7 @@ gulp.task('watch:app', function () {
 });
 
 gulp.task('watch:www', function() {
-	gulp.watch('src/app/www/**/*.ts', ['build:www']);
+	gulp.watch(['src/app/www/**/*.ts', 'src/documents/**/*.ts'], ['build:www']);
 });
 
 gulp.task('nodemon', ['build:src', 'watch:app'], function (cb) {

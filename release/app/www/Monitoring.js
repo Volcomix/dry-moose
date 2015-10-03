@@ -60,7 +60,7 @@ d3.json('/monitoring/quotes', function (error, data) {
     data.forEach(function (d) {
         d.dateTime = new Date(d.dateTime);
     });
-    x.domain(d3.extent(data, function (d) { return d.dateTime; }));
+    x.domain(d3.extent(data, function (d) { return +d.dateTime; }));
     y.domain(d3.extent(data, function (d) { return d.close; })).nice();
     zoom.x(x);
     svg.select('path.line').data([data]);
