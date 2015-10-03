@@ -19,9 +19,13 @@ path.line {
 }
 
 rect.pane {
-	cursor: move;
+	cursor: crosshair;
 	fill: none;
 	pointer-events: all;
+}
+
+rect.pane:active {
+	cursor: move;
 }
 
 .focus circle {
@@ -32,4 +36,12 @@ rect.pane {
 .focus rect {
 	fill: white;
 	stroke: orangered;
+}
+
+.target line {
+	fill: none;
+	stroke: #000;
+	stroke-dasharray: 3,2;
+	shape-rendering: crispEdges;
+	stroke-opacity: 0.25;
 }

@@ -68,6 +68,14 @@ d3.json('/monitoring/quotes', function (error, data) {
     svg.append('path')
         .attr('class', 'line')
         .attr('clip-path', 'url(#clip)');
+    var target = svg.append('g')
+        .attr('class', 'target');
+    var targetX = target.append('line')
+        .attr('y1', 0)
+        .attr('y2', height);
+    var targetY = target.append('line')
+        .attr('x1', 0)
+        .attr('x2', width);
     var focus = svg.append("g")
         .attr("class", "focus")
         .style("display", "none");
@@ -85,16 +93,25 @@ d3.json('/monitoring/quotes', function (error, data) {
         .attr('class', 'pane')
         .attr('width', width)
         .attr('height', height)
-        .on("mouseover", function () { focus.style("display", null); })
-        .on("mouseout", function () { focus.style("display", "none"); })
+        .on("mouseover", function () {
+        focus.style("display", null);
+        target.style('display', null);
+    })
+        .on("mouseout", function () {
+        focus.style("display", "none");
+        target.style('display', "none");
+    })
         .on("mousemove", mousemove)
         .call(zoom);
     svg.select('path.line').data([data]);
     draw();
     function mousemove() {
-        var x0 = x.invert(d3.mouse(this)[0]), i = bisectDate(data, x0, 1), d0 = data[i - 1], d1 = data[i], d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+        var mousePos = d3.mouse(this);
+        var x0 = x.invert(mousePos[0]), i = bisectDate(data, x0, 1), d0 = data[i - 1], d1 = data[i], d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
         focus.attr("transform", "translate(" + x(d.dateTime) + "," + y(d.close) + ")");
         focus.select("text").text(d.close);
+        targetX.attr('x1', mousePos[0]).attr('x2', mousePos[0]);
+        targetY.attr('y1', mousePos[1]).attr('y2', mousePos[1]);
     }
 });
 function draw() {
