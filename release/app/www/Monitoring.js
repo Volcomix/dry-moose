@@ -1,5 +1,6 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 var margin = { top: 20, right: 50, bottom: 30, left: 20 }, width = 900 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
+var bisectDate = d3.bisector(function (d) { return d.dateTime; }).left;
 var x = d3.time.scale()
     .range([0, width]);
 var y = d3.scale.linear()
@@ -40,36 +41,61 @@ svg.append('clipPath')
     .attr('y', y(1))
     .attr('width', x(1) - x(0))
     .attr('height', y(0) - y(1));
-svg.append('g')
-    .attr('class', 'x axis')
-    .attr('transform', 'translate(0, ' + height + ')');
-svg.append('g')
-    .attr('class', 'y axis')
-    .attr('transform', 'translate(' + width + ', 0)');
-svg.append('path')
-    .attr('class', 'line')
-    .attr('clip-path', 'url(#clip)');
-svg.append('rect')
-    .attr('class', 'pane')
-    .attr('width', width)
-    .attr('height', height)
-    .call(zoom);
 d3.json('/monitoring/quotes', function (error, data) {
     if (error)
         throw error;
     data.forEach(function (d) {
         d.dateTime = new Date(d.dateTime);
     });
+    data.sort(function (a, b) {
+        return +a.dateTime - +b.dateTime;
+    });
     if (data.length) {
+        var lastQuote = data[data.length - 1];
         x.domain([
-            moment(data[0].dateTime).subtract({ hours: 2 }).toDate(),
-            data[0].dateTime
+            moment(lastQuote.dateTime).subtract({ hours: 2 }).toDate(),
+            lastQuote.dateTime
         ]).nice();
     }
     y.domain(d3.extent(data, function (d) { return d.close; })).nice();
     zoom.x(x);
+    svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0, ' + height + ')');
+    svg.append('g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate(' + width + ', 0)');
+    svg.append('path')
+        .attr('class', 'line')
+        .attr('clip-path', 'url(#clip)');
+    var focus = svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
+    focus.append("circle")
+        .attr("r", 4.5);
+    focus.append("rect")
+        .attr("x", 9)
+        .attr("y", -8)
+        .attr("width", 50)
+        .attr("height", 16);
+    focus.append("text")
+        .attr("x", 14)
+        .attr("dy", ".35em");
+    svg.append('rect')
+        .attr('class', 'pane')
+        .attr('width', width)
+        .attr('height', height)
+        .on("mouseover", function () { focus.style("display", null); })
+        .on("mouseout", function () { focus.style("display", "none"); })
+        .on("mousemove", mousemove)
+        .call(zoom);
     svg.select('path.line').data([data]);
     draw();
+    function mousemove() {
+        var x0 = x.invert(d3.mouse(this)[0]), i = bisectDate(data, x0, 1), d0 = data[i - 1], d1 = data[i], d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+        focus.attr("transform", "translate(" + x(d.dateTime) + "," + y(d.close) + ")");
+        focus.select("text").text(d.close);
+    }
 });
 function draw() {
     svg.select('g.x.axis').call(xAxis);

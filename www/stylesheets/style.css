@@ -23,3 +23,13 @@ rect.pane {
 	fill: none;
 	pointer-events: all;
 }
+
+.focus circle {
+	fill: none;
+	stroke: orangered;
+}
+
+.focus rect {
+	fill: white;
+	stroke: orangered;
+}
