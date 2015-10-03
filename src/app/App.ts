@@ -7,8 +7,8 @@ import Monitoring = require('./routes/Monitoring');
 
 var app = express();
 
-app.use('/monitoring', Monitoring);
 app.use(express.static('www'));
+app.use('/monitoring', Monitoring);
 app.use('/javascripts', express.static('release/app/www'));
 
 DbManager.connect()
@@ -17,6 +17,6 @@ DbManager.connect()
 		var host = server.address().address;
 		var port = server.address().port;
 		
-		console.log('Monitoring listening at http://%s:%s', host, port);
+		console.log('Dry-moose listening at http://%s:%s', host, port);
 	});
 });

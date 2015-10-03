@@ -1,5 +1,5 @@
 /// <reference path="../../../typings/tsd.d.ts" />
-var margin = { top: 20, right: 50, bottom: 30, left: 20 }, width = 960 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
+var margin = { top: 20, right: 50, bottom: 30, left: 20 }, width = 900 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
 var x = d3.time.scale()
     .range([0, width]);
 var y = d3.scale.linear()
