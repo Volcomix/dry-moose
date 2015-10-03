@@ -17,20 +17,22 @@ var y = d3.scale.linear()
 var xAxis = d3.svg.axis()
     .scale(x)
     .tickFormat(d3.time.format.multi([
-        [".%L", function(d) { return d.getMilliseconds(); }],
-        [":%S", function(d) { return d.getSeconds(); }],
-        ["%H:%M", function(d) { return d.getMinutes(); }],
-        ["%H:%M", function(d) { return d.getHours(); }],
-        ["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
-        ["%b %d", function(d) { return d.getDate() != 1; }],
-        ["%B", function(d) { return d.getMonth(); }],
-        ["%Y", function() { return true; }]
+        ['.%L', function(d) { return d.getMilliseconds(); }],
+        [':%S', function(d) { return d.getSeconds(); }],
+        ['%H:%M', function(d) { return d.getMinutes(); }],
+        ['%H:%M', function(d) { return d.getHours(); }],
+        ['%a %d', function(d) { return d.getDay() && d.getDate() != 1; }],
+        ['%b %d', function(d) { return d.getDate() != 1; }],
+        ['%B', function(d) { return d.getMonth(); }],
+        ['%Y', function() { return true; }]
     ]))
     .orient('bottom')
-    .tickSize(-height, 0);
+    .tickSize(-height, 0)
+    .tickPadding(4);
 
 var yAxis = d3.svg.axis()
     .scale(y)
+    .tickFormat(d3.format(',.5f'))
     .orient('right')
     .tickSize(-width, 0);
 
@@ -101,36 +103,36 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
         .attr('x1', 0)
         .attr('x2', width);
     
-    var focus = svg.append("g")
-        .attr("class", "focus")
-        .style("display", "none");
+    var focus = svg.append('g')
+        .attr('class', 'focus')
+        .style('display', 'none');
     
-    focus.append("circle")
-        .attr("r", 4.5);
+    focus.append('circle')
+        .attr('r', 4.5);
     
-    focus.append("rect")
-        .attr("x", 9)
-        .attr("y", -8)
-        .attr("width", 50)
-        .attr("height", 16);
+    focus.append('rect')
+        .attr('x', 9)
+        .attr('y', -8)
+        .attr('width', 50)
+        .attr('height', 16);
     
-    focus.append("text")
-        .attr("x", 14)
-        .attr("dy", ".35em");
+    focus.append('text')
+        .attr('x', 14)
+        .attr('dy', '.35em');
         
     svg.append('rect')
         .attr('class', 'pane')
         .attr('width', width)
         .attr('height', height)
-        .on("mouseover", function() {
-            focus.style("display", null);
+        .on('mouseover', function() {
+            focus.style('display', null);
             target.style('display', null);
         })
-        .on("mouseout", function() {
-            focus.style("display", "none");
-            target.style('display', "none");
+        .on('mouseout', function() {
+            focus.style('display', 'none');
+            target.style('display', 'none');
         })
-        .on("mousemove", mousemove)
+        .on('mousemove', mousemove)
         .call(zoom);
     
     svg.select('path.line').data([data]);
@@ -145,10 +147,10 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
             d1 = data[i],
             d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
         focus.attr(
-            "transform",
-            "translate(" + x(d.dateTime) + "," + y(d.close) + ")"
+            'transform',
+            'translate(' + x(d.dateTime) + ',' + y(d.close) + ')'
         );
-        focus.select("text").text(d.close);
+        focus.select('text').text(d.close.toFixed(5));
         
         targetX.attr('x1', mousePos[0]).attr('x2', mousePos[0]);
         targetY.attr('y1', mousePos[1]).attr('y2', mousePos[1]);
