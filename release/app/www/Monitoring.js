@@ -26,7 +26,7 @@ var line = d3.svg.line()
     .x(function (d) { return x(d.dateTime); })
     .y(function (d) { return y(d.close); });
 var zoom = d3.behavior.zoom()
-    .scaleExtent([1, 50])
+    .scaleExtent([0.1, 10])
     .on('zoom', draw);
 var svg = d3.select('body').append('svg')
     .attr('width', width + margin.left + margin.right)
@@ -60,7 +60,12 @@ d3.json('/monitoring/quotes', function (error, data) {
     data.forEach(function (d) {
         d.dateTime = new Date(d.dateTime);
     });
-    x.domain(d3.extent(data, function (d) { return +d.dateTime; }));
+    if (data.length) {
+        x.domain([
+            moment(data[0].dateTime).subtract({ hours: 2 }).toDate(),
+            data[0].dateTime
+        ]).nice();
+    }
     y.domain(d3.extent(data, function (d) { return d.close; })).nice();
     zoom.x(x);
     svg.select('path.line').data([data]);
