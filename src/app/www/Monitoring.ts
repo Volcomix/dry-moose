@@ -78,7 +78,10 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
     var zoom = d3.behavior.zoom()
         .scaleExtent([0.1, 10])
         .on('zoom', draw);
+
     zoom.x(<any>x);
+    
+    var scale = zoom.scale();
     
     svg.append('g')
         .attr('class', 'x axis')
@@ -167,6 +170,13 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
     }
 
     function draw() {
+        var scaleChanged = (
+            d3.event && scale != (<d3.ZoomEvent>d3.event).scale
+        );
+        if (scaleChanged) {
+            scale = (<d3.ZoomEvent>d3.event).scale;
+        }
+        
         d3.timer(function() { // Force to not block browser
             svg.select('g.x.axis').call(xAxis);
             
@@ -178,9 +188,19 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
                 return d.close;
             })).nice();
             
-            svg.select('g.y.axis').call(yAxis);
+            svg.select('g.y.axis')
+                .transition()
+                .duration(200)
+                .call(yAxis);
             
-            svg.select('path.line').attr('d', line);
+            if (scaleChanged) {
+                svg.select('path.line')
+                    .transition()
+                    .duration(200)
+                    .attr('d', line);
+            } else {
+                svg.select('path.line').attr('d', line);
+            }
             
             return true;
         });

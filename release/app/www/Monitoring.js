@@ -60,6 +60,7 @@ d3.json('/monitoring/quotes', function (error, data) {
         .scaleExtent([0.1, 10])
         .on('zoom', draw);
     zoom.x(x);
+    var scale = zoom.scale();
     svg.append('g')
         .attr('class', 'x axis')
         .attr('transform', 'translate(0, ' + height + ')');
@@ -126,14 +127,29 @@ d3.json('/monitoring/quotes', function (error, data) {
         yTarget.select('text').text(y.invert(mousePos[1]).toFixed(5));
     }
     function draw() {
+        var scaleChanged = (d3.event && scale != d3.event.scale);
+        if (scaleChanged) {
+            scale = d3.event.scale;
+        }
         d3.timer(function () {
             svg.select('g.x.axis').call(xAxis);
             var domain = x.domain(), i = bisectDate(data, domain[0], 1), j = bisectDate(data, domain[1], i + 1);
             y.domain(d3.extent(data.slice(i, j), function (d) {
                 return d.close;
             })).nice();
-            svg.select('g.y.axis').call(yAxis);
-            svg.select('path.line').attr('d', line);
+            svg.select('g.y.axis')
+                .transition()
+                .duration(200)
+                .call(yAxis);
+            if (scaleChanged) {
+                svg.select('path.line')
+                    .transition()
+                    .duration(200)
+                    .attr('d', line);
+            }
+            else {
+                svg.select('path.line').attr('d', line);
+            }
             return true;
         });
     }
