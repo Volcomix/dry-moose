@@ -113,7 +113,13 @@ d3.json('/monitoring/quotes', function (error, data) {
     draw();
     function mousemove() {
         var mousePos = d3.mouse(this);
-        var x0 = x.invert(mousePos[0]), i = bisectDate(data, x0, 1), d0 = data[i - 1], d1 = data[i], d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+        var x0 = x.invert(mousePos[0]), i = bisectDate(data, x0, 1), d0 = data[i - 1], d1 = data[i], d;
+        if (d1) {
+            d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+        }
+        else {
+            d = d0;
+        }
         xTarget.attr('transform', 'translate(' + x(d.dateTime) + ', 0)');
         xTarget.select('text').text(dateFormat(d.dateTime));
         yTarget.attr('transform', 'translate(0, ' + mousePos[1] + ')');

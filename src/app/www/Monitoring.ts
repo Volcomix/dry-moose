@@ -151,7 +151,13 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
             i = bisectDate(data, x0, 1),
             d0 = data[i - 1],
             d1 = data[i],
-            d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+            d;
+            
+            if (d1) {
+                d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+            } else {
+                d = d0;
+            }
         
         xTarget.attr('transform', 'translate(' + x(d.dateTime) + ', 0)');
         xTarget.select('text').text(dateFormat(d.dateTime));
