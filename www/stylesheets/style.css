@@ -28,20 +28,26 @@ rect.pane:active {
 	cursor: move;
 }
 
-.focus circle {
-	fill: none;
-	stroke: orangered;
-}
-
-.focus rect {
-	fill: white;
-	stroke: orangered;
-}
-
 .target line {
 	fill: none;
 	stroke: #000;
 	stroke-dasharray: 3,2;
-	shape-rendering: crispEdges;
 	stroke-opacity: 0.25;
+	shape-rendering: crispEdges;
+}
+
+.target rect {
+	fill: #555;
+}
+
+.target text {
+	fill: white;
+}
+
+.x.target text {
+	text-anchor: middle;
+}
+
+.y.target text {
+	text-anchor: start;
 }

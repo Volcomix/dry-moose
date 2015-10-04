@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 var margin = { top: 20, right: 50, bottom: 30, left: 20 }, width = 900 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
-var bisectDate = d3.bisector(function (d) { return d.dateTime; }).left;
+var bisectDate = d3.bisector(function (d) { return d.dateTime; }).left, dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 var x = d3.time.scale()
     .range([0, width]);
 var y = d3.scale.linear()
@@ -69,38 +69,43 @@ d3.json('/monitoring/quotes', function (error, data) {
     svg.append('path')
         .attr('class', 'line')
         .attr('clip-path', 'url(#clip)');
-    var target = svg.append('g')
-        .attr('class', 'target');
-    var targetX = target.append('line')
-        .attr('y1', 0)
-        .attr('y2', height);
-    var targetY = target.append('line')
-        .attr('x1', 0)
-        .attr('x2', width);
-    var focus = svg.append('g')
-        .attr('class', 'focus')
+    var xTarget = svg.append('g')
+        .attr('class', 'x target')
         .style('display', 'none');
-    focus.append('circle')
-        .attr('r', 4.5);
-    focus.append('rect')
-        .attr('x', 9)
-        .attr('y', -8)
+    xTarget.append('line')
+        .attr('y2', height);
+    xTarget.append('rect')
+        .attr('x', -60)
+        .attr('y', height)
+        .attr('width', 120)
+        .attr('height', 14);
+    xTarget.append('text')
+        .attr('y', height + 3)
+        .attr('dy', '.71em');
+    var yTarget = svg.append('g')
+        .attr('class', 'y target')
+        .style('display', 'none');
+    yTarget.append('line')
+        .attr('x2', width);
+    yTarget.append('rect')
+        .attr('x', width)
+        .attr('y', -7)
         .attr('width', 50)
-        .attr('height', 16);
-    focus.append('text')
-        .attr('x', 14)
-        .attr('dy', '.35em');
+        .attr('height', 14);
+    yTarget.append('text')
+        .attr('x', width + 3)
+        .attr('dy', '.32em');
     svg.append('rect')
         .attr('class', 'pane')
         .attr('width', width)
         .attr('height', height)
         .on('mouseover', function () {
-        focus.style('display', null);
-        target.style('display', null);
+        xTarget.style('display', null);
+        yTarget.style('display', null);
     })
         .on('mouseout', function () {
-        focus.style('display', 'none');
-        target.style('display', 'none');
+        xTarget.style('display', 'none');
+        yTarget.style('display', 'none');
     })
         .on('mousemove', mousemove)
         .call(zoom);
@@ -109,10 +114,10 @@ d3.json('/monitoring/quotes', function (error, data) {
     function mousemove() {
         var mousePos = d3.mouse(this);
         var x0 = x.invert(mousePos[0]), i = bisectDate(data, x0, 1), d0 = data[i - 1], d1 = data[i], d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
-        focus.attr('transform', 'translate(' + x(d.dateTime) + ',' + y(d.close) + ')');
-        focus.select('text').text(d.close.toFixed(5));
-        targetX.attr('x1', mousePos[0]).attr('x2', mousePos[0]);
-        targetY.attr('y1', mousePos[1]).attr('y2', mousePos[1]);
+        xTarget.attr('transform', 'translate(' + x(d.dateTime) + ', 0)');
+        xTarget.select('text').text(dateFormat(d.dateTime));
+        yTarget.attr('transform', 'translate(0, ' + mousePos[1] + ')');
+        yTarget.select('text').text(y.invert(mousePos[1]).toFixed(5));
     }
 });
 function draw() {
