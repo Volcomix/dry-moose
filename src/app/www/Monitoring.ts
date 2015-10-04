@@ -183,6 +183,6 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
             svg.select('path.line').attr('d', line);
             
             return true;
-        }, 0);
+        });
     }
 });

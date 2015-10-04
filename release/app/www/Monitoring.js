@@ -135,6 +135,6 @@ d3.json('/monitoring/quotes', function (error, data) {
             svg.select('g.y.axis').call(yAxis);
             svg.select('path.line').attr('d', line);
             return true;
-        }, 0);
+        });
     }
 });
