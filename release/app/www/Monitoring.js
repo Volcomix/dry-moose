@@ -18,8 +18,7 @@ var xAxis = d3.svg.axis()
     ['%Y', function () { return true; }]
 ]))
     .orient('bottom')
-    .tickSize(-height, 0)
-    .tickPadding(4);
+    .tickSize(-height, 0);
 var yAxis = d3.svg.axis()
     .scale(y)
     .tickFormat(d3.format(',.5f'))
