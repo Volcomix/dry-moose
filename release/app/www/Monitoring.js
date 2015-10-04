@@ -121,7 +121,7 @@ d3.json('/monitoring/quotes', function (error, data) {
     }
     function draw() {
         svg.select('g.x.axis').call(xAxis);
-        var domain = x.domain(), i = bisectDate(data, domain[0], 1), j = bisectDate(data, domain[1], 1);
+        var domain = x.domain(), i = bisectDate(data, domain[0], 1), j = bisectDate(data, domain[1], i + 1);
         y.domain(d3.extent(data.slice(i, j), function (d) {
             return d.close;
         })).nice();
