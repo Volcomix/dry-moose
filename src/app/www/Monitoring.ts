@@ -40,10 +40,6 @@ var line = d3.svg.line()
     .x(<any>function(d: Quote) { return x(d.dateTime); })
     .y(<any>function(d: Quote) { return y(d.close); });
 
-var zoom = d3.behavior.zoom()
-    .scaleExtent([0.1, 10])
-    .on('zoom', draw);
-
 var svg = d3.select('body').append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
@@ -78,6 +74,10 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
     }
     
     y.domain(d3.extent(data, function(d: Quote) { return d.close; })).nice();
+    
+    var zoom = d3.behavior.zoom()
+        .scaleExtent([0.1, 10])
+        .on('zoom', draw);
     zoom.x(<any>x);
     
     svg.append('g')
@@ -159,10 +159,20 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
         yTarget.attr('transform', 'translate(0, ' + mousePos[1] + ')');
         yTarget.select('text').text(y.invert(mousePos[1]).toFixed(5));
     }
-});
 
-function draw() {
-    svg.select('g.x.axis').call(xAxis);
-    svg.select('g.y.axis').call(yAxis);
-    svg.select('path.line').attr('d', line);
-}
+    function draw() {
+        svg.select('g.x.axis').call(xAxis);
+        
+        var domain = x.domain(),
+            i = bisectDate(data, domain[0], 1),
+            j = bisectDate(data, domain[1], 1);
+        
+        y.domain(d3.extent(data.slice(i, j), function(d: Quote) {
+            return d.close;
+        })).nice();
+        
+        svg.select('g.y.axis').call(yAxis);
+        
+        svg.select('path.line').attr('d', line);
+    }
+});
