@@ -167,18 +167,22 @@ d3.json('/monitoring/quotes', function(error, data: Quote[]) {
     }
 
     function draw() {
-        svg.select('g.x.axis').call(xAxis);
-        
-        var domain = x.domain(),
-            i = bisectDate(data, domain[0], 1),
-            j = bisectDate(data, domain[1], i + 1);
-        
-        y.domain(d3.extent(data.slice(i, j), function(d: Quote) {
-            return d.close;
-        })).nice();
-        
-        svg.select('g.y.axis').call(yAxis);
-        
-        svg.select('path.line').attr('d', line);
+        d3.timer(function() { // Force to not block browser
+            svg.select('g.x.axis').call(xAxis);
+            
+            var domain = x.domain(),
+                i = bisectDate(data, domain[0], 1),
+                j = bisectDate(data, domain[1], i + 1);
+            
+            y.domain(d3.extent(data.slice(i, j), function(d: Quote) {
+                return d.close;
+            })).nice();
+            
+            svg.select('g.y.axis').call(yAxis);
+            
+            svg.select('path.line').attr('d', line);
+            
+            return true;
+        }, 0);
     }
 });
