@@ -4,7 +4,7 @@ body {
 
 .axis path,
 .axis line {
-	stroke: #000;
+	stroke: black;
 	fill: none;
 	shape-rendering: crispEdges;
 }
@@ -30,7 +30,7 @@ rect.pane:active {
 
 .target line {
 	fill: none;
-	stroke: #000;
+	stroke: black;
 	stroke-dasharray: 3,2;
 	stroke-opacity: 0.25;
 	shape-rendering: crispEdges;
