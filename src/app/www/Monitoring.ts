@@ -40,6 +40,9 @@ var line = d3.svg.line()
     .x(<any>function(d: Quote) { return x(d.dateTime); })
     .y(<any>function(d: Quote) { return y(d.close); });
 
+var zoom = d3.behavior.zoom()
+    .scaleExtent([0.5, 10]);
+
 var svg = d3.select('body').append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
@@ -111,7 +114,8 @@ svg.append('rect')
     .on('mouseout', function() {
         xTarget.style('display', 'none');
         yTarget.style('display', 'none');
-    });
+    })
+    .call(zoom);
 
 Q.nfcall(d3.json, '/monitoring/quotes').then(loadData);
 
@@ -138,15 +142,17 @@ function loadData(data: Quote[]) {
         })).nice();
     }
     
-    var zoom = d3.behavior.zoom()
-        .scaleExtent([0.5, 10])
-        .on('zoom', draw);
-    zoom.x(<any>x);
-    var scale = zoom.scale();
-        
-    svg.select('rect.pane').on('mousemove', mousemove).call(zoom);
+    if (!zoom.x()) {
+        zoom.x(<any>x);
+    }
+    
+    zoom.on('zoom', draw);    
+    svg.select('rect.pane').on('mousemove', mousemove);
     svg.select('path.line').data([data]);
+    
     draw();
+    
+    var scale = zoom.scale();
 
     function mousemove() {
         var mousePos = d3.mouse(this);
