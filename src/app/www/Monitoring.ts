@@ -200,7 +200,7 @@ function loadData(data: Quote[]) {
             var i = bisectDate(data, domain[0], 1),
                 j = bisectDate(data, domain[1], i + 1);
             
-            y.domain(d3.extent(data.slice(i, j), function(d: Quote) {
+            y.domain(d3.extent(data.slice(i, j + 1), function(d: Quote) {
                 return d.close;
             })).nice();
             
