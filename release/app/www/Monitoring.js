@@ -107,7 +107,7 @@ function loadData(data) {
         })).nice();
     }
     var zoom = d3.behavior.zoom()
-        .scaleExtent([0.1, 10])
+        .scaleExtent([0.5, 10])
         .on('zoom', draw);
     zoom.x(x);
     var scale = zoom.scale();
@@ -133,13 +133,16 @@ function loadData(data) {
         if (scaleChanged) {
             scale = d3.event.scale;
         }
+        var zoomed = !!d3.event;
         d3.timer(function () {
             var domain = x.domain();
-            if (domain[0] < data[0].dateTime) {
-                updateData(domain[0]);
-            }
-            else if (domain[1] > data[data.length - 1].dateTime) {
-                updateData(domain[1]);
+            if (zoomed) {
+                if (domain[0] < data[0].dateTime) {
+                    updateData(domain[0]);
+                }
+                else if (domain[1] > data[data.length - 1].dateTime) {
+                    updateData(domain[1]);
+                }
             }
             var i = bisectDate(data, domain[0], 1), j = bisectDate(data, domain[1], i + 1);
             y.domain(d3.extent(data.slice(i, j), function (d) {

@@ -10,7 +10,7 @@ var ConsoleInvestor = require('./release/investors/ConsoleInvestor');
 var DemoCelebrator = require('./release/celebrators/DemoCelebrator');
 var DemoCapacitor = require('./release/capacitors/DemoCapacitor');
 
-var baseDir = path.join(os.homedir(), 'Téléchargements');
+var baseDir = path.join(os.homedir(), os.type() == 'Linux' ? 'Téléchargements' : 'Downloads');
 
 var rewards = [{
 	countdown: moment({ minutes: 10 }),
