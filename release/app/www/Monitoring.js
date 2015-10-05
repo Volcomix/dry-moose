@@ -80,14 +80,6 @@ svg.append('rect')
     .attr('class', 'pane')
     .attr('width', width)
     .attr('height', height)
-    .on('mouseover', function () {
-    xTarget.style('display', null);
-    yTarget.style('display', null);
-})
-    .on('mouseout', function () {
-    xTarget.style('display', 'none');
-    yTarget.style('display', 'none');
-})
     .call(zoom);
 Q.nfcall(d3.json, '/monitoring/quotes').then(loadData);
 function loadData(data) {
@@ -113,7 +105,16 @@ function loadData(data) {
         zoom.x(x);
     }
     zoom.on('zoom', draw);
-    svg.select('rect.pane').on('mousemove', mousemove);
+    svg.select('rect.pane')
+        .on('mouseover', function () {
+        xTarget.style('display', null);
+        yTarget.style('display', null);
+    })
+        .on('mouseout', function () {
+        xTarget.style('display', 'none');
+        yTarget.style('display', 'none');
+    })
+        .on('mousemove', mousemove);
     svg.select('path.line').data([data]);
     draw();
     var scale = zoom.scale();
