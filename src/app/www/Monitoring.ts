@@ -200,9 +200,12 @@ function loadData(data: Quote[]) {
             var i = bisectDate(data, domain[0], 1),
                 j = bisectDate(data, domain[1], i + 1);
             
-            y.domain(d3.extent(data.slice(i, j + 1), function(d: Quote) {
+            var extent = d3.extent(data.slice(i, j + 1), function(d: Quote) {
                 return d.close;
-            })).nice();
+            });
+            if (extent[0] && extent[1]) {
+                y.domain(extent).nice();
+            }
             
             svg.select('g.x.axis').call(xAxis);
             
