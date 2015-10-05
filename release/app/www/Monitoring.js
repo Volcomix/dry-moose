@@ -39,77 +39,79 @@ svg.append('clipPath')
     .attr('y', y(1))
     .attr('width', x(1) - x(0))
     .attr('height', y(0) - y(1));
-d3.json('/monitoring/quotes', function (error, data) {
-    if (error)
-        throw error;
+svg.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', 'translate(0, ' + height + ')');
+svg.append('g')
+    .attr('class', 'y axis')
+    .attr('transform', 'translate(' + width + ', 0)');
+svg.append('path')
+    .attr('class', 'line')
+    .attr('clip-path', 'url(#clip)');
+var xTarget = svg.append('g')
+    .attr('class', 'x target')
+    .style('display', 'none');
+xTarget.append('line')
+    .attr('y2', height);
+xTarget.append('rect')
+    .attr('x', -60)
+    .attr('y', height)
+    .attr('width', 120)
+    .attr('height', 14);
+xTarget.append('text')
+    .attr('y', height + 3)
+    .attr('dy', '.71em');
+var yTarget = svg.append('g')
+    .attr('class', 'y target')
+    .style('display', 'none');
+yTarget.append('line')
+    .attr('x2', width);
+yTarget.append('rect')
+    .attr('x', width)
+    .attr('y', -7)
+    .attr('width', 50)
+    .attr('height', 14);
+yTarget.append('text')
+    .attr('x', width + 3)
+    .attr('dy', '.32em');
+svg.append('rect')
+    .attr('class', 'pane')
+    .attr('width', width)
+    .attr('height', height)
+    .on('mouseover', function () {
+    xTarget.style('display', null);
+    yTarget.style('display', null);
+})
+    .on('mouseout', function () {
+    xTarget.style('display', 'none');
+    yTarget.style('display', 'none');
+});
+Q.nfcall(d3.json, '/monitoring/quotes').then(loadData);
+function loadData(data) {
+    if (!data.length)
+        return;
     data.forEach(function (d) {
         d.dateTime = new Date(d.dateTime);
     });
     data.sort(function (a, b) {
         return +a.dateTime - +b.dateTime;
     });
-    if (data.length) {
+    if (+x.domain()[0] == 0 && +x.domain()[1] == 1) {
         var lastQuote = data[data.length - 1];
         x.domain([
             moment(lastQuote.dateTime).subtract({ hours: 2 }).toDate(),
             lastQuote.dateTime
         ]).nice();
+        y.domain(d3.extent(data, function (d) {
+            return d.close;
+        })).nice();
     }
-    y.domain(d3.extent(data, function (d) { return d.close; })).nice();
     var zoom = d3.behavior.zoom()
         .scaleExtent([0.1, 10])
         .on('zoom', draw);
     zoom.x(x);
     var scale = zoom.scale();
-    svg.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0, ' + height + ')');
-    svg.append('g')
-        .attr('class', 'y axis')
-        .attr('transform', 'translate(' + width + ', 0)');
-    svg.append('path')
-        .attr('class', 'line')
-        .attr('clip-path', 'url(#clip)');
-    var xTarget = svg.append('g')
-        .attr('class', 'x target')
-        .style('display', 'none');
-    xTarget.append('line')
-        .attr('y2', height);
-    xTarget.append('rect')
-        .attr('x', -60)
-        .attr('y', height)
-        .attr('width', 120)
-        .attr('height', 14);
-    xTarget.append('text')
-        .attr('y', height + 3)
-        .attr('dy', '.71em');
-    var yTarget = svg.append('g')
-        .attr('class', 'y target')
-        .style('display', 'none');
-    yTarget.append('line')
-        .attr('x2', width);
-    yTarget.append('rect')
-        .attr('x', width)
-        .attr('y', -7)
-        .attr('width', 50)
-        .attr('height', 14);
-    yTarget.append('text')
-        .attr('x', width + 3)
-        .attr('dy', '.32em');
-    svg.append('rect')
-        .attr('class', 'pane')
-        .attr('width', width)
-        .attr('height', height)
-        .on('mouseover', function () {
-        xTarget.style('display', null);
-        yTarget.style('display', null);
-    })
-        .on('mouseout', function () {
-        xTarget.style('display', 'none');
-        yTarget.style('display', 'none');
-    })
-        .on('mousemove', mousemove)
-        .call(zoom);
+    svg.select('rect.pane').on('mousemove', mousemove).call(zoom);
     svg.select('path.line').data([data]);
     draw();
     function mousemove() {
@@ -132,11 +134,18 @@ d3.json('/monitoring/quotes', function (error, data) {
             scale = d3.event.scale;
         }
         d3.timer(function () {
-            svg.select('g.x.axis').call(xAxis);
-            var domain = x.domain(), i = bisectDate(data, domain[0], 1), j = bisectDate(data, domain[1], i + 1);
+            var domain = x.domain();
+            if (domain[0] < data[0].dateTime) {
+                updateData(domain[0]);
+            }
+            else if (domain[1] > data[data.length - 1].dateTime) {
+                updateData(domain[1]);
+            }
+            var i = bisectDate(data, domain[0], 1), j = bisectDate(data, domain[1], i + 1);
             y.domain(d3.extent(data.slice(i, j), function (d) {
                 return d.close;
             })).nice();
+            svg.select('g.x.axis').call(xAxis);
             svg.select('g.y.axis')
                 .transition()
                 .duration(200)
@@ -153,4 +162,22 @@ d3.json('/monitoring/quotes', function (error, data) {
             return true;
         });
     }
-});
+}
+var delay = Q(null);
+var retrieveDateTime;
+function updateData(dateTime) {
+    retrieveDateTime = dateTime;
+    if (!delay.isPending()) {
+        retrieveData();
+    }
+}
+function retrieveData() {
+    if (retrieveDateTime) {
+        delay = Q.delay(1000).then(retrieveData);
+        Q.nfcall(d3.json, '/monitoring/quotes?dateTime=' + retrieveDateTime.toISOString())
+            .then(function (data) {
+            loadData(data);
+        });
+        retrieveDateTime = undefined;
+    }
+}
