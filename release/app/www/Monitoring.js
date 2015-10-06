@@ -1,5 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
-var margin = { top: 20, right: 50, bottom: 30, left: 20 }, width = 900 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
+var margin = { top: 20, right: 50, bottom: 30, left: 20 }, width = parseInt(d3.select('body').style('width')) -
+    margin.left - margin.right, height = parseInt(d3.select('body').style('height')) -
+    margin.top - margin.bottom;
 var bisectDate = d3.bisector(function (d) { return d.dateTime; }).left, dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 var x = d3.time.scale()
     .range([0, width]);
@@ -52,7 +54,7 @@ svg.append('path')
     .attr('clip-path', 'url(#clip)');
 var xTarget = svg.append('g')
     .attr('class', 'x target')
-    .style('display', 'none');
+    .attr('transform', 'translate(-9999, 0)');
 xTarget.append('line')
     .attr('y2', height);
 xTarget.append('rect')
@@ -65,7 +67,7 @@ xTarget.append('text')
     .attr('dy', '.71em');
 var yTarget = svg.append('g')
     .attr('class', 'y target')
-    .style('display', 'none');
+    .attr('transform', 'translate(0, -9999)');
 yTarget.append('line')
     .attr('x2', width);
 yTarget.append('rect')
@@ -116,6 +118,7 @@ function loadData(data) {
     })
         .on('mousemove', mousemove);
     svg.select('path.line').data([data]);
+    d3.select(window).on('resize', resize);
     draw();
     var scale = zoom.scale();
     function mousemove() {
@@ -138,6 +141,7 @@ function loadData(data) {
             scale = d3.event.scale;
         }
         var zoomed = !!d3.event;
+        var resized = d3.event && d3.event.type == 'resize';
         d3.timer(function () {
             var domain = x.domain();
             if (zoomed) {
@@ -156,10 +160,15 @@ function loadData(data) {
                 y.domain(extent).nice();
             }
             svg.select('g.x.axis').call(xAxis);
-            svg.select('g.y.axis')
-                .transition()
-                .duration(200)
-                .call(yAxis);
+            if (resized) {
+                svg.select('g.y.axis').call(yAxis);
+            }
+            else {
+                svg.select('g.y.axis')
+                    .transition()
+                    .duration(200)
+                    .call(yAxis);
+            }
             if (scaleChanged) {
                 svg.select('path.line')
                     .transition()
@@ -171,6 +180,35 @@ function loadData(data) {
             }
             return true;
         });
+    }
+    function resize() {
+        width = parseInt(d3.select('body').style('width')) -
+            margin.left - margin.right;
+        height = parseInt(d3.select('body').style('height')) -
+            margin.top - margin.bottom;
+        x.range([0, width]);
+        y.range([height, 0]);
+        xAxis.tickSize(-height, 0);
+        yAxis.tickSize(-width, 0);
+        d3.select('body svg')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom);
+        svg.attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+        svg.select('clipPath rect')
+            .attr('width', width)
+            .attr('height', height);
+        svg.select('g.x.axis').attr('transform', 'translate(0, ' + height + ')');
+        svg.select('g.y.axis').attr('transform', 'translate(' + width + ', 0)');
+        xTarget.select('line').attr('y2', height);
+        xTarget.select('rect').attr('y', height);
+        xTarget.select('text').attr('y', height + 3);
+        yTarget.select('line').attr('x2', width);
+        yTarget.select('rect').attr('x', width);
+        yTarget.select('text').attr('x', width + 3);
+        svg.select('rect.pane')
+            .attr('width', width)
+            .attr('height', height);
+        draw();
     }
 }
 var delay = Q(null);

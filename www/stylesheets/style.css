@@ -1,5 +1,12 @@
+html, body {
+	height: 100%;
+}
+
 body {
 	font: 10px sans-serif;
+	margin: 0px;
+	padding-bottom: 0px;
+	overflow: hidden;
 }
 
 .axis path,
