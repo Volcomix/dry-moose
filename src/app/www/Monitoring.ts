@@ -3,19 +3,14 @@
 import Quote = require('../../documents/Quote');
 
 var margin = { top: 20, right: 50, bottom: 30, left: 20 },
-    width = parseInt(d3.select('body').style('width')) -
-            margin.left - margin.right,
-    height = parseInt(d3.select('body').style('height')) -
-            margin.top - margin.bottom;
+    shouldInit: boolean = true,
+    width: number, height: number;
 
 var bisectDate = d3.bisector(function(d: Quote) { return d.dateTime; }).left,
     dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 
-var x = d3.time.scale()
-    .range([0, width]);
-    
-var y = d3.scale.linear()
-    .range([height, 0]);
+var x = d3.time.scale();
+var y = d3.scale.linear();
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -29,14 +24,12 @@ var xAxis = d3.svg.axis()
         ['%B', function(d) { return d.getMonth(); }],
         ['%Y', function() { return true; }]
     ]))
-    .orient('bottom')
-    .tickSize(-height, 0);
+    .orient('bottom');
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .tickFormat(d3.format(',.5f'))
-    .orient('right')
-    .tickSize(-width, 0);
+    .orient('right');
 
 var line = d3.svg.line()
     .x(<any>function(d: Quote) { return x(d.dateTime); })
@@ -46,26 +39,13 @@ var zoom = d3.behavior.zoom()
     .scaleExtent([0.5, 10]);
 
 var svg = d3.select('body').append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-.append('g')
-    .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+    .append('g');
 
-svg.append('clipPath')
-    .attr('id', 'clip')
-.append('rect')
-    .attr('x', x(<any>0))
-    .attr('y', y(1))
-    .attr('width', x(<any>1) - x(<any>0))
-    .attr('height', y(0) - y(1));
+svg.append('clipPath').attr('id', 'clip')
+    .append('rect');
     
-svg.append('g')
-    .attr('class', 'x axis')
-    .attr('transform', 'translate(0, ' + height + ')');
-
-svg.append('g')
-    .attr('class', 'y axis')
-    .attr('transform', 'translate(' + width + ', 0)');
+svg.append('g').attr('class', 'x axis');
+svg.append('g').attr('class', 'y axis');
 
 svg.append('path')
     .attr('class', 'line')
@@ -75,40 +55,32 @@ var xTarget = svg.append('g')
     .attr('class', 'x target')
     .attr('transform', 'translate(-9999, 0)');
 
-xTarget.append('line')
-    .attr('y2', height);
+xTarget.append('line');
 
 xTarget.append('rect')
     .attr('x', -60)
-    .attr('y', height)
     .attr('width', 120)
     .attr('height', 14);
 
 xTarget.append('text')
-    .attr('y', height + 3)
     .attr('dy', '.71em');
 
 var yTarget = svg.append('g')
     .attr('class', 'y target')
     .attr('transform', 'translate(0, -9999)');
 
-yTarget.append('line')
-    .attr('x2', width);
+yTarget.append('line');
 
 yTarget.append('rect')
-    .attr('x', width)
     .attr('y', -7)
     .attr('width', 50)
     .attr('height', 14);
 
 yTarget.append('text')
-    .attr('x', width + 3)
     .attr('dy', '.32em');
 
 svg.append('rect')
     .attr('class', 'pane')
-    .attr('width', width)
-    .attr('height', height)
     .call(zoom);
 
 Q.nfcall(d3.json, '/monitoring/quotes').then(loadData);
@@ -136,10 +108,6 @@ function loadData(data: Quote[]) {
         })).nice();
     }
     
-    if (!zoom.x()) {
-        zoom.x(<any>x);
-    }
-    
     zoom.on('zoom', draw);
     svg.select('rect.pane')
         .on('mouseover', function() {
@@ -155,7 +123,12 @@ function loadData(data: Quote[]) {
     
     d3.select(window).on('resize', resize);
     
-    draw();
+    if (shouldInit) {
+        shouldInit = false;
+        resize();
+    } else {
+        draw();
+    }
     
     var scale = zoom.scale();
 
@@ -262,6 +235,10 @@ function loadData(data: Quote[]) {
         
         svg.select('g.x.axis').attr('transform', 'translate(0, ' + height + ')');
         svg.select('g.y.axis').attr('transform', 'translate(' + width + ', 0)');
+    
+        if (!zoom.x()) {
+            zoom.x(<any>x);
+        }
         
         xTarget.select('line').attr('y2', height);
         xTarget.select('rect').attr('y', height);
