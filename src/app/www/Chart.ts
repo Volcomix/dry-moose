@@ -9,13 +9,16 @@ class Chart {
 	
 	private svg: d3.Selection<any>;
 	
-	private x = d3.time.scale();
-	private y = d3.scale.linear();
+	private x: d3.time.Scale<number, number>;
+	private y: d3.scale.Linear<number, number>;
 	
 	private xAxis: d3.svg.Axis;
 	private yAxis: d3.svg.Axis;
 	
 	constructor(private margin: Margin = { top: 20, right: 50, bottom: 30, left: 20 }) {
+		this.x = d3.time.scale();
+		this.y = d3.scale.linear();
+		
 		this.xAxis = d3.svg.axis()
 			.scale(this.x)
 			.tickFormat(d3.time.format.multi([
