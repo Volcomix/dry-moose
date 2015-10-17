@@ -51,4 +51,29 @@ var Chart;
         marginLeft: 20
     };
 })(Chart || (Chart = {}));
-ReactDOM.render(React.createElement(Chart, {"width": 800, "height": 600}), document.getElementById('chart'));
+var container = document.getElementById('chart');
+var Sizer = (function (_super) {
+    __extends(Sizer, _super);
+    function Sizer() {
+        var _this = this;
+        _super.apply(this, arguments);
+        this.state = { width: container.offsetWidth - 70, height: container.offsetHeight - 50 };
+        this.handleResize = function () {
+            _this.setState({
+                width: container.offsetWidth - 70,
+                height: container.offsetHeight - 50
+            });
+        };
+    }
+    Sizer.prototype.componentDidMount = function () {
+        window.addEventListener('resize', this.handleResize);
+    };
+    Sizer.prototype.componentWillUnmount = function () {
+        window.removeEventListener('resize', this.handleResize);
+    };
+    Sizer.prototype.render = function () {
+        return React.createElement(Chart, {"width": this.state.width, "height": this.state.height});
+    };
+    return Sizer;
+})(React.Component);
+ReactDOM.render(React.createElement(Sizer, null), container);

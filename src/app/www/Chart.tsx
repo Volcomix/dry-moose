@@ -6,10 +6,10 @@ import ReactDOM = require('react-dom');
 
 class Chart extends React.Component<Chart.Props, Chart.State> {
 	
-	x = d3.time.scale<number, Date>();
-	y = d3.scale.linear();
+	private x = d3.time.scale<number, Date>();
+	private y = d3.scale.linear();
 	
-	xAxis = d3.svg.axis()
+	private xAxis = d3.svg.axis()
 		.scale(this.x)
 		.tickFormat(d3.time.format.multi([
 			['.%L', function(d) { return d.getMilliseconds(); }],
@@ -23,7 +23,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		]))
 		.orient('bottom');
 		
-	yAxis = d3.svg.axis()
+	private yAxis = d3.svg.axis()
 		.scale(this.y)
 		.tickFormat(d3.format(',.5f'))
 		.orient('right');
@@ -75,4 +75,30 @@ module Chart {
 	}
 }
 
-ReactDOM.render(<Chart width={800} height={600} />, document.getElementById('chart'));
+var container = document.getElementById('chart');
+
+class Sizer extends React.Component<{}, { width: number; height: number; }> {
+	
+	state = { width: container.offsetWidth - 70, height: container.offsetHeight - 50 };
+	
+	handleResize = () => {
+		this.setState({
+			width: container.offsetWidth - 70,
+			height: container.offsetHeight - 50
+		});
+	}
+	
+	componentDidMount() {
+		window.addEventListener('resize', this.handleResize);
+	}
+	
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.handleResize);
+	}
+	
+	render() {
+		return <Chart width={this.state.width} height={this.state.height} />;
+	}
+}
+
+ReactDOM.render(<Sizer />, container);
