@@ -54,7 +54,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('build:src', function () {
-	return gulp.src(['src/**/*.ts', '!src/test/**', 'addon/**/*.d.ts'])
+	return gulp.src(['src/**/*.ts?(x)', '!src/test/**', 'addon/**/*.d.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(addon())
 		.pipe(gulp.dest('release'));
@@ -71,10 +71,7 @@ gulp.task('build:app', function () {
 });
 
 gulp.task('build:www', function () {
-	return gulp.src([
-			'src/app/www/**/*.ts', 'src/app/www/**/*.tsx',
-			'src/documents/**/*.ts'
-		])
+	return gulp.src(['src/app/www/**/*.ts?(x)', 'src/documents/**/*.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(gulp.dest('release'));
 });
@@ -87,13 +84,13 @@ gulp.task('build:test', function () {
 });
 
 gulp.task('build', ['clean'], function () {
-	return gulp.src(['src/**/*.ts', 'addon/**/*.d.ts'])
+	return gulp.src(['src/**/*.ts?(x)', 'addon/**/*.d.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(addon())
 		.pipe(gulp.dest('release'));
 });
 
-gulp.task('bundle', bundle);
+gulp.task('bundle', ['build:src'], bundle);
 
 gulp.task('test', ['build'], function () {
 	return gulp.src('release/test/**/*.js')
@@ -109,7 +106,7 @@ gulp.task('watch:app', function () {
 
 gulp.task('watch:www', function() {
 	gulp.watch(
-		['src/app/www/**/*.ts', 'src/app/www/**/*.tsx', 'src/documents/**/*.ts'],
+		['src/app/www/**/*.ts?(x)', 'src/documents/**/*.ts'],
 		['build:www']
 	);
 });
