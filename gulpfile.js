@@ -6,11 +6,24 @@ var gulp = require('gulp');
 var tsc = require('gulp-typescript');
 var mocha = require('gulp-mocha');
 var nodemon = require('gulp-nodemon');
+var watchify = require('watchify');
+var browserify = require('browserify');
 var browserSync = require('browser-sync').create();
+var source = require('vinyl-source-stream');
+var gutil = require('gulp-util');
+var assign = require('lodash.assign');
 var del = require('del');
 var through2 = require('through2');
 
 var tsProject = tsc.createProject('tsconfig.json');
+
+var opts = assign({}, watchify.args, {
+  entries: ['release/app/www/Chart.js'],
+  debug: true
+});
+var b = watchify(browserify(opts));
+b.on('update', bundle);
+b.on('log', gutil.log);
 
 function addon() {
 	return through2.obj(function (chunk, enc, callback) {
@@ -27,6 +40,13 @@ function addon() {
 		this.push(chunk);
 		callback();
 	})
+}
+
+function bundle() {
+	return b.bundle()
+		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+		.pipe(source('bundle.js'))
+		.pipe(gulp.dest('release/app/www'));
 }
 
 gulp.task('clean', function () {
@@ -51,7 +71,10 @@ gulp.task('build:app', function () {
 });
 
 gulp.task('build:www', function () {
-	return gulp.src(['src/app/www/**/*.ts', 'src/documents/**/*.ts'])
+	return gulp.src([
+			'src/app/www/**/*.ts', 'src/app/www/**/*.tsx',
+			'src/documents/**/*.ts'
+		])
 		.pipe(tsc(tsProject))
 		.js.pipe(gulp.dest('release'));
 });
@@ -70,6 +93,8 @@ gulp.task('build', ['clean'], function () {
 		.pipe(gulp.dest('release'));
 });
 
+gulp.task('bundle', bundle);
+
 gulp.task('test', ['build'], function () {
 	return gulp.src('release/test/**/*.js')
 		.pipe(mocha({ timeout: 10000 }));
@@ -83,7 +108,10 @@ gulp.task('watch:app', function () {
 });
 
 gulp.task('watch:www', function() {
-	gulp.watch(['src/app/www/**/*.ts', 'src/documents/**/*.ts'], ['build:www']);
+	gulp.watch(
+		['src/app/www/**/*.ts', 'src/app/www/**/*.tsx', 'src/documents/**/*.ts'],
+		['build:www']
+	);
 });
 
 gulp.task('nodemon', ['build:src', 'watch:app'], function (cb) {
@@ -95,18 +123,18 @@ gulp.task('nodemon', ['build:src', 'watch:app'], function (cb) {
 	.on('start', function() {
 		if (!started) {
 			started = true;
-			setTimeout(cb, 500);
+			cb();
 		}
 	});
 });
 
-gulp.task('browser-sync', ['nodemon', 'watch:www'], function() {
+gulp.task('browser-sync', ['nodemon', 'watch:www', 'bundle'], function() {
     browserSync.init({
         proxy: 'localhost:8080'
     });
 	
 	gulp.watch('www/**/*.css', ['browser-sync:css']);
-	gulp.watch(['www/**/*.html', 'release/app/www/**/*.js'])
+	gulp.watch(['www/**/*.html', 'release/app/www/bundle.js'])
 		.on('change', browserSync.reload);
 });
 
