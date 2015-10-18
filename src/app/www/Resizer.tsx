@@ -4,11 +4,6 @@ import React = require('react');
 
 class Resizer extends React.Component<Resizer.Props, Resizer.State> {
 	
-	private static fill = {
-		width: '100%',
-		height: '100%'
-	}
-	
 	private resizer: HTMLElement;
 	
 	private handleResize = () => {
@@ -36,12 +31,12 @@ class Resizer extends React.Component<Resizer.Props, Resizer.State> {
 						width: ref.offsetWidth,
 						height: ref.offsetHeight
 					})}
-					style={Resizer.fill} />
+					className="resizer" />
 			);
 		}
 		
 		return (
-			<div ref={(ref: any) => this.resizer = ref} style={Resizer.fill}>
+			<div ref={(ref: any) => this.resizer = ref} className="resizer">
 				{React.cloneElement(this.props.children, {
 					width: this.state.width,
 					height: this.state.height

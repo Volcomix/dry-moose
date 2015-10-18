@@ -31,16 +31,12 @@ var Resizer = (function (_super) {
             return (React.createElement("div", {"ref": function (ref) { return ref && _this.setState({
                 width: ref.offsetWidth,
                 height: ref.offsetHeight
-            }); }, "style": Resizer.fill}));
+            }); }, "className": "resizer"}));
         }
-        return (React.createElement("div", {"ref": function (ref) { return _this.resizer = ref; }, "style": Resizer.fill}, React.cloneElement(this.props.children, {
+        return (React.createElement("div", {"ref": function (ref) { return _this.resizer = ref; }, "className": "resizer"}, React.cloneElement(this.props.children, {
             width: this.state.width,
             height: this.state.height
         })));
-    };
-    Resizer.fill = {
-        width: '100%',
-        height: '100%'
     };
     return Resizer;
 })(React.Component);
