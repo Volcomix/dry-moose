@@ -23,22 +23,23 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	render() {
 		var {width, height, marginTop, marginRight, marginBottom, marginLeft} = this.props;
 		
-		this.x.range([0, width]);
-        this.y.range([height, 0]);
+		var innerWidth = width - marginLeft - marginRight;
+		var innerHeight = height - marginTop - marginBottom;
+		
+		this.x.range([0, innerWidth]);
+        this.y.range([innerHeight, 0]);
         
-        this.xAxis.tickSize(-height, 0);
-        this.yAxis.tickSize(-width, 0);
+        this.xAxis.tickSize(-innerHeight, 0);
+        this.yAxis.tickSize(-innerWidth, 0);
 		
 		return (
-			<svg
-				width={width + marginLeft + marginRight}
-				height={height + marginTop + marginBottom}>
+			<svg width={width} height={height}>
 				<g transform={'translate(' + marginLeft + ', ' + marginTop + ')'}>
 					<g
-						className="x axis" transform={'translate(0, ' + height + ')'}
+						className="x axis" transform={'translate(0, ' + innerHeight + ')'}
 						ref={(ref: any) => d3.select(ref).call(this.xAxis)} />
 					<g
-						className="y axis" transform={'translate(' + width + ', 0)'}
+						className="y axis" transform={'translate(' + innerWidth + ', 0)'}
 						ref={(ref: any) => d3.select(ref).call(this.yAxis)} />
 				</g>
 			</svg>

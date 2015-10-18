@@ -25,11 +25,13 @@ var Chart = (function (_super) {
     Chart.prototype.render = function () {
         var _this = this;
         var _a = this.props, width = _a.width, height = _a.height, marginTop = _a.marginTop, marginRight = _a.marginRight, marginBottom = _a.marginBottom, marginLeft = _a.marginLeft;
-        this.x.range([0, width]);
-        this.y.range([height, 0]);
-        this.xAxis.tickSize(-height, 0);
-        this.yAxis.tickSize(-width, 0);
-        return (React.createElement("svg", {"width": width + marginLeft + marginRight, "height": height + marginTop + marginBottom}, React.createElement("g", {"transform": 'translate(' + marginLeft + ', ' + marginTop + ')'}, React.createElement("g", {"className": "x axis", "transform": 'translate(0, ' + height + ')', "ref": function (ref) { return d3.select(ref).call(_this.xAxis); }}), React.createElement("g", {"className": "y axis", "transform": 'translate(' + width + ', 0)', "ref": function (ref) { return d3.select(ref).call(_this.yAxis); }}))));
+        var innerWidth = width - marginLeft - marginRight;
+        var innerHeight = height - marginTop - marginBottom;
+        this.x.range([0, innerWidth]);
+        this.y.range([innerHeight, 0]);
+        this.xAxis.tickSize(-innerHeight, 0);
+        this.yAxis.tickSize(-innerWidth, 0);
+        return (React.createElement("svg", {"width": width, "height": height}, React.createElement("g", {"transform": 'translate(' + marginLeft + ', ' + marginTop + ')'}, React.createElement("g", {"className": "x axis", "transform": 'translate(0, ' + innerHeight + ')', "ref": function (ref) { return d3.select(ref).call(_this.xAxis); }}), React.createElement("g", {"className": "y axis", "transform": 'translate(' + innerWidth + ', 0)', "ref": function (ref) { return d3.select(ref).call(_this.yAxis); }}))));
     };
     return Chart;
 })(React.Component);
