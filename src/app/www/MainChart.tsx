@@ -2,16 +2,16 @@
 
 import React = require('react');
 
-class Resizer extends React.Component<Resizer.Props, Resizer.State> {
+import Chart = require('./Chart');
+
+class MainChart extends React.Component<MainChart.Props, MainChart.State> {
 	
-	private resizer: HTMLElement;
+	private chart: HTMLElement;
 	
 	private handleResize = () => {
-		if (!this.resizer) return;
-		
 		this.setState({
-			width: this.resizer.offsetWidth,
-			height: this.resizer.offsetHeight
+			width: this.chart.offsetWidth,
+			height: this.chart.offsetHeight
 		});
 	}
 	
@@ -31,23 +31,19 @@ class Resizer extends React.Component<Resizer.Props, Resizer.State> {
 						width: ref.offsetWidth,
 						height: ref.offsetHeight
 					})}
-					className="resizer" />
+					className="chart" />
 			);
 		}
 		
 		return (
-			<div ref={(ref: any) => this.resizer = ref} className="resizer">
-				{React.cloneElement(this.props.children, {
-					width: this.state.width,
-					height: this.state.height
-				})}
+			<div ref={(ref: any) => this.chart = ref} className="chart">
+				<Chart width={this.state.width} height={this.state.height} />
 			</div>
 		);
 	}
 }
-module Resizer {
+module MainChart {
 	export interface Props {
-		children?: React.ReactElement<any>
 	}
 	
 	export interface State {
@@ -56,4 +52,4 @@ module Resizer {
 	}
 }
 
-export = Resizer;
+export = MainChart;

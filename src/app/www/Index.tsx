@@ -3,7 +3,6 @@
 import React = require('react');
 import ReactDOM = require('react-dom');
 
-import Chart = require('./Chart');
-import Resizer = require('./Resizer');
+import MainChart = require('./MainChart');
 
-ReactDOM.render(<Resizer><Chart /></Resizer>, document.getElementById('chart'));
+ReactDOM.render(<MainChart />, document.getElementById('mainChart'));

@@ -5,39 +5,35 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
-var Resizer = (function (_super) {
-    __extends(Resizer, _super);
-    function Resizer() {
+var Chart = require('./Chart');
+var MainChart = (function (_super) {
+    __extends(MainChart, _super);
+    function MainChart() {
         var _this = this;
         _super.apply(this, arguments);
         this.handleResize = function () {
-            if (!_this.resizer)
-                return;
             _this.setState({
-                width: _this.resizer.offsetWidth,
-                height: _this.resizer.offsetHeight
+                width: _this.chart.offsetWidth,
+                height: _this.chart.offsetHeight
             });
         };
     }
-    Resizer.prototype.componentDidMount = function () {
+    MainChart.prototype.componentDidMount = function () {
         window.addEventListener('resize', this.handleResize);
     };
-    Resizer.prototype.componentWillUnmount = function () {
+    MainChart.prototype.componentWillUnmount = function () {
         window.removeEventListener('resize', this.handleResize);
     };
-    Resizer.prototype.render = function () {
+    MainChart.prototype.render = function () {
         var _this = this;
         if (!this.state) {
             return (React.createElement("div", {"ref": function (ref) { return ref && _this.setState({
                 width: ref.offsetWidth,
                 height: ref.offsetHeight
-            }); }, "className": "resizer"}));
+            }); }, "className": "chart"}));
         }
-        return (React.createElement("div", {"ref": function (ref) { return _this.resizer = ref; }, "className": "resizer"}, React.cloneElement(this.props.children, {
-            width: this.state.width,
-            height: this.state.height
-        })));
+        return (React.createElement("div", {"ref": function (ref) { return _this.chart = ref; }, "className": "chart"}, React.createElement(Chart, {"width": this.state.width, "height": this.state.height})));
     };
-    return Resizer;
+    return MainChart;
 })(React.Component);
-module.exports = Resizer;
+module.exports = MainChart;
