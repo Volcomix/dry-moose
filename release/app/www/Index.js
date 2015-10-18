@@ -2,4 +2,5 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Chart = require('./Chart');
-ReactDOM.render(React.createElement(Chart, {"width": 800, "height": 600}), document.getElementById('chart'));
+var Resizer = require('./Resizer');
+ReactDOM.render(React.createElement(Resizer, null, React.createElement(Chart, null)), document.getElementById('chart'));

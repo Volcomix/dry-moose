@@ -48,8 +48,8 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 
 module Chart {
 	export interface Props {
-		width: number;
-		height: number;
+		width?: number;
+		height?: number;
 		marginTop?: number;
 		marginRight?: number;
 		marginBottom?: number;

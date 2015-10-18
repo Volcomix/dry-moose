@@ -4,5 +4,6 @@ import React = require('react');
 import ReactDOM = require('react-dom');
 
 import Chart = require('./Chart');
+import Resizer = require('./Resizer');
 
-ReactDOM.render(<Chart width={800} height={600} />, document.getElementById('chart'));
+ReactDOM.render(<Resizer><Chart /></Resizer>, document.getElementById('chart'));
