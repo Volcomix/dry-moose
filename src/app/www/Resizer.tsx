@@ -9,7 +9,7 @@ class Resizer extends React.Component<Resizer.Props, Resizer.State> {
 		height: '100%'
 	}
 	
-	private resizer;
+	private resizer: HTMLElement;
 	
 	private handleResize = () => {
 		if (!this.resizer) return;
@@ -41,7 +41,7 @@ class Resizer extends React.Component<Resizer.Props, Resizer.State> {
 		}
 		
 		return (
-			<div ref={ref => this.resizer = ref} style={Resizer.fill}>
+			<div ref={(ref: any) => this.resizer = ref} style={Resizer.fill}>
 				{React.cloneElement(this.props.children, {
 					width: this.state.width,
 					height: this.state.height
