@@ -31,7 +31,7 @@ var Chart = (function (_super) {
         this.y.range([innerHeight, 0]);
         this.xAxis.tickSize(-innerHeight, 0);
         this.yAxis.tickSize(-innerWidth, 0);
-        return (React.createElement("svg", {"width": width, "height": height}, React.createElement("g", {"transform": 'translate(' + marginLeft + ', ' + marginTop + ')'}, React.createElement("g", {"className": "x axis", "transform": 'translate(0, ' + innerHeight + ')', "ref": function (ref) { return d3.select(ref).call(_this.xAxis); }}), React.createElement("g", {"className": "y axis", "transform": 'translate(' + innerWidth + ', 0)', "ref": function (ref) { return d3.select(ref).call(_this.yAxis); }}))));
+        return (React.createElement("svg", {"width": width, "height": height}, React.createElement("g", {"transform": 'translate(' + marginLeft + ', ' + marginTop + ')'}, React.createElement("g", {"className": 'x axis', "transform": 'translate(0, ' + innerHeight + ')', "ref": function (ref) { return d3.select(ref).call(_this.xAxis); }}), React.createElement("g", {"className": 'y axis', "transform": 'translate(' + innerWidth + ', 0)', "ref": function (ref) { return d3.select(ref).call(_this.yAxis); }}), this.props.children)));
     };
     return Chart;
 })(React.Component);

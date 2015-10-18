@@ -36,11 +36,12 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 			<svg width={width} height={height}>
 				<g transform={'translate(' + marginLeft + ', ' + marginTop + ')'}>
 					<g
-						className="x axis" transform={'translate(0, ' + innerHeight + ')'}
+						className='x axis' transform={'translate(0, ' + innerHeight + ')'}
 						ref={(ref: any) => d3.select(ref).call(this.xAxis)} />
 					<g
-						className="y axis" transform={'translate(' + innerWidth + ', 0)'}
+						className='y axis' transform={'translate(' + innerWidth + ', 0)'}
 						ref={(ref: any) => d3.select(ref).call(this.yAxis)} />
+					{this.props.children}
 				</g>
 			</svg>
 		);
@@ -55,6 +56,7 @@ module Chart {
 		marginRight?: number;
 		marginBottom?: number;
 		marginLeft?: number;
+		children?: React.ReactElement<any>[]
 	}
 
 	export var defaultProps = {

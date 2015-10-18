@@ -6,6 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var Chart = require('./Chart');
+var LineSeries = require('./LineSeries');
 var MainChart = (function (_super) {
     __extends(MainChart, _super);
     function MainChart() {
@@ -30,9 +31,9 @@ var MainChart = (function (_super) {
             return (React.createElement("div", {"ref": function (ref) { return ref && _this.setState({
                 width: ref.offsetWidth,
                 height: ref.offsetHeight
-            }); }, "className": "chart"}));
+            }); }, "className": 'chart'}));
         }
-        return (React.createElement("div", {"ref": function (ref) { return _this.chart = ref; }, "className": "chart"}, React.createElement(Chart, {"width": this.state.width, "height": this.state.height})));
+        return (React.createElement("div", {"ref": function (ref) { return _this.chart = ref; }, "className": 'chart'}, React.createElement(Chart, {"width": this.state.width, "height": this.state.height}, React.createElement(LineSeries, null))));
     };
     return MainChart;
 })(React.Component);

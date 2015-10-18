@@ -3,6 +3,7 @@
 import React = require('react');
 
 import Chart = require('./Chart');
+import LineSeries = require('./LineSeries');
 
 class MainChart extends React.Component<MainChart.Props, MainChart.State> {
 	
@@ -31,17 +32,20 @@ class MainChart extends React.Component<MainChart.Props, MainChart.State> {
 						width: ref.offsetWidth,
 						height: ref.offsetHeight
 					})}
-					className="chart" />
+					className='chart' />
 			);
 		}
 		
 		return (
-			<div ref={(ref: any) => this.chart = ref} className="chart">
-				<Chart width={this.state.width} height={this.state.height} />
+			<div ref={(ref: any) => this.chart = ref} className='chart'>
+				<Chart width={this.state.width} height={this.state.height}>
+					<LineSeries />
+				</Chart>
 			</div>
 		);
 	}
 }
+
 module MainChart {
 	export interface Props {
 	}
