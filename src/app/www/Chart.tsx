@@ -2,7 +2,8 @@
 
 import d3 = require('d3');
 import React = require('react');
-import ReactDOM = require('react-dom');
+
+import TimeFormat = require('./TimeFormat');
 
 class Chart extends React.Component<Chart.Props, Chart.State> {
 	
@@ -11,16 +12,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private xAxis = d3.svg.axis()
 		.scale(this.x)
-		.tickFormat(d3.time.format.multi([
-			['.%L', function(d) { return d.getMilliseconds(); }],
-			[':%S', function(d) { return d.getSeconds(); }],
-			['%H:%M', function(d) { return d.getMinutes(); }],
-			['%H:%M', function(d) { return d.getHours(); }],
-			['%a %d', function(d) { return d.getDay() && d.getDate() != 1; }],
-			['%b %d', function(d) { return d.getDate() != 1; }],
-			['%B', function(d) { return d.getMonth(); }],
-			['%Y', function() { return true; }]
-		]))
+		.tickFormat(TimeFormat.multi())
 		.orient('bottom');
 		
 	private yAxis = d3.svg.axis()
@@ -44,10 +36,10 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 				<g transform={'translate(' + marginLeft + ', ' + marginTop + ')'}>
 					<g
 						className="x axis" transform={'translate(0, ' + height + ')'}
-						ref={(ref: any) => this.xAxis(d3.select(ref))} />
+						ref={(ref: any) => d3.select(ref).call(this.xAxis)} />
 					<g
 						className="y axis" transform={'translate(' + width + ', 0)'}
-						ref={(ref: any) => this.yAxis(d3.select(ref))} />
+						ref={(ref: any) => d3.select(ref).call(this.yAxis)} />
 				</g>
 			</svg>
 		);
@@ -75,30 +67,4 @@ module Chart {
 	}
 }
 
-var container = document.getElementById('chart');
-
-class Sizer extends React.Component<{}, { width: number; height: number; }> {
-	
-	state = { width: container.offsetWidth - 70, height: container.offsetHeight - 50 };
-	
-	handleResize = () => {
-		this.setState({
-			width: container.offsetWidth - 70,
-			height: container.offsetHeight - 50
-		});
-	}
-	
-	componentDidMount() {
-		window.addEventListener('resize', this.handleResize);
-	}
-	
-	componentWillUnmount() {
-		window.removeEventListener('resize', this.handleResize);
-	}
-	
-	render() {
-		return <Chart width={this.state.width} height={this.state.height} />;
-	}
-}
-
-ReactDOM.render(<Sizer />, container);
+export = Chart;

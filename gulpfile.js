@@ -18,7 +18,7 @@ var through2 = require('through2');
 var tsProject = tsc.createProject('tsconfig.json');
 
 var opts = assign({}, watchify.args, {
-  entries: ['release/app/www/Chart.js'],
+  entries: ['release/app/www/Index.js'],
   debug: true
 });
 var b = watchify(browserify(opts));
