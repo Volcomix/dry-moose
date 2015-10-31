@@ -16,4 +16,15 @@ var Chart = (function (_super) {
     };
     return Chart;
 })(React.Component);
+var Chart;
+(function (Chart) {
+    Chart.defaultProps = {
+        margin: {
+            top: 20,
+            right: 50,
+            bottom: 30,
+            left: 20
+        }
+    };
+})(Chart || (Chart = {}));
 module.exports = Chart;

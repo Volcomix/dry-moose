@@ -21,8 +21,17 @@ module Chart {
 	export interface Props {
 		width: number;
 		height: number;
-		margin: Margin
+		margin?: Margin
 		children?: React.ReactElement<any>[]
+	}
+	
+	export var defaultProps = {
+		margin: {
+			top: 20,
+			right: 50,
+			bottom: 30,
+			left: 20
+		}
 	}
   
 	export interface State {

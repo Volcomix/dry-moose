@@ -1,5 +1,9 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
+import d3 = require('d3');
+import Q = require('q');
+import moment = require('moment');
+
 import Quote = require('../../documents/Quote');
 
 var margin = { top: 20, right: 50, bottom: 30, left: 20 },

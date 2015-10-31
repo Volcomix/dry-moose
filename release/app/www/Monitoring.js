@@ -1,4 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
+var d3 = require('d3');
+var Q = require('q');
+var moment = require('moment');
 var margin = { top: 20, right: 50, bottom: 30, left: 20 }, shouldInit = true, width, height;
 var bisectDate = d3.bisector(function (d) { return d.dateTime; }).left, dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 var x = d3.time.scale();
