@@ -6,65 +6,46 @@ import d3 = require('d3');
 
 import Quote = require('../../documents/Quote');
 
-class Svg extends React.Component<any, any> {
-	render() {
-		var { width, height, margin } = this.props;
-		return (
-			<svg width={width} height={height}>
-				<Chart
-					data={this.props.data}
-					width={width - margin.left - margin.right}
-					height={height - margin.top - margin.bottom}
-					margin={margin} />
-			</svg>
-		);
-	}
-	
-	static defaultProps = {
-		width: 800,
-		height: 600,
-		margin: { top: 20, right: 50, bottom: 30, left: 20 }
-	}
-}
-
 class Chart extends React.Component<any, any> {
 	
 	private xScale = d3.time.scale();
 	private yScale = d3.scale.linear();
 	
 	render() {
+		var { data, containerWidth, containerHeight, margin }: {
+			data: Quote[];
+			containerWidth: number;
+			containerHeight: number;
+			margin: { top: number, right: number, bottom: number, left: number };
+		} = this.props;
+		var width = containerWidth - margin.left - margin.right;
+		var height = containerHeight - margin.top - margin.bottom;
+		
 		this.xScale
-			.range([0, this.props.width])
-			.domain([
-				this.props.data[0].dateTime,
-				this.props.data[this.props.data.length - 1].dateTime
-			])
+			.range([0, width])
+			.domain([data[0].dateTime, data[data.length - 1].dateTime])
 			.nice();
 			
 		this.yScale
-			.range([this.props.height, 0])
+			.range([height, 0])
 			.domain(d3.extent(data, d => d.close))
 			.nice();
 		
 		return (
-			<g transform={'translate(' +
-					this.props.margin.left + ', ' + 
-					this.props.margin.top +
-				')'}>
-				<XAxis
-					width={this.props.width}
-					height={this.props.height}
-					scale={this.xScale} />
-				<YAxis
-					width={this.props.width}
-					height={this.props.height}
-					scale={this.yScale} />
-				<LineSeries
-					data={this.props.data}
-					xScale={this.xScale}
-					yScale={this.yScale} />
-			</g>
+			<svg width={containerWidth} height={containerHeight}>
+				<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
+					<XAxis width={width} height={height} scale={this.xScale} />
+					<YAxis width={width} height={height} scale={this.yScale} />
+					<LineSeries data={data} xScale={this.xScale} yScale={this.yScale} />
+				</g>
+			</svg>
 		);
+	}
+	
+	static defaultProps = {
+		containerWidth: 800,
+		containerHeight: 600,
+		margin: { top: 20, right: 50, bottom: 30, left: 20 }
 	}
 }
 
@@ -150,4 +131,4 @@ var data = [
 	{ dateTime: new Date('2015-10-20T12:00:00Z'), close: 1.16 },
 	{ dateTime: new Date('2015-10-20T13:00:00Z'), close: 1.35 }
 ];
-ReactDOM.render(<Svg data={data} />, document.getElementById('chart'));
+ReactDOM.render(<Chart data={data} />, document.getElementById('chart'));

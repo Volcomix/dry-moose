@@ -7,22 +7,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var ReactDOM = require('react-dom');
 var d3 = require('d3');
-var Svg = (function (_super) {
-    __extends(Svg, _super);
-    function Svg() {
-        _super.apply(this, arguments);
-    }
-    Svg.prototype.render = function () {
-        var _a = this.props, width = _a.width, height = _a.height, margin = _a.margin;
-        return (React.createElement("svg", {"width": width, "height": height}, React.createElement(Chart, {"data": this.props.data, "width": width - margin.left - margin.right, "height": height - margin.top - margin.bottom, "margin": margin})));
-    };
-    Svg.defaultProps = {
-        width: 800,
-        height: 600,
-        margin: { top: 20, right: 50, bottom: 30, left: 20 }
-    };
-    return Svg;
-})(React.Component);
 var Chart = (function (_super) {
     __extends(Chart, _super);
     function Chart() {
@@ -31,21 +15,23 @@ var Chart = (function (_super) {
         this.yScale = d3.scale.linear();
     }
     Chart.prototype.render = function () {
+        var _a = this.props, data = _a.data, containerWidth = _a.containerWidth, containerHeight = _a.containerHeight, margin = _a.margin;
+        var width = containerWidth - margin.left - margin.right;
+        var height = containerHeight - margin.top - margin.bottom;
         this.xScale
-            .range([0, this.props.width])
-            .domain([
-            this.props.data[0].dateTime,
-            this.props.data[this.props.data.length - 1].dateTime
-        ])
+            .range([0, width])
+            .domain([data[0].dateTime, data[data.length - 1].dateTime])
             .nice();
         this.yScale
-            .range([this.props.height, 0])
+            .range([height, 0])
             .domain(d3.extent(data, function (d) { return d.close; }))
             .nice();
-        return (React.createElement("g", {"transform": 'translate(' +
-            this.props.margin.left + ', ' +
-            this.props.margin.top +
-            ')'}, React.createElement(XAxis, {"width": this.props.width, "height": this.props.height, "scale": this.xScale}), React.createElement(YAxis, {"width": this.props.width, "height": this.props.height, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.props.data, "xScale": this.xScale, "yScale": this.yScale})));
+        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"width": width, "height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "height": height, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale}))));
+    };
+    Chart.defaultProps = {
+        containerWidth: 800,
+        containerHeight: 600,
+        margin: { top: 20, right: 50, bottom: 30, left: 20 }
     };
     return Chart;
 })(React.Component);
@@ -111,4 +97,4 @@ var data = [
     { dateTime: new Date('2015-10-20T12:00:00Z'), close: 1.16 },
     { dateTime: new Date('2015-10-20T13:00:00Z'), close: 1.35 }
 ];
-ReactDOM.render(React.createElement(Svg, {"data": data}), document.getElementById('chart'));
+ReactDOM.render(React.createElement(Chart, {"data": data}), document.getElementById('chart'));
