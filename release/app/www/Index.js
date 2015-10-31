@@ -26,7 +26,7 @@ var Chart = (function (_super) {
             .range([height, 0])
             .domain(d3.extent(data, function (d) { return d.close; }))
             .nice();
-        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"width": width, "height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "height": height, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale}), React.createElement(Cursor, {"data": data, "width": width, "height": height, "xScale": this.xScale}))));
+        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"width": width, "height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "height": height, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale}), React.createElement(Cursor, {"data": data, "width": width, "height": height, "xScale": this.xScale, "yScale": this.yScale}))));
     };
     Chart.defaultProps = {
         containerWidth: 800,
@@ -97,11 +97,11 @@ var Cursor = (function (_super) {
         _super.apply(this, arguments);
     }
     Cursor.prototype.render = function () {
-        return (React.createElement("g", null, React.createElement(XCursor, {"data": this.props.data, x: this.props.x, "height": this.props.height, "scale": this.props.xScale}), React.createElement("rect", {"className": 'pane', "width": this.props.width, "height": this.props.height})));
+        return (React.createElement("g", null, React.createElement(XCursor, {"data": this.props.data, x: this.props.x, "height": this.props.height, "scale": this.props.xScale}), React.createElement(YCursor, {y: this.props.y, "width": this.props.width, "scale": this.props.yScale}), React.createElement("rect", {"className": 'pane', "width": this.props.width, "height": this.props.height})));
     };
     Cursor.defaultProps = {
         x: 200,
-        y: 100
+        y: 200
     };
     return Cursor;
 })(React.Component);
@@ -123,6 +123,16 @@ var XCursor = (function (_super) {
         return (React.createElement("g", {"className": 'x cursor', "transform": 'translate(' + this.props.scale(d.dateTime) + ', 0)'}, React.createElement("line", {"y2": this.props.height}), React.createElement("rect", {x: -60, y: this.props.height, "width": 120, "height": 14}), React.createElement("text", {"dy": '.71em', y: this.props.height + 3}, this.dateFormat(d.dateTime))));
     };
     return XCursor;
+})(React.Component);
+var YCursor = (function (_super) {
+    __extends(YCursor, _super);
+    function YCursor() {
+        _super.apply(this, arguments);
+    }
+    YCursor.prototype.render = function () {
+        return (React.createElement("g", {"className": 'y cursor', "transform": 'translate(0, ' + this.props.y + ')'}, React.createElement("line", {"x2": this.props.width}), React.createElement("rect", {x: this.props.width, y: -7, "width": 50, "height": 14}), React.createElement("text", {"dy": '.32em', x: this.props.width + 3}, this.props.scale.invert(this.props.y).toFixed(5))));
+    };
+    return YCursor;
 })(React.Component);
 var data = [
     { dateTime: new Date('2015-10-20T10:00:00Z'), close: 1.12 },

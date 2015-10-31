@@ -37,7 +37,12 @@ class Chart extends React.Component<any, any> {
 					<XAxis width={width} height={height} scale={this.xScale} />
 					<YAxis width={width} height={height} scale={this.yScale} />
 					<LineSeries data={data} xScale={this.xScale} yScale={this.yScale} />
-					<Cursor data={data} width={width} height={height} xScale={this.xScale} />
+					<Cursor
+						data={data}
+						width={width}
+						height={height}
+						xScale={this.xScale}
+						yScale={this.yScale} />
 				</g>
 			</svg>
 		);
@@ -137,6 +142,10 @@ class Cursor extends React.Component<any, any> {
 					x={this.props.x}
 					height={this.props.height}
 					scale={this.props.xScale} />
+				<YCursor
+					y={this.props.y}
+					width={this.props.width}
+					scale={this.props.yScale} />
 				<rect
 					className='pane'
 					width={this.props.width}
@@ -147,7 +156,7 @@ class Cursor extends React.Component<any, any> {
 	
 	static defaultProps = {
 		x: 200,
-		y: 100
+		y: 200
 	}
 }
 
@@ -177,6 +186,20 @@ class XCursor extends React.Component<any, any> {
 				<rect x={-60} y={this.props.height} width={120} height={14} />
 				<text dy='.71em' y={this.props.height + 3}>
 					{this.dateFormat(d.dateTime)}
+				</text>
+			</g>
+		);
+	}
+}
+
+class YCursor extends React.Component<any, any> {
+	render() {
+		return (
+			<g className='y cursor' transform={'translate(0, ' + this.props.y + ')'}>
+				<line x2={this.props.width} />
+				<rect x={this.props.width} y={-7} width={50} height={14} />
+				<text dy='.32em' x={this.props.width + 3}>
+					{this.props.scale.invert(this.props.y).toFixed(5)}
 				</text>
 			</g>
 		);
