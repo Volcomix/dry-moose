@@ -37,6 +37,7 @@ class Chart extends React.Component<any, any> {
 					<XAxis width={width} height={height} scale={this.xScale} />
 					<YAxis width={width} height={height} scale={this.yScale} />
 					<LineSeries data={data} xScale={this.xScale} yScale={this.yScale} />
+					<Cursor data={data} width={width} height={height} xScale={this.xScale} />
 				</g>
 			</svg>
 		);
@@ -49,7 +50,8 @@ class Chart extends React.Component<any, any> {
 	}
 }
 
-class XAxis extends React.Component<any, any> {	
+class XAxis extends React.Component<any, any> {
+	
 	private axis = d3.svg.axis()
 		.tickFormat(d3.time.format.multi([
 			['.%L', d => d.getMilliseconds()],
@@ -81,7 +83,8 @@ class XAxis extends React.Component<any, any> {
 	}
 }
 
-class YAxis extends React.Component<any, any> {	
+class YAxis extends React.Component<any, any> {
+	
 	private axis = d3.svg.axis()
 		.tickFormat(d3.format(',.5f'))
 		.orient('right');
@@ -121,6 +124,61 @@ class LineSeries extends React.Component<any, any> {
 			<path
 				className='line'
 				d={this.line(this.props.data)} />
+		);
+	}
+}
+
+class Cursor extends React.Component<any, any> {
+	render() {		
+		return (
+			<g>
+				<XCursor
+					data={this.props.data}
+					x={this.props.x}
+					height={this.props.height}
+					scale={this.props.xScale} />
+				<rect
+					className='pane'
+					width={this.props.width}
+					height={this.props.height} />
+			</g>
+		);
+	}
+	
+	static defaultProps = {
+		x: 200,
+		y: 100
+	}
+}
+
+class XCursor extends React.Component<any, any> {
+	
+	private bisectDate = d3.bisector(function(d: Quote) { return d.dateTime; }).left;
+	private dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+	
+	render() {
+		var x0 = this.props.scale.invert(this.props.x),
+            i = this.bisectDate(this.props.data, x0, 1),
+            d0 = this.props.data[i - 1],
+            d1 = this.props.data[i],
+            d: Quote;
+		
+		if (d1) {
+			d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+		} else {
+			d = d0;
+		}
+		
+		return (
+			<g
+				className='x cursor'
+				transform={'translate(' + this.props.scale(d.dateTime) + ', 0)'}>
+				<line y2={this.props.height} />
+				<rect x={-60} y={this.props.height} width={120} height={14} />
+				<text dy='.71em' y={this.props.height + 3}>
+					{this.dateFormat(d.dateTime)}
+				</text>
+			</g>
 		);
 	}
 }

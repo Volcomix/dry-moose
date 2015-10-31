@@ -26,7 +26,7 @@ var Chart = (function (_super) {
             .range([height, 0])
             .domain(d3.extent(data, function (d) { return d.close; }))
             .nice();
-        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"width": width, "height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "height": height, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale}))));
+        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"width": width, "height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "height": height, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale}), React.createElement(Cursor, {"data": data, "width": width, "height": height, "xScale": this.xScale}))));
     };
     Chart.defaultProps = {
         containerWidth: 800,
@@ -90,6 +90,39 @@ var LineSeries = (function (_super) {
         return (React.createElement("path", {"className": 'line', d: this.line(this.props.data)}));
     };
     return LineSeries;
+})(React.Component);
+var Cursor = (function (_super) {
+    __extends(Cursor, _super);
+    function Cursor() {
+        _super.apply(this, arguments);
+    }
+    Cursor.prototype.render = function () {
+        return (React.createElement("g", null, React.createElement(XCursor, {"data": this.props.data, x: this.props.x, "height": this.props.height, "scale": this.props.xScale}), React.createElement("rect", {"className": 'pane', "width": this.props.width, "height": this.props.height})));
+    };
+    Cursor.defaultProps = {
+        x: 200,
+        y: 100
+    };
+    return Cursor;
+})(React.Component);
+var XCursor = (function (_super) {
+    __extends(XCursor, _super);
+    function XCursor() {
+        _super.apply(this, arguments);
+        this.bisectDate = d3.bisector(function (d) { return d.dateTime; }).left;
+        this.dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
+    }
+    XCursor.prototype.render = function () {
+        var x0 = this.props.scale.invert(this.props.x), i = this.bisectDate(this.props.data, x0, 1), d0 = this.props.data[i - 1], d1 = this.props.data[i], d;
+        if (d1) {
+            d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+        }
+        else {
+            d = d0;
+        }
+        return (React.createElement("g", {"className": 'x cursor', "transform": 'translate(' + this.props.scale(d.dateTime) + ', 0)'}, React.createElement("line", {"y2": this.props.height}), React.createElement("rect", {x: -60, y: this.props.height, "width": 120, "height": 14}), React.createElement("text", {"dy": '.71em', y: this.props.height + 3}, this.dateFormat(d.dateTime))));
+    };
+    return XCursor;
 })(React.Component);
 var data = [
     { dateTime: new Date('2015-10-20T10:00:00Z'), close: 1.12 },

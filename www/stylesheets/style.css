@@ -45,7 +45,7 @@ rect.pane:active {
 	cursor: move;
 }
 
-.target line {
+.cursor line {
 	fill: none;
 	stroke: black;
 	stroke-dasharray: 3,2;
@@ -53,18 +53,18 @@ rect.pane:active {
 	shape-rendering: crispEdges;
 }
 
-.target rect {
+.cursor rect {
 	fill: #555;
 }
 
-.target text {
+.cursor text {
 	fill: white;
 }
 
-.x.target text {
+.x.cursor text {
 	text-anchor: middle;
 }
 
-.y.target text {
+.y.cursor text {
 	text-anchor: start;
 }
