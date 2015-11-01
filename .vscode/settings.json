@@ -1,5 +1,0 @@
-// Place your settings in this file to overwrite default and user settings.
-{
-	// Set path to typescript 1.6
-	"typescript.tsdk": "/home/volcomix/.node_modules/lib/node_modules/typescript/lib"
-}

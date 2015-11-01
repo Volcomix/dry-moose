@@ -5,13 +5,19 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var d3 = require('d3');
 var LineSeries = (function (_super) {
     __extends(LineSeries, _super);
-    function LineSeries() {
-        _super.apply(this, arguments);
+    function LineSeries(props) {
+        var _this = this;
+        _super.call(this, props);
+        this.line = d3.svg.line();
+        this.line
+            .x(function (d) { return _this.props.xScale(d.dateTime); })
+            .y(function (d) { return _this.props.yScale(d.close); });
     }
     LineSeries.prototype.render = function () {
-        return React.createElement("path", {"className": 'line'});
+        return (React.createElement("path", {"className": 'line', d: this.line(this.props.data)}));
     };
     return LineSeries;
 })(React.Component);
