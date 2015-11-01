@@ -5,28 +5,34 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var d3 = require('d3');
 var XCursor = require('./XCursor');
 var YCursor = require('./YCursor');
 var Cursor = (function (_super) {
     __extends(Cursor, _super);
-    function Cursor() {
-        _super.apply(this, arguments);
+    function Cursor(props) {
+        var _this = this;
+        _super.call(this, props);
+        this.clearPosition = function () { return _this.setState({ position: undefined }); };
+        this.updatePosition = function () { return _this.setState({ position: d3.mouse(_this.pane) }); };
+        this.state = { position: undefined };
     }
+    Cursor.prototype.componentDidMount = function () {
+        // Use d3.event to make d3.mouse work
+        d3.select(this.pane).on('mousemove', this.updatePosition);
+    };
+    Cursor.prototype.componentWillUnmount = function () {
+        d3.select(this.pane).on('mousemove', null);
+    };
     Cursor.prototype.render = function () {
-        return (React.createElement("g", null, React.createElement(XCursor, {"data": this.props.data, x: this.props.x, "height": this.props.height, "scale": this.props.xScale}), React.createElement(YCursor, {y: this.props.y, "width": this.props.width, "scale": this.props.yScale}), React.createElement("rect", {"className": 'pane', "width": this.props.width, "height": this.props.height})));
+        var _this = this;
+        var xCursor, yCursor;
+        if (this.state.position) {
+            xCursor = (React.createElement(XCursor, {"data": this.props.data, x: this.state.position[0], "height": this.props.height, "scale": this.props.xScale}));
+            yCursor = (React.createElement(YCursor, {y: this.state.position[1], "width": this.props.width, "scale": this.props.yScale}));
+        }
+        return (React.createElement("g", null, xCursor, yCursor, React.createElement("rect", {"className": 'pane', "ref": function (pane) { return _this.pane = pane; }, "width": this.props.width, "height": this.props.height, "onMouseOut": this.clearPosition})));
     };
     return Cursor;
 })(React.Component);
-var Cursor;
-(function (Cursor) {
-    Cursor.defaultProps = {
-        data: undefined,
-        x: 200,
-        y: 200,
-        width: undefined,
-        height: undefined,
-        xScale: undefined,
-        yScale: undefined
-    };
-})(Cursor || (Cursor = {}));
 module.exports = Cursor;

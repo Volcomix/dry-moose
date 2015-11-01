@@ -9,22 +9,56 @@ import XCursor = require('./XCursor');
 import YCursor = require('./YCursor');
 
 class Cursor extends React.Component<Cursor.Props, Cursor.State> {
-	render() {		
-		return (
-			<g>
+	
+	private pane: SVGRectElement;
+	
+	constructor(props) {
+		super(props);
+		this.state = { position: undefined };
+	}
+	
+	private clearPosition = () => this.setState({ position: undefined});
+	private updatePosition = () => this.setState({ position: d3.mouse(this.pane) });
+	
+	componentDidMount() {
+		// Use d3.event to make d3.mouse work
+		d3.select(this.pane).on('mousemove', this.updatePosition);
+	}
+	
+	componentWillUnmount() {
+		d3.select(this.pane).on('mousemove', null);
+  	}
+	
+	render() {
+		var xCursor: JSX.Element,
+			yCursor: JSX.Element;
+		
+		if (this.state.position) {
+			xCursor = (
 				<XCursor
 					data={this.props.data}
-					x={this.props.x}
+					x={this.state.position[0]}
 					height={this.props.height}
 					scale={this.props.xScale} />
+			);
+			yCursor = (
 				<YCursor
-					y={this.props.y}
+					y={this.state.position[1]}
 					width={this.props.width}
 					scale={this.props.yScale} />
+			);
+		}
+		
+		return (
+			<g>
+				{xCursor}
+				{yCursor}
 				<rect
 					className='pane'
+					ref={(pane: any) => this.pane = pane}
 					width={this.props.width}
-					height={this.props.height} />
+					height={this.props.height}
+					onMouseOut={this.clearPosition} />
 			</g>
 		);
 	}
@@ -33,25 +67,14 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 module Cursor {
 	export interface Props {
 		data: Quote[];
-		x?: number;
-		y?: number;
 		width: number;
 		height: number;
 		xScale: d3.time.Scale<Date, number>;
 		yScale: d3.scale.Linear<number, number>;
 	}
 	
-	export var defaultProps: Props = {
-		data: undefined,
-		x: 200,
-		y: 200,
-		width: undefined,
-		height: undefined,
-		xScale: undefined,
-		yScale: undefined
-	}
-	
 	export interface State {
+		position: [number, number];
 	}
 }
 
