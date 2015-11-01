@@ -15,7 +15,13 @@ class XCursor extends React.Component<XCursor.Props, XCursor.State> {
             i = this.bisectDate(this.props.data, x0, 1),
             d0 = this.props.data[i - 1],
             d1 = this.props.data[i],
-            d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+            d: Quote;
+			
+			if (d1) {
+				d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+			} else {
+				d = d0;
+			}
 		
 		return (
 			<g

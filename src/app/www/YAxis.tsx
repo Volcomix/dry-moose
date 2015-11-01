@@ -11,13 +11,11 @@ class YAxis extends React.Component<YAxis.Props, YAxis.State> {
 	
 	constructor(props) {
 		super(props);
-		
 		this.axis.scale(this.props.scale);
 	}
 	
 	render() {
 		this.axis.tickSize(-this.props.width, 0);
-		
 		return (
 			<g
 				className='y axis'

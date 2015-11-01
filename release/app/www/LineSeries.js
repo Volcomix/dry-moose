@@ -17,7 +17,11 @@ var LineSeries = (function (_super) {
             .y(function (d) { return _this.props.yScale(d.close); });
     }
     LineSeries.prototype.render = function () {
-        return (React.createElement("path", {"className": 'line', d: this.line(this.props.data)}));
+        return React.createElement('path', {
+            className: 'line',
+            d: this.line(this.props.data),
+            clipPath: this.props.clipPath
+        }); // TSX doesn't know clipPath attribute
     };
     return LineSeries;
 })(React.Component);

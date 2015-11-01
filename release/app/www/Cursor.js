@@ -13,16 +13,21 @@ var Cursor = (function (_super) {
     function Cursor(props) {
         var _this = this;
         _super.call(this, props);
+        this.zoom = d3.behavior.zoom();
         this.clearPosition = function () { return _this.setState({ position: undefined }); };
         this.updatePosition = function () { return _this.setState({ position: d3.mouse(_this.pane) }); };
+        this.zoom.x(this.props.xScale);
         this.state = { position: undefined };
     }
     Cursor.prototype.componentDidMount = function () {
         // Use d3.event to make d3.mouse work
         d3.select(this.pane).on('mousemove', this.updatePosition);
+        this.zoom.on('zoom', this.props.onZoom);
+        d3.select(this.pane).call(this.zoom);
     };
     Cursor.prototype.componentWillUnmount = function () {
         d3.select(this.pane).on('mousemove', null);
+        this.zoom.on('zoom', null);
     };
     Cursor.prototype.render = function () {
         var _this = this;

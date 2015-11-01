@@ -15,15 +15,36 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	private xScale = d3.time.scale<Date, number>();
 	private yScale = d3.scale.linear();
 	
-	render() {
-		var { data, containerWidth, containerHeight, margin } = this.props;
-		var width = containerWidth - margin.left - margin.right;
-		var height = containerHeight - margin.top - margin.bottom;
+	private get width() {
+		return this.props.containerWidth -
+			this.props.margin.left -
+			this.props.margin.right;
+	}
+	
+	private get height() {
+		return this.props.containerHeight -
+			this.props.margin.top -
+			this.props.margin.bottom;
+	}
+	
+	constructor(props) {
+		super(props);
 		
 		this.xScale
-			.range([0, width] as any) // range() wants Dates which is wrong
-			.domain([data[0].dateTime, data[data.length - 1].dateTime])
+			.range([0, this.width] as any) // range() wants Dates which is wrong
+			.domain([
+				this.props.data[0].dateTime,
+				this.props.data[this.props.data.length - 1].dateTime
+			])
 			.nice();
+	}
+	
+	private handleZoom = () => this.forceUpdate(); 
+	
+	render() {
+		var { data, containerWidth, containerHeight, margin } = this.props;
+		var width = this.width; // To avoid multiple substracts
+		var height = this.height; // To avoid multiple substracts
 			
 		this.yScale
 			.range([height, 0])
@@ -33,15 +54,23 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		return (
 			<svg width={containerWidth} height={containerHeight}>
 				<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
+					{React.createElement('clipPath', {id: 'clip'},
+						<rect width={width} height={height} />
+					) /* TSX doesn't know clipPath element */}
 					<XAxis height={height} scale={this.xScale} />
 					<YAxis width={width} scale={this.yScale} />
-					<LineSeries data={data} xScale={this.xScale} yScale={this.yScale} />
+					<LineSeries
+						data={data}
+						xScale={this.xScale}
+						yScale={this.yScale}
+						clipPath='url(#clip)' />
 					<Cursor
 						data={data}
 						width={width}
 						height={height}
 						xScale={this.xScale}
-						yScale={this.yScale} />
+						yScale={this.yScale}
+						onZoom={this.handleZoom} />
 				</g>
 			</svg>
 		);

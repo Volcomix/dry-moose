@@ -10,10 +10,12 @@ import YCursor = require('./YCursor');
 
 class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 	
+	private zoom = d3.behavior.zoom();
 	private pane: SVGRectElement;
 	
 	constructor(props) {
 		super(props);
+		this.zoom.x(this.props.xScale as any);
 		this.state = { position: undefined };
 	}
 	
@@ -23,10 +25,14 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 	componentDidMount() {
 		// Use d3.event to make d3.mouse work
 		d3.select(this.pane).on('mousemove', this.updatePosition);
+		
+		this.zoom.on('zoom', this.props.onZoom);
+		d3.select(this.pane).call(this.zoom);
 	}
 	
 	componentWillUnmount() {
 		d3.select(this.pane).on('mousemove', null);
+		this.zoom.on('zoom', null);
   	}
 	
 	render() {
@@ -71,6 +77,7 @@ module Cursor {
 		height: number;
 		xScale: d3.time.Scale<Date, number>;
 		yScale: d3.scale.Linear<number, number>;
+		onZoom?: (d: {}, i: number) => any;
 	}
 	
 	export interface State {

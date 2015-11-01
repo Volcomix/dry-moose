@@ -20,13 +20,11 @@ class XAxis extends React.Component<XAxis.Props, XAxis.State> {
 	
 	constructor(props) {
 		super(props);
-		
 		this.axis.scale(this.props.scale);
 	}
 	
 	render() {
 		this.axis.tickSize(-this.props.height, 0);
-		
 		return (
 			<g
 				className='x axis'

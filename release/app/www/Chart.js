@@ -12,24 +12,47 @@ var LineSeries = require('./LineSeries');
 var Cursor = require('./Cursor');
 var Chart = (function (_super) {
     __extends(Chart, _super);
-    function Chart() {
-        _super.apply(this, arguments);
+    function Chart(props) {
+        var _this = this;
+        _super.call(this, props);
         this.xScale = d3.time.scale();
         this.yScale = d3.scale.linear();
+        this.handleZoom = function () { return _this.forceUpdate(); };
+        this.xScale
+            .range([0, this.width]) // range() wants Dates which is wrong
+            .domain([
+            this.props.data[0].dateTime,
+            this.props.data[this.props.data.length - 1].dateTime
+        ])
+            .nice();
     }
+    Object.defineProperty(Chart.prototype, "width", {
+        get: function () {
+            return this.props.containerWidth -
+                this.props.margin.left -
+                this.props.margin.right;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Chart.prototype, "height", {
+        get: function () {
+            return this.props.containerHeight -
+                this.props.margin.top -
+                this.props.margin.bottom;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Chart.prototype.render = function () {
         var _a = this.props, data = _a.data, containerWidth = _a.containerWidth, containerHeight = _a.containerHeight, margin = _a.margin;
-        var width = containerWidth - margin.left - margin.right;
-        var height = containerHeight - margin.top - margin.bottom;
-        this.xScale
-            .range([0, width]) // range() wants Dates which is wrong
-            .domain([data[0].dateTime, data[data.length - 1].dateTime])
-            .nice();
+        var width = this.width; // To avoid multiple substracts
+        var height = this.height; // To avoid multiple substracts
         this.yScale
             .range([height, 0])
             .domain(d3.extent(data, function (d) { return d.close; }))
             .nice();
-        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale}), React.createElement(Cursor, {"data": data, "width": width, "height": height, "xScale": this.xScale, "yScale": this.yScale}))));
+        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": width, "height": height})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": data, "width": width, "height": height, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.handleZoom}))));
     };
     return Chart;
 })(React.Component);
