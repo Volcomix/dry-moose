@@ -42,7 +42,7 @@ var Chart = (function (_super) {
         WindowStore.removeChangeListener(this.handleResize);
     };
     Chart.prototype.render = function () {
-        var _a = this.props, data = _a.data, margin = _a.margin, contentWidth = this.state.width - margin.left - margin.right, contentHeight = this.state.height - margin.top - margin.bottom, domain = this.xScale.domain(), i = Quote.bisect(data, domain[0], 1), j = Quote.bisect(data, domain[1], i + 1), extent = d3.extent(data.slice(i, j + 1), function (d) { return d.close; });
+        var _a = this.props, data = _a.data, margin = _a.margin, contentWidth = this.state.width - margin.left - margin.right, contentHeight = this.state.height - margin.top - margin.bottom, domain = this.xScale.domain(), i = Quote.bisect(data, domain[0], 1), j = Quote.bisect(data, domain[1], i + 1), extent = d3.extent(data.slice(i - 1, j + 1), function (d) { return d.close; });
         this.xScale.range([0, contentWidth]); // range() wants Dates which is wrong
         this.yScale.range([contentHeight, 0]);
         if (extent[0] != extent[1]) {

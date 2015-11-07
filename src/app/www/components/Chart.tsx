@@ -52,7 +52,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 			domain = this.xScale.domain(),
 			i = Quote.bisect(data, domain[0], 1),
 			j = Quote.bisect(data, domain[1], i + 1),
-			extent = d3.extent(data.slice(i, j + 1), d => d.close);
+			extent = d3.extent(data.slice(i - 1, j + 1), d => d.close);
 		
 		this.xScale.range([0, contentWidth] as any); // range() wants Dates which is wrong
 		this.yScale.range([contentHeight, 0]);

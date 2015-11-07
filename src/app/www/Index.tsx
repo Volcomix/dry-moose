@@ -20,10 +20,10 @@ var asQuote = (dateTime: Date, close: number): Quote => ({
 })
 
 var data = [
-	asQuote(new Date('2015-10-20T10:00:00Z'), 1.12),
-	asQuote(new Date('2015-10-20T11:00:00Z'), 1.20),
-	asQuote(new Date('2015-10-20T12:00:00Z'), 1.16),
-	asQuote(new Date('2015-10-20T13:00:00Z'), 1.35)
+	asQuote(new Date('2015-10-20T10:00:00Z'), 1.125),
+	asQuote(new Date('2015-10-20T11:00:00Z'), 1.25),
+	asQuote(new Date('2015-10-20T12:00:00Z'), 1.20),
+	asQuote(new Date('2015-10-20T13:00:00Z'), 1.345)
 ];
 
 var container = document.getElementById('chart');
