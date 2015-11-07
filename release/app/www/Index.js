@@ -1,7 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Chart = require('./Chart');
+var Chart = require('./components/Chart');
 var asQuote = function (dateTime, close) { return ({
     dateTime: dateTime,
     open: undefined,

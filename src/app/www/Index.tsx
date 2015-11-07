@@ -5,7 +5,7 @@ import ReactDOM = require('react-dom');
 
 import Quote = require('../../documents/Quote');
 
-import Chart = require('./Chart');
+import Chart = require('./components/Chart');
 
 var asQuote = (dateTime: Date, close: number): Quote => ({
 	dateTime: dateTime,

@@ -1,9 +1,9 @@
-/// <reference path="../../../typings/tsd.d.ts" />
+/// <reference path="../../../../typings/tsd.d.ts" />
 
 import React = require('react');
 import d3 = require('d3');
 
-import Quote = require('../../documents/Quote');
+import Quote = require('../../../documents/Quote');
 
 class XCursor extends React.Component<XCursor.Props, XCursor.State> {
 	
