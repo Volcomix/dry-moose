@@ -6,6 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
+var Quote = require('../../documents/Quote');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
 var LineSeries = require('./LineSeries');
@@ -45,13 +46,13 @@ var Chart = (function (_super) {
         configurable: true
     });
     Chart.prototype.render = function () {
-        var _a = this.props, data = _a.data, containerWidth = _a.containerWidth, containerHeight = _a.containerHeight, margin = _a.margin;
-        var width = this.width; // To avoid multiple substracts
-        var height = this.height; // To avoid multiple substracts
-        this.yScale
-            .range([height, 0])
-            .domain(d3.extent(data, function (d) { return d.close; }))
-            .nice();
+        var _a = this.props, data = _a.data, containerWidth = _a.containerWidth, containerHeight = _a.containerHeight, margin = _a.margin, width = this.width, // To avoid multiple substracts
+        height = this.height, // To avoid multiple substracts
+        domain = this.xScale.domain(), i = Quote.bisect(data, domain[0], 1), j = Quote.bisect(data, domain[1], i + 1), extent = d3.extent(data.slice(i, j + 1), function (d) { return d.close; });
+        this.yScale.range([height, 0]);
+        if (extent[0] != extent[1]) {
+            this.yScale.domain(extent).nice();
+        }
         return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": width, "height": height})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": data, "width": width, "height": height, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.handleZoom}))));
     };
     return Chart;

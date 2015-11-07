@@ -42,14 +42,20 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	private handleZoom = () => this.forceUpdate(); 
 	
 	render() {
-		var { data, containerWidth, containerHeight, margin } = this.props;
-		var width = this.width; // To avoid multiple substracts
-		var height = this.height; // To avoid multiple substracts
-			
-		this.yScale
-			.range([height, 0])
-			.domain(d3.extent(data, d => d.close))
-			.nice();
+		var { data, containerWidth, containerHeight, margin } = this.props,
+			width = this.width, // To avoid multiple substracts
+			height = this.height, // To avoid multiple substracts
+		
+			domain = this.xScale.domain(),
+			i = Quote.bisect(data, domain[0], 1),
+			j = Quote.bisect(data, domain[1], i + 1),
+			extent = d3.extent(data.slice(i, j + 1), d => d.close);
+		
+		this.yScale.range([height, 0]);
+		
+		if (extent[0] != extent[1]) {
+			this.yScale.domain(extent).nice();
+		}
 		
 		return (
 			<svg width={containerWidth} height={containerHeight}>

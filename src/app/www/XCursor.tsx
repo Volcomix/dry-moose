@@ -7,12 +7,11 @@ import Quote = require('../../documents/Quote');
 
 class XCursor extends React.Component<XCursor.Props, XCursor.State> {
 	
-	private bisectDate = d3.bisector((d: Quote) => d.dateTime).left;
 	private dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 	
 	render() {
 		var x0 = this.props.scale.invert(this.props.x),
-            i = this.bisectDate(this.props.data, x0, 1),
+            i = Quote.bisect(this.props.data, x0, 1),
             d0 = this.props.data[i - 1],
             d1 = this.props.data[i],
             d: Quote;
