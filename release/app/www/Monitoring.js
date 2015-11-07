@@ -38,7 +38,7 @@ svg.append('path')
     .attr('class', 'line')
     .attr('clip-path', 'url(#clip)');
 var xTarget = svg.append('g')
-    .attr('class', 'x target')
+    .attr('class', 'x cursor')
     .attr('transform', 'translate(-9999, 0)');
 xTarget.append('line');
 xTarget.append('rect')
@@ -48,7 +48,7 @@ xTarget.append('rect')
 xTarget.append('text')
     .attr('dy', '.71em');
 var yTarget = svg.append('g')
-    .attr('class', 'y target')
+    .attr('class', 'y cursor')
     .attr('transform', 'translate(0, -9999)');
 yTarget.append('line');
 yTarget.append('rect')

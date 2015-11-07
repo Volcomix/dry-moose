@@ -33,7 +33,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		this.xScale.domain([data[0].dateTime, data[data.length - 1].dateTime]).nice();
 	}
 	
-	private handleZoom = () => this.forceUpdate(); 
+	private handleZoom = () => this.forceUpdate();
 	private handleResize = () => this.setState(this.chartState);
 	
 	componentDidMount() {
