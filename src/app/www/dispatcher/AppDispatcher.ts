@@ -2,4 +2,6 @@
 
 import flux = require('flux');
 
-export = new flux.Dispatcher();
+import IAction = require('../actions/IAction');
+
+export = new flux.Dispatcher<IAction>();

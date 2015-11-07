@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var Quote = require('../../../documents/Quote');
+var WindowStore = require('../stores/WindowStore');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
 var LineSeries = require('./LineSeries');
@@ -19,41 +20,35 @@ var Chart = (function (_super) {
         this.xScale = d3.time.scale();
         this.yScale = d3.scale.linear();
         this.handleZoom = function () { return _this.forceUpdate(); };
-        this.xScale
-            .range([0, this.width]) // range() wants Dates which is wrong
-            .domain([
-            this.props.data[0].dateTime,
-            this.props.data[this.props.data.length - 1].dateTime
-        ])
-            .nice();
+        this.handleResize = function () { return _this.setState(_this.chartState); };
+        this.state = this.chartState;
+        var data = this.props.data;
+        this.xScale.domain([data[0].dateTime, data[data.length - 1].dateTime]).nice();
     }
-    Object.defineProperty(Chart.prototype, "width", {
+    Object.defineProperty(Chart.prototype, "chartState", {
         get: function () {
-            return this.props.containerWidth -
-                this.props.margin.left -
-                this.props.margin.right;
+            return {
+                width: WindowStore.getWidth(),
+                height: WindowStore.getHeight()
+            };
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Chart.prototype, "height", {
-        get: function () {
-            return this.props.containerHeight -
-                this.props.margin.top -
-                this.props.margin.bottom;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    Chart.prototype.componentDidMount = function () {
+        WindowStore.addChangeListener(this.handleResize);
+    };
+    Chart.prototype.componentWillUnmount = function () {
+        WindowStore.removeChangeListener(this.handleResize);
+    };
     Chart.prototype.render = function () {
-        var _a = this.props, data = _a.data, containerWidth = _a.containerWidth, containerHeight = _a.containerHeight, margin = _a.margin, width = this.width, // To avoid multiple substracts
-        height = this.height, // To avoid multiple substracts
-        domain = this.xScale.domain(), i = Quote.bisect(data, domain[0], 1), j = Quote.bisect(data, domain[1], i + 1), extent = d3.extent(data.slice(i, j + 1), function (d) { return d.close; });
-        this.yScale.range([height, 0]);
+        var _a = this.props, data = _a.data, margin = _a.margin, contentWidth = this.state.width - margin.left - margin.right, contentHeight = this.state.height - margin.top - margin.bottom, domain = this.xScale.domain(), i = Quote.bisect(data, domain[0], 1), j = Quote.bisect(data, domain[1], i + 1), extent = d3.extent(data.slice(i, j + 1), function (d) { return d.close; });
+        this.xScale.range([0, contentWidth]); // range() wants Dates which is wrong
+        this.yScale.range([contentHeight, 0]);
         if (extent[0] != extent[1]) {
             this.yScale.domain(extent).nice();
         }
-        return (React.createElement("svg", {"width": containerWidth, "height": containerHeight}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": width, "height": height})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(YAxis, {"width": width, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": data, "width": width, "height": height, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.handleZoom}))));
+        return (React.createElement("svg", {"width": this.state.width, "height": this.state.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.handleZoom}))));
     };
     return Chart;
 })(React.Component);
@@ -61,8 +56,6 @@ var Chart;
 (function (Chart) {
     Chart.defaultProps = {
         data: undefined,
-        containerWidth: 800,
-        containerHeight: 600,
         margin: { top: 20, right: 50, bottom: 30, left: 20 }
     };
 })(Chart || (Chart = {}));

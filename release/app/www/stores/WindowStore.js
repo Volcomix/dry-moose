@@ -10,8 +10,25 @@ var ActionType = require('../constants/ActionType');
 var WindowStoreImpl = (function (_super) {
     __extends(WindowStoreImpl, _super);
     function WindowStoreImpl() {
-        _super.apply(this, arguments);
+        var _this = this;
+        _super.call(this);
+        AppDispatcher.register(function (action) {
+            switch (action.actionType) {
+                case ActionType.WindowResize:
+                    var resizeAction = action;
+                    _this.width = resizeAction.width;
+                    _this.height = resizeAction.height;
+                    _this.emitChange();
+                    break;
+            }
+        });
     }
+    WindowStoreImpl.prototype.getWidth = function () {
+        return this.width;
+    };
+    WindowStoreImpl.prototype.getHeight = function () {
+        return this.height;
+    };
     WindowStoreImpl.prototype.emitChange = function () {
         this.emit(WindowStoreImpl.CHANGE_EVENT);
     };
@@ -25,10 +42,4 @@ var WindowStoreImpl = (function (_super) {
     return WindowStoreImpl;
 })(events.EventEmitter);
 var WindowStore = new WindowStoreImpl();
-AppDispatcher.register(function (action) {
-    switch (action.actionType) {
-        case ActionType.WindowResize:
-            break;
-    }
-});
 module.exports = WindowStore;

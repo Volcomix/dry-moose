@@ -1,6 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 var React = require('react');
 var ReactDOM = require('react-dom');
+var WindowActions = require('./actions/WindowActions');
 var Chart = require('./components/Chart');
 var asQuote = function (dateTime, close) { return ({
     dateTime: dateTime,
@@ -17,4 +18,10 @@ var data = [
     asQuote(new Date('2015-10-20T12:00:00Z'), 1.16),
     asQuote(new Date('2015-10-20T13:00:00Z'), 1.35)
 ];
-ReactDOM.render(React.createElement(Chart, {"data": data}), document.getElementById('chart'));
+var container = document.getElementById('chart');
+function resizeContainer() {
+    WindowActions.resize(container.offsetWidth, container.offsetHeight);
+}
+window.addEventListener('resize', resizeContainer);
+resizeContainer();
+ReactDOM.render(React.createElement(Chart, {"data": data}), container);

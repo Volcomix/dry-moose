@@ -1,7 +1,11 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
-var WindowActions = (function () {
-    function WindowActions() {
-    }
-    return WindowActions;
-})();
-module.exports = WindowActions;
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var ActionType = require('../constants/ActionType');
+function resize(width, height) {
+    AppDispatcher.dispatch({
+        actionType: ActionType.WindowResize,
+        width: width,
+        height: height
+    });
+}
+exports.resize = resize;

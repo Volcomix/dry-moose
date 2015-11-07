@@ -9,12 +9,7 @@ body {
 	overflow: hidden;
 }
 
-#mainChart {
-	width: 100%;
-	height: 100%;
-}
-
-#mainChart .chart {
+#chart {
 	width: 100%;
 	height: 100%;
 }

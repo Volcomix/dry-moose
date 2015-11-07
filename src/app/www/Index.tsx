@@ -5,6 +5,8 @@ import ReactDOM = require('react-dom');
 
 import Quote = require('../../documents/Quote');
 
+import WindowActions = require('./actions/WindowActions');
+
 import Chart = require('./components/Chart');
 
 var asQuote = (dateTime: Date, close: number): Quote => ({
@@ -23,4 +25,13 @@ var data = [
 	asQuote(new Date('2015-10-20T12:00:00Z'), 1.16),
 	asQuote(new Date('2015-10-20T13:00:00Z'), 1.35)
 ];
-ReactDOM.render(<Chart data={data} />, document.getElementById('chart'));
+
+var container = document.getElementById('chart');
+
+function resizeContainer() {
+	WindowActions.resize(container.offsetWidth, container.offsetHeight);
+}
+window.addEventListener('resize', resizeContainer);
+resizeContainer();
+
+ReactDOM.render(<Chart data={data} />, container);
