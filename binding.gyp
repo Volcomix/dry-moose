@@ -23,6 +23,16 @@
                             "..\\..\\..\\..\\Downloads\\ta-lib\\c\\lib\\ta_libc_cmr.lib"
                         ]
                     }
+                }],
+                ["OS==\"mac\"", {
+                    "include_dirs": [
+                        "/usr/local/Cellar/ta-lib/0.4.0/include/ta-lib"
+                    ],
+                    "link_settings": {
+                        "libraries": [
+                            "-lta_lib"
+                        ]
+                    }
                 }]
             ]
         }
