@@ -2,6 +2,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var WindowActions = require('./actions/WindowActions');
+var QuotesUtils = require('./utils/QuotesUtils');
 var Chart = require('./components/Chart');
 var asQuote = function (dateTime, close) { return ({
     dateTime: dateTime,
@@ -24,4 +25,5 @@ function resizeContainer() {
 }
 window.addEventListener('resize', resizeContainer);
 resizeContainer();
-ReactDOM.render(React.createElement(Chart, {"data": data}), container);
+QuotesUtils.getQuotes();
+ReactDOM.render(React.createElement(Chart, null), container);

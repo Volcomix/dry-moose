@@ -1,18 +1,18 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
+import Quote = require('../../../documents/Quote');
+
 import IAction = require('./IAction');
 import AppDispatcher = require('../dispatcher/AppDispatcher');
 import ActionType = require('../constants/ActionType');
 
-export function resize(width: number, height: number) {
+export function receive(data: Quote[]) {
 	AppDispatcher.dispatch({
-		actionType: ActionType.WindowResize,
-		width: width,
-		height: height
-	} as Resize);
+		actionType: ActionType.QuotesReceived,
+		data: data
+	} as Receive)
 }
 
-export interface Resize extends IAction {
-	width: number;
-	height: number;
+export interface Receive extends IAction {
+	data: Quote[];
 }

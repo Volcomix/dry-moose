@@ -1,14 +1,12 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
-import events = require('events');
-
+import AbstractStore = require('./AbstractStore');
+import IStore = require('./IStore');
 import AppDispatcher = require('../dispatcher/AppDispatcher');
 import WindowActions = require('../actions/WindowActions');
 import ActionType = require('../constants/ActionType');
 
-class WindowStoreImpl extends events.EventEmitter implements WindowStore {
-	private static CHANGE_EVENT = 'change';
-	
+class WindowStoreImpl extends AbstractStore implements WindowStore {
 	private _width: number;
 	private _height: number;
 	
@@ -22,7 +20,6 @@ class WindowStoreImpl extends events.EventEmitter implements WindowStore {
 	
 	constructor() {
 		super();
-		
 		AppDispatcher.register(action => {
 			switch(action.actionType) {
 				case ActionType.WindowResize:
@@ -34,25 +31,11 @@ class WindowStoreImpl extends events.EventEmitter implements WindowStore {
 			}
 		});
 	}
-	
-	private emitChange() {
-		this.emit(WindowStoreImpl.CHANGE_EVENT);
-	}
-	
-	addChangeListener(callback: Function) {
-		this.on(WindowStoreImpl.CHANGE_EVENT, callback);
-	}
-	
-	removeChangeListener(callback: Function) {
-		this.removeListener(WindowStoreImpl.CHANGE_EVENT, callback);
-	}
 }
 
-interface WindowStore {
+interface WindowStore extends IStore {
 	width: number;
 	height: number;
-	addChangeListener(callback: Function);
-	removeChangeListener(callback: Function);
 }
 
 var WindowStore: WindowStore = new WindowStoreImpl();

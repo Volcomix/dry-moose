@@ -7,37 +7,28 @@ var __extends = (this && this.__extends) || function (d, b) {
 var AbstractStore = require('./AbstractStore');
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var ActionType = require('../constants/ActionType');
-var WindowStoreImpl = (function (_super) {
-    __extends(WindowStoreImpl, _super);
-    function WindowStoreImpl() {
+var QuotesStoreImpl = (function (_super) {
+    __extends(QuotesStoreImpl, _super);
+    function QuotesStoreImpl() {
         var _this = this;
         _super.call(this);
         AppDispatcher.register(function (action) {
             switch (action.actionType) {
-                case ActionType.WindowResize:
-                    var resizeAction = action;
-                    _this._width = resizeAction.width;
-                    _this._height = resizeAction.height;
+                case ActionType.QuotesReceived:
+                    var quotesReceivedAction = action;
+                    _this._data = quotesReceivedAction.data;
                     _this.emitChange();
-                    break;
             }
         });
     }
-    Object.defineProperty(WindowStoreImpl.prototype, "width", {
+    Object.defineProperty(QuotesStoreImpl.prototype, "data", {
         get: function () {
-            return this._width;
+            return this._data;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(WindowStoreImpl.prototype, "height", {
-        get: function () {
-            return this._height;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return WindowStoreImpl;
+    return QuotesStoreImpl;
 })(AbstractStore);
-var WindowStore = new WindowStoreImpl();
-module.exports = WindowStore;
+var QuotesStore = new QuotesStoreImpl();
+module.exports = QuotesStore;
