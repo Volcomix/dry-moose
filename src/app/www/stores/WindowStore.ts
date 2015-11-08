@@ -3,7 +3,6 @@
 import events = require('events');
 
 import AppDispatcher = require('../dispatcher/AppDispatcher');
-import IAction = require('../actions/IAction');
 import WindowActions = require('../actions/WindowActions');
 import ActionType = require('../constants/ActionType');
 
