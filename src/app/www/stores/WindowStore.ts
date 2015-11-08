@@ -10,15 +10,15 @@ import ActionType = require('../constants/ActionType');
 class WindowStoreImpl extends events.EventEmitter implements WindowStore {
 	private static CHANGE_EVENT = 'change';
 	
-	private width: number;
-	private height: number;
+	private _width: number;
+	private _height: number;
 	
-	getWidth() {
-		return this.width;
+	get width() {
+		return this._width;
 	}
 	
-	getHeight() {
-		return this.height;
+	get height() {
+		return this._height;
 	}
 	
 	constructor() {
@@ -28,8 +28,8 @@ class WindowStoreImpl extends events.EventEmitter implements WindowStore {
 			switch(action.actionType) {
 				case ActionType.WindowResize:
 					var resizeAction = action as WindowActions.Resize;
-					this.width = resizeAction.width;
-					this.height = resizeAction.height;
+					this._width = resizeAction.width;
+					this._height = resizeAction.height;
 					this.emitChange();
 					break;
 			}
@@ -50,8 +50,8 @@ class WindowStoreImpl extends events.EventEmitter implements WindowStore {
 }
 
 interface WindowStore {
-	getWidth(): number;
-	getHeight(): number;
+	width: number;
+	height: number;
 	addChangeListener(callback: Function);
 	removeChangeListener(callback: Function);
 }

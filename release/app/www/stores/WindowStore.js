@@ -16,19 +16,27 @@ var WindowStoreImpl = (function (_super) {
             switch (action.actionType) {
                 case ActionType.WindowResize:
                     var resizeAction = action;
-                    _this.width = resizeAction.width;
-                    _this.height = resizeAction.height;
+                    _this._width = resizeAction.width;
+                    _this._height = resizeAction.height;
                     _this.emitChange();
                     break;
             }
         });
     }
-    WindowStoreImpl.prototype.getWidth = function () {
-        return this.width;
-    };
-    WindowStoreImpl.prototype.getHeight = function () {
-        return this.height;
-    };
+    Object.defineProperty(WindowStoreImpl.prototype, "width", {
+        get: function () {
+            return this._width;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(WindowStoreImpl.prototype, "height", {
+        get: function () {
+            return this._height;
+        },
+        enumerable: true,
+        configurable: true
+    });
     WindowStoreImpl.prototype.emitChange = function () {
         this.emit(WindowStoreImpl.CHANGE_EVENT);
     };

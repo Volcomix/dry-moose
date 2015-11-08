@@ -28,8 +28,8 @@ var Chart = (function (_super) {
     Object.defineProperty(Chart.prototype, "chartState", {
         get: function () {
             return {
-                width: WindowStore.getWidth(),
-                height: WindowStore.getHeight()
+                width: WindowStore.width,
+                height: WindowStore.height
             };
         },
         enumerable: true,

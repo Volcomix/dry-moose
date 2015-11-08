@@ -19,8 +19,8 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private get chartState(): Chart.State {
 		return {
-			width: WindowStore.getWidth(),
-			height: WindowStore.getHeight()
+			width: WindowStore.width,
+			height: WindowStore.height
 		};
 	}
 	
