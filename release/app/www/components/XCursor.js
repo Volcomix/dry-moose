@@ -14,19 +14,41 @@ var XCursor = (function (_super) {
         this.dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
     }
     XCursor.prototype.render = function () {
-        var quote = this.bisectQuote();
-        return (React.createElement("g", {"className": 'x cursor', "transform": 'translate(' + this.props.scale(quote.dateTime) + ', 0)'}, React.createElement("line", {"y2": this.props.height}), React.createElement("rect", {x: -60, y: this.props.height, "width": 120, "height": 14}), React.createElement("text", {"dy": '.71em', y: this.props.height + 3}, this.dateFormat(quote.dateTime))));
+        var dateTime = this.snapDateTime();
+        return (React.createElement("g", {"className": 'x cursor', "transform": 'translate(' + this.props.scale(dateTime) + ', 0)'}, React.createElement("line", {"y2": this.props.height}), React.createElement("rect", {x: -60, y: this.props.height, "width": 120, "height": 14}), React.createElement("text", {"dy": '.71em', y: this.props.height + 3}, this.dateFormat(dateTime))));
     };
-    XCursor.prototype.bisectQuote = function () {
+    XCursor.prototype.snapDateTime = function () {
         var x0 = this.props.scale.invert(this.props.x), i = Quote.bisect(this.props.data, x0, 1), d0 = this.props.data[i - 1], d1 = this.props.data[i], quote;
         if (d1) {
-            quote = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+            var domain = this.props.scale.domain();
+            if (d1.dateTime > domain[1]) {
+                quote = d0;
+            }
+            else if (d0.dateTime < domain[0]) {
+                quote = d1;
+            }
+            else {
+                quote = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+            }
         }
         else {
             quote = d0;
         }
-        return quote;
+        if (Math.abs(+quote.dateTime - +x0) > this.props.snapThreshold) {
+            return x0;
+        }
+        return quote.dateTime;
     };
     return XCursor;
 })(React.Component);
+var XCursor;
+(function (XCursor) {
+    XCursor.defaultProps = {
+        data: undefined,
+        x: undefined,
+        height: undefined,
+        scale: undefined,
+        snapThreshold: 60000
+    };
+})(XCursor || (XCursor = {}));
 module.exports = XCursor;
