@@ -2,17 +2,9 @@
 var Q = require('q');
 var d3 = require('d3');
 var QuotesServerActions = require('../actions/QuotesServerActions');
-function quotify(data) {
+function receive(data) {
     // Datetimes are received from server as strings
     data.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
-}
-function receive(data) {
-    quotify(data);
-    QuotesServerActions.receive(data);
-}
-function receiveAndSort(data) {
-    quotify(data);
-    data.sort(function (a, b) { return +a.dateTime - +b.dateTime; });
     QuotesServerActions.receive(data);
 }
 var delay = Q(null);
@@ -33,6 +25,6 @@ function get(dateTime) {
 }
 exports.get = get;
 function getLast() {
-    Q.nfcall(d3.json, '/monitoring/quotes').then(receiveAndSort);
+    Q.nfcall(d3.json, '/monitoring/quotes').then(receive);
 }
 exports.getLast = getLast;
