@@ -4,15 +4,16 @@ import Q = require('q');
 import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
+import Portfolio = require('../../../documents/Portfolio');
 
-import QuotesServerActions = require('../actions/QuotesServerActions');
+import MonitoringServerActions = require('../actions/MonitoringServerActions');
 
-function receive(data) {
+function receive(data: { quotes: Quote[], portfolio: Portfolio[]}) {
     var quotes: Quote[] = data.quotes;
     
 	// Datetimes are received from server as strings
 	quotes.forEach(d => d.dateTime = new Date(d.dateTime as any));
-	QuotesServerActions.receive(quotes);
+	MonitoringServerActions.receive(quotes);
 }
 
 var delay = Q<void>(null);

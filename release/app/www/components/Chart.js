@@ -9,7 +9,7 @@ var d3 = require('d3');
 var moment = require('moment');
 var Quote = require('../../../documents/Quote');
 var MonitoringActions = require('../actions/MonitoringActions');
-var QuotesStore = require('../stores/QuotesStore');
+var MonitoringStore = require('../stores/MonitoringStore');
 var WindowStore = require('../stores/WindowStore');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
@@ -39,7 +39,7 @@ var Chart = (function (_super) {
     Object.defineProperty(Chart.prototype, "stateFromStores", {
         get: function () {
             return {
-                data: QuotesStore.data,
+                data: MonitoringStore.data,
                 width: WindowStore.width,
                 height: WindowStore.height
             };
@@ -48,11 +48,11 @@ var Chart = (function (_super) {
         configurable: true
     });
     Chart.prototype.componentDidMount = function () {
-        QuotesStore.addChangeListener(this.onChange);
+        MonitoringStore.addChangeListener(this.onChange);
         WindowStore.addChangeListener(this.onChange);
     };
     Chart.prototype.componentWillUnmount = function () {
-        QuotesStore.removeChangeListener(this.onChange);
+        MonitoringStore.removeChangeListener(this.onChange);
         WindowStore.removeChangeListener(this.onChange);
     };
     Chart.prototype.render = function () {

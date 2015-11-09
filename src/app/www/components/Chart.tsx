@@ -7,7 +7,7 @@ import moment = require('moment');
 import Quote = require('../../../documents/Quote');
 
 import MonitoringActions = require('../actions/MonitoringActions');
-import QuotesStore = require('../stores/QuotesStore');
+import MonitoringStore = require('../stores/MonitoringStore');
 import WindowStore = require('../stores/WindowStore');
 
 import XAxis = require('./XAxis');
@@ -22,7 +22,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private get stateFromStores(): Chart.State {
 		return {
-			data: QuotesStore.data,
+			data: MonitoringStore.data,
 			width: WindowStore.width,
 			height: WindowStore.height
 		};
@@ -35,12 +35,12 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	}
 	
 	componentDidMount() {
-		QuotesStore.addChangeListener(this.onChange)
+		MonitoringStore.addChangeListener(this.onChange)
 		WindowStore.addChangeListener(this.onChange);
 	}
 	
 	componentWillUnmount() {
-		QuotesStore.removeChangeListener(this.onChange);
+		MonitoringStore.removeChangeListener(this.onChange);
 		WindowStore.removeChangeListener(this.onChange);
 	}
 	

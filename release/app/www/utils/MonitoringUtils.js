@@ -1,12 +1,12 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 var Q = require('q');
 var d3 = require('d3');
-var QuotesServerActions = require('../actions/QuotesServerActions');
+var MonitoringServerActions = require('../actions/MonitoringServerActions');
 function receive(data) {
     var quotes = data.quotes;
     // Datetimes are received from server as strings
     quotes.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
-    QuotesServerActions.receive(quotes);
+    MonitoringServerActions.receive(quotes);
 }
 var delay = Q(null);
 var retrieveDateTime;

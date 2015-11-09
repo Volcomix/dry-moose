@@ -5,10 +5,10 @@ import Quote = require('../../../documents/Quote');
 import AbstractStore = require('./AbstractStore');
 import IStore = require('./IStore');
 import AppDispatcher = require('../dispatcher/AppDispatcher');
-import QuotesServerActions = require('../actions/QuotesServerActions');
+import MonitoringServerActions = require('../actions/MonitoringServerActions');
 import ActionType = require('../constants/ActionType');
 
-class QuotesStoreImpl extends AbstractStore implements QuotesStore {
+class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 	
 	private _data: Quote[];
 	
@@ -21,7 +21,7 @@ class QuotesStoreImpl extends AbstractStore implements QuotesStore {
 		AppDispatcher.register(action => {
 			switch(action.actionType) {
 				case ActionType.QuotesReceived:
-					var quotesReceivedAction = action as QuotesServerActions.Receive;
+					var quotesReceivedAction = action as MonitoringServerActions.Receive;
 					if (quotesReceivedAction.data && quotesReceivedAction.data.length) {
 						this._data = quotesReceivedAction.data;
 						this.emitChange();
@@ -31,10 +31,10 @@ class QuotesStoreImpl extends AbstractStore implements QuotesStore {
 	}
 }
 
-interface QuotesStore extends IStore {
+interface MonitoringStore extends IStore {
 	data: Quote[];
 }
 
-var QuotesStore: QuotesStore = new QuotesStoreImpl();
+var MonitoringStore: MonitoringStore = new MonitoringStoreImpl();
 
-export = QuotesStore;
+export = MonitoringStore;

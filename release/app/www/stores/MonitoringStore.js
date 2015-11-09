@@ -32,4 +32,5 @@ var MonitoringStoreImpl = (function (_super) {
     });
     return MonitoringStoreImpl;
 })(AbstractStore);
-var QuotesStore = new MonitoringStoreImpl();
+var MonitoringStore = new MonitoringStoreImpl();
+module.exports = MonitoringStore;
