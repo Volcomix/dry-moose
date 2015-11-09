@@ -19,9 +19,6 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 		this.state = { position: undefined };
 	}
 	
-	private clearPosition = () => this.setState({ position: undefined});
-	private updatePosition = () => this.setState({ position: d3.mouse(this.pane) });
-	
 	componentDidMount() {
 		// Use d3.event to make d3.mouse work
 		d3.select(this.pane).on('mousemove', this.updatePosition);
@@ -68,6 +65,9 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 			</g>
 		);
 	}
+	
+	private clearPosition = () => this.setState({ position: undefined});
+	private updatePosition = () => this.setState({ position: d3.mouse(this.pane) });
 }
 
 module Cursor {

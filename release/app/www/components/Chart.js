@@ -32,11 +32,11 @@ var Chart = (function (_super) {
             }
             _this.forceUpdate();
         }, 0); }; // Force wait UI refresh (improve UI performance)
-        this.onChange = function () { return _this.setState(_this.chartState); };
+        this.onChange = function () { return _this.setState(_this.stateFromStores); };
         QuotesActions.getLast();
-        this.state = this.chartState;
+        this.state = this.stateFromStores;
     }
-    Object.defineProperty(Chart.prototype, "chartState", {
+    Object.defineProperty(Chart.prototype, "stateFromStores", {
         get: function () {
             return {
                 data: QuotesStore.data,
@@ -56,25 +56,30 @@ var Chart = (function (_super) {
         WindowStore.removeChangeListener(this.onChange);
     };
     Chart.prototype.render = function () {
-        var data = this.state.data;
-        if (!data)
+        if (!this.state.data)
             return React.createElement("span", null, "Loading data...");
-        var margin = this.props.margin, contentWidth = this.state.width - margin.left - margin.right, contentHeight = this.state.height - margin.top - margin.bottom, domain = this.xScale.domain();
-        this.xScale.range([0, contentWidth]); // range() wants Dates which is wrong
+        var margin = this.props.margin, contentWidth = this.state.width - margin.left - margin.right, contentHeight = this.state.height - margin.top - margin.bottom;
+        this.updateXScale(contentWidth);
+        this.updateYScale(contentHeight);
+        return (React.createElement("svg", {"width": this.state.width, "height": this.state.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.state.data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.state.data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
+    };
+    Chart.prototype.updateXScale = function (width) {
+        var domain = this.xScale.domain();
+        this.xScale.range([0, width]); // range() wants Dates which is wrong
         if (+domain[0] == 0 && +domain[1] == 1) {
-            var lastQuote = data[data.length - 1];
+            var lastQuote = this.state.data[this.state.data.length - 1];
             this.xScale.domain([
                 moment(lastQuote.dateTime).subtract({ hours: 2 }).toDate(),
                 lastQuote.dateTime
             ]).nice();
-            domain = this.xScale.domain();
         }
-        var i = Quote.bisect(data, domain[0], 1), j = Quote.bisect(data, domain[1], i + 1), extent = d3.extent(data.slice(i - 1, j + 1), function (d) { return d.close; });
-        this.yScale.range([contentHeight, 0]);
+    };
+    Chart.prototype.updateYScale = function (height) {
+        var domain = this.xScale.domain(), i = Quote.bisect(this.state.data, domain[0], 1), j = Quote.bisect(this.state.data, domain[1], i + 1), extent = d3.extent(this.state.data.slice(i - 1, j + 1), function (d) { return d.close; });
+        this.yScale.range([height, 0]);
         if (extent[0] != extent[1]) {
             this.yScale.domain(extent).nice();
         }
-        return (React.createElement("svg", {"width": this.state.width, "height": this.state.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
     };
     return Chart;
 })(React.Component);
