@@ -6,7 +6,7 @@ import moment = require('moment');
 
 import Quote = require('../../../documents/Quote');
 
-import QuotesActions = require('../actions/QuotesActions');
+import MonitoringActions = require('../actions/MonitoringActions');
 import QuotesStore = require('../stores/QuotesStore');
 import WindowStore = require('../stores/WindowStore');
 
@@ -30,7 +30,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	constructor(props) {
 		super(props);
-		QuotesActions.getLast();
+		MonitoringActions.getLast();
 		this.state = this.stateFromStores;
 	}
 	
@@ -110,9 +110,9 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 			domain = this.xScale.domain();
 		
 		if (domain[0]  < data[0].dateTime) {
-			QuotesActions.get(domain[0]);
+			MonitoringActions.get(domain[0]);
 		} else if (domain[1] > data[data.length - 1].dateTime) {
-			QuotesActions.get(domain[1]);
+			MonitoringActions.get(domain[1]);
 		}
 		
 		this.forceUpdate()

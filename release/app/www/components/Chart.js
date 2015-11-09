@@ -8,7 +8,7 @@ var React = require('react');
 var d3 = require('d3');
 var moment = require('moment');
 var Quote = require('../../../documents/Quote');
-var QuotesActions = require('../actions/QuotesActions');
+var MonitoringActions = require('../actions/MonitoringActions');
 var QuotesStore = require('../stores/QuotesStore');
 var WindowStore = require('../stores/WindowStore');
 var XAxis = require('./XAxis');
@@ -25,15 +25,15 @@ var Chart = (function (_super) {
         this.onZoom = function () { return setTimeout(function () {
             var data = _this.state.data, domain = _this.xScale.domain();
             if (domain[0] < data[0].dateTime) {
-                QuotesActions.get(domain[0]);
+                MonitoringActions.get(domain[0]);
             }
             else if (domain[1] > data[data.length - 1].dateTime) {
-                QuotesActions.get(domain[1]);
+                MonitoringActions.get(domain[1]);
             }
             _this.forceUpdate();
         }, 0); }; // Force wait UI refresh (improve UI performance)
         this.onChange = function () { return _this.setState(_this.stateFromStores); };
-        QuotesActions.getLast();
+        MonitoringActions.getLast();
         this.state = this.stateFromStores;
     }
     Object.defineProperty(Chart.prototype, "stateFromStores", {
