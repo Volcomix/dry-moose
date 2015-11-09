@@ -7,10 +7,12 @@ import Quote = require('../../../documents/Quote');
 
 import QuotesServerActions = require('../actions/QuotesServerActions');
 
-function receive(data: Quote[]) {
+function receive(data) {
+    var quotes: Quote[] = data.quotes;
+    
 	// Datetimes are received from server as strings
-	data.forEach(d => d.dateTime = new Date(d.dateTime as any));
-	QuotesServerActions.receive(data);
+	quotes.forEach(d => d.dateTime = new Date(d.dateTime as any));
+	QuotesServerActions.receive(quotes);
 }
 
 var delay = Q<void>(null);
@@ -20,7 +22,7 @@ function retrieveData() {
 	if (retrieveDateTime) {
         delay = Q.delay(1000).then(retrieveData);
         
-        Q.nfcall(d3.json, '/monitoring/quotes/' + retrieveDateTime.toISOString())
+        Q.nfcall(d3.json, '/monitoring/' + retrieveDateTime.toISOString())
         .then(receive);
         
         retrieveDateTime = undefined;
@@ -36,5 +38,5 @@ export function get(dateTime: Date) {
 }
 
 export function getLast() {
-	Q.nfcall(d3.json, '/monitoring/quotes').then(receive);
+	Q.nfcall(d3.json, '/monitoring').then(receive);
 }
