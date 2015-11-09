@@ -10,29 +10,34 @@ class XCursor extends React.Component<XCursor.Props, XCursor.State> {
 	private dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 	
 	render() {
+		var quote = this.bisectQuote();
+		return (
+			<g
+				className='x cursor'
+				transform={'translate(' + this.props.scale(quote.dateTime) + ', 0)'}>
+				<line y2={this.props.height} />
+				<rect x={-60} y={this.props.height} width={120} height={14} />
+				<text dy='.71em' y={this.props.height + 3}>
+					{this.dateFormat(quote.dateTime)}
+				</text>
+			</g>
+		);
+	}
+	
+	private bisectQuote() {
 		var x0 = this.props.scale.invert(this.props.x),
             i = Quote.bisect(this.props.data, x0, 1),
             d0 = this.props.data[i - 1],
             d1 = this.props.data[i],
-            d: Quote;
+            quote: Quote;
 			
-			if (d1) {
-				d = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
-			} else {
-				d = d0;
-			}
+		if (d1) {
+			quote = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+		} else {
+			quote = d0;
+		}
 		
-		return (
-			<g
-				className='x cursor'
-				transform={'translate(' + this.props.scale(d.dateTime) + ', 0)'}>
-				<line y2={this.props.height} />
-				<rect x={-60} y={this.props.height} width={120} height={14} />
-				<text dy='.71em' y={this.props.height + 3}>
-					{this.dateFormat(d.dateTime)}
-				</text>
-			</g>
-		);
+		return quote;
 	}
 }
 
