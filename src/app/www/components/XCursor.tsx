@@ -58,7 +58,7 @@ module XCursor {
 		x: number;
 		height: number;
 		scale: d3.time.Scale<Date, number>;
-		snapThreshold: number;
+		snapThreshold?: number;
 	}
 	
 	export var defaultProps: Props = {
