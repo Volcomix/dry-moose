@@ -7,14 +7,23 @@ import Quote = require('../../../documents/Quote');
 
 import QuotesServerActions = require('../actions/QuotesServerActions');
 
-function receive(data: Quote[]) {
+function quotify(data: Quote[]) {
 	data.forEach(d => d.dateTime = new Date(d.dateTime as any));
+}
+
+function receiveAndSort(data: Quote[]) {
+	quotify(data);
 	data.sort((a, b) => +a.dateTime - +b.dateTime);
 	QuotesServerActions.receive(data);
 }
 
+function receive(data: Quote[]) {
+	quotify(data);
+	QuotesServerActions.receive(data);
+}
+
 export function getLast() {
-	Q.nfcall(d3.json, '/monitoring/quotes').then(receive);
+	Q.nfcall(d3.json, '/monitoring/quotes').then(receiveAndSort);
 }
 
 var delay = Q<void>(null);
