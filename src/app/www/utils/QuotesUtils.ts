@@ -5,13 +5,36 @@ import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
 
-import QuotesActions = require('../actions/QuotesActions');
+import QuotesServerActions = require('../actions/QuotesServerActions');
 
-export function getQuotes() {
-	Q.nfcall(d3.json, '/monitoring/quotes')
-	.then(function(data: Quote[]) {
-		data.forEach(d => d.dateTime = new Date(d.dateTime as any));
-		data.sort((a, b) => +a.dateTime - +b.dateTime);
-		QuotesActions.receive(data);
-	});
+function receive(data: Quote[]) {
+	data.forEach(d => d.dateTime = new Date(d.dateTime as any));
+	data.sort((a, b) => +a.dateTime - +b.dateTime);
+	QuotesServerActions.receive(data);
+}
+
+export function getLast() {
+	Q.nfcall(d3.json, '/monitoring/quotes').then(receive);
+}
+
+var delay = Q<void>(null);
+var retrieveDateTime: Date;
+
+function retrieveData() {
+	if (retrieveDateTime) {
+        delay = Q.delay(1000).then(retrieveData);
+        
+        Q.nfcall(d3.json, '/monitoring/quotes?dateTime=' + retrieveDateTime.toISOString())
+        .then(receive);
+        
+        retrieveDateTime = undefined;
+    }
+}
+
+export function get(dateTime: Date) {
+	retrieveDateTime = dateTime;
+    
+    if (!delay.isPending()) {
+        retrieveData();
+    }
 }

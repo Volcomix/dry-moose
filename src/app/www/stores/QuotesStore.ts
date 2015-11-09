@@ -5,7 +5,7 @@ import Quote = require('../../../documents/Quote');
 import AbstractStore = require('./AbstractStore');
 import IStore = require('./IStore');
 import AppDispatcher = require('../dispatcher/AppDispatcher');
-import QuotesActions = require('../actions/QuotesActions');
+import QuotesServerActions = require('../actions/QuotesServerActions');
 import ActionType = require('../constants/ActionType');
 
 class QuotesStoreImpl extends AbstractStore implements QuotesStore {
@@ -21,7 +21,7 @@ class QuotesStoreImpl extends AbstractStore implements QuotesStore {
 		AppDispatcher.register(action => {
 			switch(action.actionType) {
 				case ActionType.QuotesReceived:
-					var quotesReceivedAction = action as QuotesActions.Receive;
+					var quotesReceivedAction = action as QuotesServerActions.Receive;
 					this._data = quotesReceivedAction.data;
 					this.emitChange();
 			}

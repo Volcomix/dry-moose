@@ -6,6 +6,7 @@ import moment = require('moment');
 
 import Quote = require('../../../documents/Quote');
 
+import QuotesActions = require('../actions/QuotesActions');
 import QuotesStore = require('../stores/QuotesStore');
 import WindowStore = require('../stores/WindowStore');
 
@@ -29,10 +30,23 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	constructor(props) {
 		super(props);
+		QuotesActions.getLast();
 		this.state = this.chartState;
 	}
 	
-	private onZoom = () => setTimeout(() => this.forceUpdate(), 0); // Force wait UI
+	private onZoom = () => setTimeout(() => {
+		var data = this.state.data,
+			domain = this.xScale.domain();
+		
+		if (domain[0]  < data[0].dateTime) {
+			QuotesActions.get(domain[0]);
+		} else if (domain[1] > data[data.length - 1].dateTime) {
+			QuotesActions.get(domain[1]);
+		}
+		
+		this.forceUpdate()
+	}, 0); // Force wait UI refresh (improve UI performance)
+	
 	private onChange = () => this.setState(this.chartState);
 	
 	componentDidMount() {

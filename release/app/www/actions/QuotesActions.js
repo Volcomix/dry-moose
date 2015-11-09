@@ -1,10 +1,10 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var ActionType = require('../constants/ActionType');
-function receive(data) {
-    AppDispatcher.dispatch({
-        actionType: ActionType.QuotesReceived,
-        data: data
-    });
+var QuotesUtils = require('../utils/QuotesUtils');
+function getLast() {
+    QuotesUtils.getLast();
 }
-exports.receive = receive;
+exports.getLast = getLast;
+function get(dateTime) {
+    QuotesUtils.get(dateTime);
+}
+exports.get = get;

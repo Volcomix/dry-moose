@@ -6,7 +6,6 @@ import ReactDOM = require('react-dom');
 import Quote = require('../../documents/Quote');
 
 import WindowActions = require('./actions/WindowActions');
-import QuotesUtils = require('./utils/QuotesUtils');
 
 import Chart = require('./components/Chart');
 
@@ -35,5 +34,4 @@ function resizeContainer() {
 window.addEventListener('resize', resizeContainer);
 resizeContainer();
 
-QuotesUtils.getQuotes();
 ReactDOM.render(<Chart />, container);
