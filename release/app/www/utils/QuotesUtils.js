@@ -3,6 +3,7 @@ var Q = require('q');
 var d3 = require('d3');
 var QuotesServerActions = require('../actions/QuotesServerActions');
 function quotify(data) {
+    // Datetimes are received from server as strings
     data.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
 }
 function receive(data) {

@@ -8,6 +8,7 @@ import Quote = require('../../../documents/Quote');
 import QuotesServerActions = require('../actions/QuotesServerActions');
 
 function quotify(data: Quote[]) {
+	// Datetimes are received from server as strings
 	data.forEach(d => d.dateTime = new Date(d.dateTime as any));
 }
 
