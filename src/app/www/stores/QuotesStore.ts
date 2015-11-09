@@ -22,8 +22,10 @@ class QuotesStoreImpl extends AbstractStore implements QuotesStore {
 			switch(action.actionType) {
 				case ActionType.QuotesReceived:
 					var quotesReceivedAction = action as QuotesServerActions.Receive;
-					this._data = quotesReceivedAction.data;
-					this.emitChange();
+					if (quotesReceivedAction.data && quotesReceivedAction.data.length) {
+						this._data = quotesReceivedAction.data;
+						this.emitChange();
+					}
 			}
 		});
 	}

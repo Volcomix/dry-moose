@@ -57,7 +57,7 @@ var Chart = (function (_super) {
     };
     Chart.prototype.render = function () {
         var data = this.state.data;
-        if (!data || !data.length)
+        if (!data)
             return React.createElement("span", null, "Loading data...");
         var margin = this.props.margin, contentWidth = this.state.width - margin.left - margin.right, contentHeight = this.state.height - margin.top - margin.bottom, domain = this.xScale.domain();
         this.xScale.range([0, contentWidth]); // range() wants Dates which is wrong

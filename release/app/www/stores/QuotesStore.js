@@ -16,8 +16,10 @@ var QuotesStoreImpl = (function (_super) {
             switch (action.actionType) {
                 case ActionType.QuotesReceived:
                     var quotesReceivedAction = action;
-                    _this._data = quotesReceivedAction.data;
-                    _this.emitChange();
+                    if (quotesReceivedAction.data && quotesReceivedAction.data.length) {
+                        _this._data = quotesReceivedAction.data;
+                        _this.emitChange();
+                    }
             }
         });
     }

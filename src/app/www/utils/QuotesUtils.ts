@@ -11,19 +11,15 @@ function quotify(data: Quote[]) {
 	data.forEach(d => d.dateTime = new Date(d.dateTime as any));
 }
 
-function receiveAndSort(data: Quote[]) {
-	quotify(data);
-	data.sort((a, b) => +a.dateTime - +b.dateTime);
-	QuotesServerActions.receive(data);
-}
-
 function receive(data: Quote[]) {
 	quotify(data);
 	QuotesServerActions.receive(data);
 }
 
-export function getLast() {
-	Q.nfcall(d3.json, '/monitoring/quotes').then(receiveAndSort);
+function receiveAndSort(data: Quote[]) {
+	quotify(data);
+	data.sort((a, b) => +a.dateTime - +b.dateTime);
+	QuotesServerActions.receive(data);
 }
 
 var delay = Q<void>(null);
@@ -46,4 +42,8 @@ export function get(dateTime: Date) {
     if (!delay.isPending()) {
         retrieveData();
     }
+}
+
+export function getLast() {
+	Q.nfcall(d3.json, '/monitoring/quotes').then(receiveAndSort);
 }

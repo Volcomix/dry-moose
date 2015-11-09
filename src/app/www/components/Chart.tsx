@@ -62,7 +62,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	render() {
 		var data = this.state.data;
 		
-		if (!data || !data.length) return <span>Loading data...</span>;
+		if (!data) return <span>Loading data...</span>;
 		
 		var margin = this.props.margin,
 			contentWidth = this.state.width - margin.left - margin.right,
