@@ -1,11 +1,11 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
-import QuotesUtils = require('../utils/QuotesUtils');
+import MonitoringUtils = require('../utils/MonitoringUtils');
 
 export function getLast() {
-	QuotesUtils.getLast();
+	MonitoringUtils.getLast();
 }
 
 export function get(dateTime: Date) {
-	QuotesUtils.get(dateTime);
+	MonitoringUtils.get(dateTime);
 }
