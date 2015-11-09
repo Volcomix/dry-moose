@@ -12,7 +12,7 @@ var retrieveDateTime;
 function retrieveData() {
     if (retrieveDateTime) {
         delay = Q.delay(1000).then(retrieveData);
-        Q.nfcall(d3.json, '/monitoring/quotes?dateTime=' + retrieveDateTime.toISOString())
+        Q.nfcall(d3.json, '/monitoring/quotes/' + retrieveDateTime.toISOString())
             .then(receive);
         retrieveDateTime = undefined;
     }
