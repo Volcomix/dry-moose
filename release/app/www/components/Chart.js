@@ -39,7 +39,7 @@ var Chart = (function (_super) {
     Object.defineProperty(Chart.prototype, "stateFromStores", {
         get: function () {
             return {
-                data: MonitoringStore.data,
+                data: MonitoringStore.quotes,
                 width: WindowStore.width,
                 height: WindowStore.height
             };

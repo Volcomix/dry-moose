@@ -4,7 +4,8 @@ var ActionType = require('../constants/ActionType');
 function receive(data) {
     AppDispatcher.dispatch({
         actionType: ActionType.QuotesReceived,
-        data: data
+        quotes: data.quotes,
+        portfolio: data.portfolio
     });
 }
 exports.receive = receive;

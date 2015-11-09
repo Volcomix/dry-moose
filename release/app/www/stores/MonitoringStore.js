@@ -15,17 +15,27 @@ var MonitoringStoreImpl = (function (_super) {
         AppDispatcher.register(function (action) {
             switch (action.actionType) {
                 case ActionType.QuotesReceived:
-                    var quotesReceivedAction = action;
-                    if (quotesReceivedAction.data && quotesReceivedAction.data.length) {
-                        _this._data = quotesReceivedAction.data;
-                        _this.emitChange();
+                    var receiveAction = action;
+                    if (receiveAction.quotes.length) {
+                        _this._quotes = receiveAction.quotes;
                     }
+                    if (receiveAction.portfolio.length) {
+                        _this._portfolio = receiveAction.portfolio;
+                    }
+                    _this.emitChange();
             }
         });
     }
-    Object.defineProperty(MonitoringStoreImpl.prototype, "data", {
+    Object.defineProperty(MonitoringStoreImpl.prototype, "quotes", {
         get: function () {
-            return this._data;
+            return this._quotes;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MonitoringStoreImpl.prototype, "portfolio", {
+        get: function () {
+            return this._portfolio;
         },
         enumerable: true,
         configurable: true

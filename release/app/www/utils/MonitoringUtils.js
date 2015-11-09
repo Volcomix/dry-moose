@@ -2,11 +2,14 @@
 var Q = require('q');
 var d3 = require('d3');
 var MonitoringServerActions = require('../actions/MonitoringServerActions');
+function convertDateTime(d) {
+    d.dateTime = new Date(d.dateTime);
+}
 function receive(data) {
-    var quotes = data.quotes;
     // Datetimes are received from server as strings
-    quotes.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
-    MonitoringServerActions.receive(quotes);
+    data.quotes.forEach(convertDateTime);
+    data.portfolio.forEach(convertDateTime);
+    MonitoringServerActions.receive(data);
 }
 var delay = Q(null);
 var retrieveDateTime;

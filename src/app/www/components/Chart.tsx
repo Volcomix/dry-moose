@@ -22,7 +22,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private get stateFromStores(): Chart.State {
 		return {
-			data: MonitoringStore.data,
+			data: MonitoringStore.quotes,
 			width: WindowStore.width,
 			height: WindowStore.height
 		};

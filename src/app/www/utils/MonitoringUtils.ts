@@ -8,12 +8,16 @@ import Portfolio = require('../../../documents/Portfolio');
 
 import MonitoringServerActions = require('../actions/MonitoringServerActions');
 
+function convertDateTime(d: { dateTime: Date }) {
+    d.dateTime = new Date(d.dateTime as any);
+}
+
 function receive(data: { quotes: Quote[], portfolio: Portfolio[]}) {
-    var quotes: Quote[] = data.quotes;
+    // Datetimes are received from server as strings
+	data.quotes.forEach(convertDateTime);
+    data.portfolio.forEach(convertDateTime);
     
-	// Datetimes are received from server as strings
-	quotes.forEach(d => d.dateTime = new Date(d.dateTime as any));
-	MonitoringServerActions.receive(quotes);
+	MonitoringServerActions.receive(data);
 }
 
 var delay = Q<void>(null);
