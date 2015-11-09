@@ -15,7 +15,7 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 	
 	constructor(props) {
 		super(props);
-		this.zoom.x(this.props.xScale as any);
+		this.zoom.scaleExtent(this.props.zoomScaleExtent).x(this.props.xScale as any);
 		this.state = { position: undefined };
 	}
 	
@@ -77,7 +77,18 @@ module Cursor {
 		height: number;
 		xScale: d3.time.Scale<Date, number>;
 		yScale: d3.scale.Linear<number, number>;
+		zoomScaleExtent?: [number, number];
 		onZoom?: (d: {}, i: number) => any;
+	}
+	
+	export var defaultProps: Props = {
+		data: undefined,
+		width: undefined,
+		height: undefined,
+		xScale: undefined,
+		yScale: undefined,
+		zoomScaleExtent: [0.5, 10],
+		onZoom: undefined
 	}
 	
 	export interface State {

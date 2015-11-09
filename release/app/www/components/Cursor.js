@@ -16,7 +16,7 @@ var Cursor = (function (_super) {
         this.zoom = d3.behavior.zoom();
         this.clearPosition = function () { return _this.setState({ position: undefined }); };
         this.updatePosition = function () { return _this.setState({ position: d3.mouse(_this.pane) }); };
-        this.zoom.x(this.props.xScale);
+        this.zoom.scaleExtent(this.props.zoomScaleExtent).x(this.props.xScale);
         this.state = { position: undefined };
     }
     Cursor.prototype.componentDidMount = function () {
@@ -40,4 +40,16 @@ var Cursor = (function (_super) {
     };
     return Cursor;
 })(React.Component);
+var Cursor;
+(function (Cursor) {
+    Cursor.defaultProps = {
+        data: undefined,
+        width: undefined,
+        height: undefined,
+        xScale: undefined,
+        yScale: undefined,
+        zoomScaleExtent: [0.5, 10],
+        onZoom: undefined
+    };
+})(Cursor || (Cursor = {}));
 module.exports = Cursor;
