@@ -13,15 +13,13 @@ var Charts = (function (_super) {
         var _this = this;
         _super.call(this, props);
         this.onResize = function () { return _this.setState({
-            quotesChartWidth: _this.quotesChartContainer.offsetWidth,
+            mainWidth: _this.mainContainer.offsetWidth,
             quotesChartHeight: _this.quotesChartContainer.offsetHeight,
-            portfolioChartWidth: _this.portfolioChartContainer.offsetWidth,
             portfolioChartHeight: _this.portfolioChartContainer.offsetHeight
         }); };
         this.state = {
-            quotesChartWidth: undefined,
+            mainWidth: undefined,
             quotesChartHeight: undefined,
-            portfolioChartWidth: undefined,
             portfolioChartHeight: undefined
         };
     }
@@ -34,7 +32,7 @@ var Charts = (function (_super) {
     };
     Charts.prototype.render = function () {
         var _this = this;
-        return (React.createElement("div", {"style": { height: '100%' }}, React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, React.createElement(QuotesChart, {"width": this.state.quotesChartWidth, "height": this.state.quotesChartHeight})), React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, React.createElement(PortfolioChart, {"width": this.state.portfolioChartWidth, "height": this.state.portfolioChartHeight}))));
+        return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, React.createElement(QuotesChart, {"width": this.state.mainWidth, "height": this.state.quotesChartHeight})), React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, React.createElement(PortfolioChart, {"width": this.state.mainWidth, "height": this.state.portfolioChartHeight}))));
     };
     return Charts;
 })(React.Component);

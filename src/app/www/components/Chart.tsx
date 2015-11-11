@@ -111,7 +111,7 @@ module Chart {
 		yAccessor: undefined,
 		width: undefined,
 		height: undefined,
-		margin: { top: 20, right: 50, bottom: 30, left: 20 }
+		margin: { top: 20, right: 80, bottom: 30, left: 20 }
 	}
 	
 	export interface State {
