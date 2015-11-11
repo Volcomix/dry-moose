@@ -14,9 +14,9 @@ var LineSeries = require('./LineSeries');
 var Cursor = require('./Cursor');
 var Chart = (function (_super) {
     __extends(Chart, _super);
-    function Chart(props) {
+    function Chart() {
         var _this = this;
-        _super.call(this, props);
+        _super.apply(this, arguments);
         this.xScale = d3.time.scale();
         this.yScale = d3.scale.linear();
         this.onZoom = function () { return setTimeout(function () {
@@ -29,7 +29,6 @@ var Chart = (function (_super) {
             }
             _this.forceUpdate();
         }, 0); }; // Force wait UI refresh (improve UI performance)
-        MonitoringActions.getLast();
     }
     Chart.prototype.render = function () {
         if (!this.props.data)

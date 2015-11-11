@@ -16,11 +16,6 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	private xScale = d3.time.scale<Date, number>();
 	private yScale = d3.scale.linear();
 	
-	constructor(props) {
-		super(props);
-		MonitoringActions.getLast();
-	}
-	
 	render() {
 		if (!this.props.data) return <span>Loading data...</span>;
 		
