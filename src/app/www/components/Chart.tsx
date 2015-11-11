@@ -4,8 +4,6 @@ import React = require('react');
 import d3 = require('d3');
 import moment = require('moment');
 
-import Quote = require('../../../documents/Quote');
-
 import MonitoringActions = require('../actions/MonitoringActions');
 
 import XAxis = require('./XAxis');
@@ -43,11 +41,14 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 					<YAxis width={contentWidth} scale={this.yScale} />
 					<LineSeries
 						data={this.props.data}
+						xAccessor={this.props.xAccessor}
+						yAccessor={this.props.yAccessor}
 						xScale={this.xScale}
 						yScale={this.yScale}
 						clipPath='url(#clip)' />
 					<Cursor
 						data={this.props.data}
+						xAccessor={this.props.xAccessor}
 						width={contentWidth}
 						height={contentHeight}
 						xScale={this.xScale}
@@ -64,19 +65,20 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		this.xScale.range([0, width] as any); // range() wants Dates which is wrong
 		
 		if (+domain[0] == 0 && +domain[1] == 1) {
-			var lastQuote = this.props.data[this.props.data.length - 1];
-			this.xScale.domain([
-				moment(lastQuote.dateTime).subtract({ hours: 2 }).toDate(),
-				lastQuote.dateTime
-			]).nice();
+			var lastDatum = this.props.data[this.props.data.length - 1];
+			var endDateTime = this.props.xAccessor(lastDatum);
+			var startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
+			this.xScale.domain([startDateTime, endDateTime]).nice();
 		}
 	}
 	
 	private updateYScale(height: number) {
-		var domain = this.xScale.domain(),
-			i = Quote.bisect(this.props.data, domain[0], 1),
-			j = Quote.bisect(this.props.data, domain[1], i + 1),
-			extent = d3.extent(this.props.data.slice(i - 1, j + 1), d => d.close);
+		var bisect = d3.bisector(this.props.xAccessor).left,
+			domain = this.xScale.domain(),
+			i = bisect(this.props.data, domain[0], 1),
+			j = bisect(this.props.data, domain[1], i + 1),
+			domainData = this.props.data.slice(i - 1, j + 1),
+			extent = d3.extent(domainData, this.props.yAccessor);
 		
 		this.yScale.range([height, 0]);
 		if (extent[0] != extent[1]) {
@@ -88,9 +90,9 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		var data = this.props.data,
 			domain = this.xScale.domain();
 		
-		if (domain[0]  < data[0].dateTime) {
+		if (domain[0]  < this.props.xAccessor(data[0])) {
 			MonitoringActions.get(domain[0]);
-		} else if (domain[1] > data[data.length - 1].dateTime) {
+		} else if (domain[1] > this.props.xAccessor(data[data.length - 1])) {
 			MonitoringActions.get(domain[1]);
 		}
 		
@@ -100,7 +102,9 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 
 module Chart {
 	export interface Props {
-		data: Quote[];
+		data: {}[];
+		xAccessor: (d: {}) => Date;
+		yAccessor: (d: {}) => number;
 		width: number;
 		height: number;
 		margin?: { top: number; right: number; bottom: number; left: number; };
@@ -108,6 +112,8 @@ module Chart {
 	
 	export var defaultProps: Props = {
 		data: undefined,
+		xAccessor: undefined,
+		yAccessor: undefined,
 		width: undefined,
 		height: undefined,
 		margin: { top: 20, right: 50, bottom: 30, left: 20 }

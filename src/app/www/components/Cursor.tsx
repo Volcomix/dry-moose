@@ -3,8 +3,6 @@
 import React = require('react');
 import d3 = require('d3');
 
-import Quote = require('../../../documents/Quote');
-
 import XCursor = require('./XCursor');
 import YCursor = require('./YCursor');
 
@@ -16,7 +14,7 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 	constructor(props) {
 		super(props);
 		this.zoom.scaleExtent(this.props.zoomScaleExtent).x(this.props.xScale as any);
-		this.state = { position: undefined };
+		this.state = { mouse: undefined };
 	}
 	
 	componentDidMount() {
@@ -36,17 +34,18 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 		var xCursor: JSX.Element,
 			yCursor: JSX.Element;
 		
-		if (this.state.position) {
+		if (this.state.mouse) {
 			xCursor = (
 				<XCursor
 					data={this.props.data}
-					x={this.state.position[0]}
+					accessor={this.props.xAccessor}
+					mouseX={this.state.mouse[0]}
 					height={this.props.height}
 					scale={this.props.xScale} />
 			);
 			yCursor = (
 				<YCursor
-					y={this.state.position[1]}
+					mouseY={this.state.mouse[1]}
 					width={this.props.width}
 					scale={this.props.yScale} />
 			);
@@ -66,13 +65,14 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 		);
 	}
 	
-	private clearPosition = () => this.setState({ position: undefined});
-	private updatePosition = () => this.setState({ position: d3.mouse(this.pane) });
+	private clearPosition = () => this.setState({ mouse: undefined});
+	private updatePosition = () => this.setState({ mouse: d3.mouse(this.pane) });
 }
 
 module Cursor {
 	export interface Props {
-		data: Quote[];
+		data: {}[];
+		xAccessor: (d: {}) => Date;
 		width: number;
 		height: number;
 		xScale: d3.time.Scale<Date, number>;
@@ -83,6 +83,7 @@ module Cursor {
 	
 	export var defaultProps: Props = {
 		data: undefined,
+		xAccessor: undefined,
 		width: undefined,
 		height: undefined,
 		xScale: undefined,
@@ -92,7 +93,7 @@ module Cursor {
 	}
 	
 	export interface State {
-		position: [number, number];
+		mouse: [number, number];
 	}
 }
 

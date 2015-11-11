@@ -14,10 +14,10 @@ var Cursor = (function (_super) {
         var _this = this;
         _super.call(this, props);
         this.zoom = d3.behavior.zoom();
-        this.clearPosition = function () { return _this.setState({ position: undefined }); };
-        this.updatePosition = function () { return _this.setState({ position: d3.mouse(_this.pane) }); };
+        this.clearPosition = function () { return _this.setState({ mouse: undefined }); };
+        this.updatePosition = function () { return _this.setState({ mouse: d3.mouse(_this.pane) }); };
         this.zoom.scaleExtent(this.props.zoomScaleExtent).x(this.props.xScale);
-        this.state = { position: undefined };
+        this.state = { mouse: undefined };
     }
     Cursor.prototype.componentDidMount = function () {
         // Use d3.event to make d3.mouse work
@@ -32,9 +32,9 @@ var Cursor = (function (_super) {
     Cursor.prototype.render = function () {
         var _this = this;
         var xCursor, yCursor;
-        if (this.state.position) {
-            xCursor = (React.createElement(XCursor, {"data": this.props.data, x: this.state.position[0], "height": this.props.height, "scale": this.props.xScale}));
-            yCursor = (React.createElement(YCursor, {y: this.state.position[1], "width": this.props.width, "scale": this.props.yScale}));
+        if (this.state.mouse) {
+            xCursor = (React.createElement(XCursor, {"data": this.props.data, "accessor": this.props.xAccessor, "mouseX": this.state.mouse[0], "height": this.props.height, "scale": this.props.xScale}));
+            yCursor = (React.createElement(YCursor, {"mouseY": this.state.mouse[1], "width": this.props.width, "scale": this.props.yScale}));
         }
         return (React.createElement("g", null, xCursor, yCursor, React.createElement("rect", {"className": 'pane', "ref": function (pane) { return _this.pane = pane; }, "width": this.props.width, "height": this.props.height, "onMouseOut": this.clearPosition})));
     };
@@ -44,6 +44,7 @@ var Cursor;
 (function (Cursor) {
     Cursor.defaultProps = {
         data: undefined,
+        xAccessor: undefined,
         width: undefined,
         height: undefined,
         xScale: undefined,

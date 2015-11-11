@@ -7,7 +7,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var moment = require('moment');
-var Quote = require('../../../documents/Quote');
 var MonitoringActions = require('../actions/MonitoringActions');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
@@ -22,10 +21,10 @@ var Chart = (function (_super) {
         this.yScale = d3.scale.linear();
         this.onZoom = function () { return setTimeout(function () {
             var data = _this.props.data, domain = _this.xScale.domain();
-            if (domain[0] < data[0].dateTime) {
+            if (domain[0] < _this.props.xAccessor(data[0])) {
                 MonitoringActions.get(domain[0]);
             }
-            else if (domain[1] > data[data.length - 1].dateTime) {
+            else if (domain[1] > _this.props.xAccessor(data[data.length - 1])) {
                 MonitoringActions.get(domain[1]);
             }
             _this.forceUpdate();
@@ -38,21 +37,20 @@ var Chart = (function (_super) {
         var margin = this.props.margin, contentWidth = this.props.width - margin.left - margin.right, contentHeight = this.props.height - margin.top - margin.bottom;
         this.updateXScale(contentWidth);
         this.updateYScale(contentHeight);
-        return (React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.props.data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.props.data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
+        return (React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.props.data, "xAccessor": this.props.xAccessor, "yAccessor": this.props.yAccessor, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.props.data, "xAccessor": this.props.xAccessor, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
     };
     Chart.prototype.updateXScale = function (width) {
         var domain = this.xScale.domain();
         this.xScale.range([0, width]); // range() wants Dates which is wrong
         if (+domain[0] == 0 && +domain[1] == 1) {
-            var lastQuote = this.props.data[this.props.data.length - 1];
-            this.xScale.domain([
-                moment(lastQuote.dateTime).subtract({ hours: 2 }).toDate(),
-                lastQuote.dateTime
-            ]).nice();
+            var lastDatum = this.props.data[this.props.data.length - 1];
+            var endDateTime = this.props.xAccessor(lastDatum);
+            var startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
+            this.xScale.domain([startDateTime, endDateTime]).nice();
         }
     };
     Chart.prototype.updateYScale = function (height) {
-        var domain = this.xScale.domain(), i = Quote.bisect(this.props.data, domain[0], 1), j = Quote.bisect(this.props.data, domain[1], i + 1), extent = d3.extent(this.props.data.slice(i - 1, j + 1), function (d) { return d.close; });
+        var bisect = d3.bisector(this.props.xAccessor).left, domain = this.xScale.domain(), i = bisect(this.props.data, domain[0], 1), j = bisect(this.props.data, domain[1], i + 1), domainData = this.props.data.slice(i - 1, j + 1), extent = d3.extent(domainData, this.props.yAccessor);
         this.yScale.range([height, 0]);
         if (extent[0] != extent[1]) {
             this.yScale.domain(extent).nice();
@@ -64,6 +62,8 @@ var Chart;
 (function (Chart) {
     Chart.defaultProps = {
         data: undefined,
+        xAccessor: undefined,
+        yAccessor: undefined,
         width: undefined,
         height: undefined,
         margin: { top: 20, right: 50, bottom: 30, left: 20 }

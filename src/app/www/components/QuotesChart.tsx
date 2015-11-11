@@ -33,6 +33,8 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 		return (
 			<Chart
 				data={this.state.quotes}
+				xAccessor={(d: Quote) => d.dateTime}
+				yAccessor={(d: Quote) => d.close}
 				width={this.props.width}
 				height={this.props.height} />
 		);

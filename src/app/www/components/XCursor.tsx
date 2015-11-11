@@ -3,8 +3,6 @@
 import React = require('react');
 import d3 = require('d3');
 
-import Quote = require('../../../documents/Quote');
-
 class XCursor extends React.Component<XCursor.Props, XCursor.State> {
 	
 	private dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
@@ -25,37 +23,41 @@ class XCursor extends React.Component<XCursor.Props, XCursor.State> {
 	}
 	
 	private snapDateTime() {
-		var x0 = this.props.scale.invert(this.props.x),
-            i = Quote.bisect(this.props.data, x0, 1),
+		var bisect = d3.bisector(this.props.accessor).left,
+			x0 = this.props.scale.invert(this.props.mouseX),
+            i = bisect(this.props.data, x0, 1),
             d0 = this.props.data[i - 1],
             d1 = this.props.data[i],
-            quote: Quote;
+            d: {};
 			
 		if (d1) {
 			var domain = this.props.scale.domain();
-			if (d1.dateTime > domain[1]) {
-				quote = d0;
-			} else if (d0.dateTime < domain[0]) {
-				quote = d1;
+			if (this.props.accessor(d1) > domain[1]) {
+				d = d0;
+			} else if (this.props.accessor(d0) < domain[0]) {
+				d = d1;
+			} else if (+x0 - +this.props.accessor(d0) > +this.props.accessor(d1) - +x0) {
+				d = d1;
 			} else {
-				quote = +x0 - +d0.dateTime > +d1.dateTime - +x0 ? d1 : d0;
+				d = d0;
 			}
 		} else {
-			quote = d0;
+			d = d0;
 		}
 		
-		if (Math.abs(+quote.dateTime - +x0) > this.props.snapThreshold) {
+		if (Math.abs(+this.props.accessor(d) - +x0) > this.props.snapThreshold) {
 			return x0;
 		}
 		
-		return quote.dateTime;
+		return this.props.accessor(d);
 	}
 }
 
 module XCursor {
 	export interface Props {
-		data: Quote[];
-		x: number;
+		data: {}[];
+		accessor: (d: {}) => Date;
+		mouseX: number;
 		height: number;
 		scale: d3.time.Scale<Date, number>;
 		snapThreshold?: number;
@@ -63,7 +65,8 @@ module XCursor {
 	
 	export var defaultProps: Props = {
 		data: undefined,
-		x: undefined,
+		accessor: undefined,
+		mouseX: undefined,
 		height: undefined,
 		scale: undefined,
 		snapThreshold: 60000

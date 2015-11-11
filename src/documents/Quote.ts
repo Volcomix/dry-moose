@@ -1,7 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
-import d3 = require('d3');
-
 import Reward = require('./Reward');
 
 interface Quote {
@@ -12,10 +10,6 @@ interface Quote {
     close: number;
     volume: number;
     rewards: Reward[];
-}
-
-module Quote {
-    export var bisect = d3.bisector<Quote, Date>(d => d.dateTime).left;
 }
 
 export = Quote;

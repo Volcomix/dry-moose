@@ -13,8 +13,8 @@ var LineSeries = (function (_super) {
         _super.call(this, props);
         this.line = d3.svg.line();
         this.line
-            .x(function (d) { return _this.props.xScale(d.dateTime); })
-            .y(function (d) { return _this.props.yScale(d.close); });
+            .x(function (d) { return _this.props.xScale(_this.props.xAccessor(d)); })
+            .y(function (d) { return _this.props.yScale(_this.props.yAccessor(d)); });
     }
     LineSeries.prototype.render = function () {
         return React.createElement('path', {
