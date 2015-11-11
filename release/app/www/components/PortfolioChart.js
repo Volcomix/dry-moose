@@ -5,13 +5,33 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var MonitoringStore = require('../stores/MonitoringStore');
+var Chart = require('./Chart');
 var PortfolioChart = (function (_super) {
     __extends(PortfolioChart, _super);
-    function PortfolioChart() {
-        _super.apply(this, arguments);
+    function PortfolioChart(props) {
+        var _this = this;
+        _super.call(this, props);
+        this.onChange = function () { return _this.setState(_this.stateFromStores); };
+        this.state = this.stateFromStores;
     }
+    Object.defineProperty(PortfolioChart.prototype, "stateFromStores", {
+        get: function () {
+            return {
+                portfolio: MonitoringStore.portfolio
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    PortfolioChart.prototype.componentDidMount = function () {
+        MonitoringStore.addChangeListener(this.onChange);
+    };
+    PortfolioChart.prototype.componentWillUnmount = function () {
+        MonitoringStore.removeChangeListener(this.onChange);
+    };
     PortfolioChart.prototype.render = function () {
-        return (React.createElement("svg", null));
+        return (React.createElement(Chart, {"data": this.state.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height}));
     };
     return PortfolioChart;
 })(React.Component);

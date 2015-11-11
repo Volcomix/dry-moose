@@ -14,11 +14,15 @@ var Charts = (function (_super) {
         _super.call(this, props);
         this.onResize = function () { return _this.setState({
             quotesChartWidth: _this.quotesChartContainer.offsetWidth,
-            quotesChartHeight: _this.quotesChartContainer.offsetHeight
+            quotesChartHeight: _this.quotesChartContainer.offsetHeight,
+            portfolioChartWidth: _this.portfolioChartContainer.offsetWidth,
+            portfolioChartHeight: _this.portfolioChartContainer.offsetHeight
         }); };
         this.state = {
             quotesChartWidth: undefined,
-            quotesChartHeight: undefined
+            quotesChartHeight: undefined,
+            portfolioChartWidth: undefined,
+            portfolioChartHeight: undefined
         };
     }
     Charts.prototype.componentDidMount = function () {
@@ -30,7 +34,7 @@ var Charts = (function (_super) {
     };
     Charts.prototype.render = function () {
         var _this = this;
-        return (React.createElement("div", {"style": { height: '100%' }}, React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, React.createElement(QuotesChart, {"width": this.state.quotesChartWidth, "height": this.state.quotesChartHeight})), React.createElement("div", {"style": { height: '50%' }}, React.createElement(PortfolioChart, null))));
+        return (React.createElement("div", {"style": { height: '100%' }}, React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, React.createElement(QuotesChart, {"width": this.state.quotesChartWidth, "height": this.state.quotesChartHeight})), React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, React.createElement(PortfolioChart, {"width": this.state.portfolioChartWidth, "height": this.state.portfolioChartHeight}))));
     };
     return Charts;
 })(React.Component);
