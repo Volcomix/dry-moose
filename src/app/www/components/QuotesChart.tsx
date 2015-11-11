@@ -2,14 +2,43 @@
 
 import React = require('react');
 
+import Quote = require('../../../documents/Quote');
+
+import MonitoringStore = require('../stores/MonitoringStore');
+
 import Chart = require('./Chart');
 
 class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> {
+	
+	private get stateFromStores(): QuotesChart.State {
+		return {
+			quotes: MonitoringStore.quotes
+		};
+	}
+	
+	constructor(props) {
+		super(props);
+		this.state = this.stateFromStores;
+	}
+	
+	componentDidMount() {
+		MonitoringStore.addChangeListener(this.onChange)
+	}
+	
+	componentWillUnmount() {
+		MonitoringStore.removeChangeListener(this.onChange);
+	}
+	
 	render() {
 		return (
-			<Chart width={this.props.width} height={this.props.height} />
+			<Chart
+				data={this.state.quotes}
+				width={this.props.width}
+				height={this.props.height} />
 		);
 	}
+	
+	private onChange = () => this.setState(this.stateFromStores);
 }
 
 module QuotesChart {
@@ -19,6 +48,7 @@ module QuotesChart {
 	}
 	
 	export interface State {
+		quotes: Quote[];
 	}
 }
 

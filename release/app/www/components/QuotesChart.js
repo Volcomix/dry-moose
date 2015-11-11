@@ -5,14 +5,33 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var MonitoringStore = require('../stores/MonitoringStore');
 var Chart = require('./Chart');
 var QuotesChart = (function (_super) {
     __extends(QuotesChart, _super);
-    function QuotesChart() {
-        _super.apply(this, arguments);
+    function QuotesChart(props) {
+        var _this = this;
+        _super.call(this, props);
+        this.onChange = function () { return _this.setState(_this.stateFromStores); };
+        this.state = this.stateFromStores;
     }
+    Object.defineProperty(QuotesChart.prototype, "stateFromStores", {
+        get: function () {
+            return {
+                quotes: MonitoringStore.quotes
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    QuotesChart.prototype.componentDidMount = function () {
+        MonitoringStore.addChangeListener(this.onChange);
+    };
+    QuotesChart.prototype.componentWillUnmount = function () {
+        MonitoringStore.removeChangeListener(this.onChange);
+    };
     QuotesChart.prototype.render = function () {
-        return (React.createElement(Chart, {"width": this.props.width, "height": this.props.height}));
+        return (React.createElement(Chart, {"data": this.state.quotes, "width": this.props.width, "height": this.props.height}));
     };
     return QuotesChart;
 })(React.Component);

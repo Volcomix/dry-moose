@@ -9,7 +9,6 @@ var d3 = require('d3');
 var moment = require('moment');
 var Quote = require('../../../documents/Quote');
 var MonitoringActions = require('../actions/MonitoringActions');
-var MonitoringStore = require('../stores/MonitoringStore');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
 var LineSeries = require('./LineSeries');
@@ -22,7 +21,7 @@ var Chart = (function (_super) {
         this.xScale = d3.time.scale();
         this.yScale = d3.scale.linear();
         this.onZoom = function () { return setTimeout(function () {
-            var data = _this.state.data, domain = _this.xScale.domain();
+            var data = _this.props.data, domain = _this.xScale.domain();
             if (domain[0] < data[0].dateTime) {
                 MonitoringActions.get(domain[0]);
             }
@@ -31,38 +30,21 @@ var Chart = (function (_super) {
             }
             _this.forceUpdate();
         }, 0); }; // Force wait UI refresh (improve UI performance)
-        this.onChange = function () { return _this.setState(_this.stateFromStores); };
         MonitoringActions.getLast();
-        this.state = this.stateFromStores;
     }
-    Object.defineProperty(Chart.prototype, "stateFromStores", {
-        get: function () {
-            return {
-                data: MonitoringStore.quotes
-            };
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Chart.prototype.componentDidMount = function () {
-        MonitoringStore.addChangeListener(this.onChange);
-    };
-    Chart.prototype.componentWillUnmount = function () {
-        MonitoringStore.removeChangeListener(this.onChange);
-    };
     Chart.prototype.render = function () {
-        if (!this.state.data)
+        if (!this.props.data)
             return React.createElement("span", null, "Loading data...");
         var margin = this.props.margin, contentWidth = this.props.width - margin.left - margin.right, contentHeight = this.props.height - margin.top - margin.bottom;
         this.updateXScale(contentWidth);
         this.updateYScale(contentHeight);
-        return (React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.state.data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.state.data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
+        return (React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.props.data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.props.data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
     };
     Chart.prototype.updateXScale = function (width) {
         var domain = this.xScale.domain();
         this.xScale.range([0, width]); // range() wants Dates which is wrong
         if (+domain[0] == 0 && +domain[1] == 1) {
-            var lastQuote = this.state.data[this.state.data.length - 1];
+            var lastQuote = this.props.data[this.props.data.length - 1];
             this.xScale.domain([
                 moment(lastQuote.dateTime).subtract({ hours: 2 }).toDate(),
                 lastQuote.dateTime
@@ -70,7 +52,7 @@ var Chart = (function (_super) {
         }
     };
     Chart.prototype.updateYScale = function (height) {
-        var domain = this.xScale.domain(), i = Quote.bisect(this.state.data, domain[0], 1), j = Quote.bisect(this.state.data, domain[1], i + 1), extent = d3.extent(this.state.data.slice(i - 1, j + 1), function (d) { return d.close; });
+        var domain = this.xScale.domain(), i = Quote.bisect(this.props.data, domain[0], 1), j = Quote.bisect(this.props.data, domain[1], i + 1), extent = d3.extent(this.props.data.slice(i - 1, j + 1), function (d) { return d.close; });
         this.yScale.range([height, 0]);
         if (extent[0] != extent[1]) {
             this.yScale.domain(extent).nice();
@@ -81,6 +63,7 @@ var Chart = (function (_super) {
 var Chart;
 (function (Chart) {
     Chart.defaultProps = {
+        data: undefined,
         width: undefined,
         height: undefined,
         margin: { top: 20, right: 50, bottom: 30, left: 20 }

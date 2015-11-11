@@ -7,7 +7,6 @@ import moment = require('moment');
 import Quote = require('../../../documents/Quote');
 
 import MonitoringActions = require('../actions/MonitoringActions');
-import MonitoringStore = require('../stores/MonitoringStore');
 
 import XAxis = require('./XAxis');
 import YAxis = require('./YAxis');
@@ -19,28 +18,13 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	private xScale = d3.time.scale<Date, number>();
 	private yScale = d3.scale.linear();
 	
-	private get stateFromStores(): Chart.State {
-		return {
-			data: MonitoringStore.quotes
-		};
-	}
-	
 	constructor(props) {
 		super(props);
 		MonitoringActions.getLast();
-		this.state = this.stateFromStores;
-	}
-	
-	componentDidMount() {
-		MonitoringStore.addChangeListener(this.onChange)
-	}
-	
-	componentWillUnmount() {
-		MonitoringStore.removeChangeListener(this.onChange);
 	}
 	
 	render() {
-		if (!this.state.data) return <span>Loading data...</span>;
+		if (!this.props.data) return <span>Loading data...</span>;
 		
 		var margin = this.props.margin,
 			contentWidth = this.props.width - margin.left - margin.right,
@@ -58,12 +42,12 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 					<XAxis height={contentHeight} scale={this.xScale} />
 					<YAxis width={contentWidth} scale={this.yScale} />
 					<LineSeries
-						data={this.state.data}
+						data={this.props.data}
 						xScale={this.xScale}
 						yScale={this.yScale}
 						clipPath='url(#clip)' />
 					<Cursor
-						data={this.state.data}
+						data={this.props.data}
 						width={contentWidth}
 						height={contentHeight}
 						xScale={this.xScale}
@@ -80,7 +64,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		this.xScale.range([0, width] as any); // range() wants Dates which is wrong
 		
 		if (+domain[0] == 0 && +domain[1] == 1) {
-			var lastQuote = this.state.data[this.state.data.length - 1];
+			var lastQuote = this.props.data[this.props.data.length - 1];
 			this.xScale.domain([
 				moment(lastQuote.dateTime).subtract({ hours: 2 }).toDate(),
 				lastQuote.dateTime
@@ -90,9 +74,9 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private updateYScale(height: number) {
 		var domain = this.xScale.domain(),
-			i = Quote.bisect(this.state.data, domain[0], 1),
-			j = Quote.bisect(this.state.data, domain[1], i + 1),
-			extent = d3.extent(this.state.data.slice(i - 1, j + 1), d => d.close);
+			i = Quote.bisect(this.props.data, domain[0], 1),
+			j = Quote.bisect(this.props.data, domain[1], i + 1),
+			extent = d3.extent(this.props.data.slice(i - 1, j + 1), d => d.close);
 		
 		this.yScale.range([height, 0]);
 		if (extent[0] != extent[1]) {
@@ -101,7 +85,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	}
 	
 	private onZoom = () => setTimeout(() => {
-		var data = this.state.data,
+		var data = this.props.data,
 			domain = this.xScale.domain();
 		
 		if (domain[0]  < data[0].dateTime) {
@@ -112,25 +96,24 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		
 		this.forceUpdate()
 	}, 0); // Force wait UI refresh (improve UI performance)
-	
-	private onChange = () => this.setState(this.stateFromStores);
 }
 
 module Chart {
 	export interface Props {
+		data: Quote[];
 		width: number;
 		height: number;
 		margin?: { top: number; right: number; bottom: number; left: number; };
 	}
 	
 	export var defaultProps: Props = {
+		data: undefined,
 		width: undefined,
 		height: undefined,
 		margin: { top: 20, right: 50, bottom: 30, left: 20 }
 	}
 	
 	export interface State {
-		data: Quote[];
 	}
 }
 
