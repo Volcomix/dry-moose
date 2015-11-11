@@ -10,7 +10,6 @@ var moment = require('moment');
 var Quote = require('../../../documents/Quote');
 var MonitoringActions = require('../actions/MonitoringActions');
 var MonitoringStore = require('../stores/MonitoringStore');
-var WindowStore = require('../stores/WindowStore');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
 var LineSeries = require('./LineSeries');
@@ -39,9 +38,7 @@ var Chart = (function (_super) {
     Object.defineProperty(Chart.prototype, "stateFromStores", {
         get: function () {
             return {
-                data: MonitoringStore.quotes,
-                width: WindowStore.width,
-                height: WindowStore.height
+                data: MonitoringStore.quotes
             };
         },
         enumerable: true,
@@ -49,19 +46,17 @@ var Chart = (function (_super) {
     });
     Chart.prototype.componentDidMount = function () {
         MonitoringStore.addChangeListener(this.onChange);
-        WindowStore.addChangeListener(this.onChange);
     };
     Chart.prototype.componentWillUnmount = function () {
         MonitoringStore.removeChangeListener(this.onChange);
-        WindowStore.removeChangeListener(this.onChange);
     };
     Chart.prototype.render = function () {
         if (!this.state.data)
             return React.createElement("span", null, "Loading data...");
-        var margin = this.props.margin, contentWidth = this.state.width - margin.left - margin.right, contentHeight = this.state.height - margin.top - margin.bottom;
+        var margin = this.props.margin, contentWidth = this.props.width - margin.left - margin.right, contentHeight = this.props.height - margin.top - margin.bottom;
         this.updateXScale(contentWidth);
         this.updateYScale(contentHeight);
-        return (React.createElement("svg", {"width": this.state.width, "height": this.state.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.state.data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.state.data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
+        return (React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.state.data, "xScale": this.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.state.data, "width": contentWidth, "height": contentHeight, "xScale": this.xScale, "yScale": this.yScale, "onZoom": this.onZoom}))));
     };
     Chart.prototype.updateXScale = function (width) {
         var domain = this.xScale.domain();
@@ -86,6 +81,8 @@ var Chart = (function (_super) {
 var Chart;
 (function (Chart) {
     Chart.defaultProps = {
+        width: undefined,
+        height: undefined,
         margin: { top: 20, right: 50, bottom: 30, left: 20 }
     };
 })(Chart || (Chart = {}));

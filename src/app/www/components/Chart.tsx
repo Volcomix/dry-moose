@@ -8,7 +8,6 @@ import Quote = require('../../../documents/Quote');
 
 import MonitoringActions = require('../actions/MonitoringActions');
 import MonitoringStore = require('../stores/MonitoringStore');
-import WindowStore = require('../stores/WindowStore');
 
 import XAxis = require('./XAxis');
 import YAxis = require('./YAxis');
@@ -22,9 +21,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private get stateFromStores(): Chart.State {
 		return {
-			data: MonitoringStore.quotes,
-			width: WindowStore.width,
-			height: WindowStore.height
+			data: MonitoringStore.quotes
 		};
 	}
 	
@@ -36,26 +33,24 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	componentDidMount() {
 		MonitoringStore.addChangeListener(this.onChange)
-		WindowStore.addChangeListener(this.onChange);
 	}
 	
 	componentWillUnmount() {
 		MonitoringStore.removeChangeListener(this.onChange);
-		WindowStore.removeChangeListener(this.onChange);
 	}
 	
 	render() {
 		if (!this.state.data) return <span>Loading data...</span>;
 		
 		var margin = this.props.margin,
-			contentWidth = this.state.width - margin.left - margin.right,
-			contentHeight = this.state.height - margin.top - margin.bottom;
+			contentWidth = this.props.width - margin.left - margin.right,
+			contentHeight = this.props.height - margin.top - margin.bottom;
 		
 		this.updateXScale(contentWidth);
 		this.updateYScale(contentHeight);
 		
 		return (
-			<svg width={this.state.width} height={this.state.height}>
+			<svg width={this.props.width} height={this.props.height}>
 				<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
 					{React.createElement('clipPath', {id: 'clip'},
 						<rect width={contentWidth} height={contentHeight} />
@@ -123,17 +118,19 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 
 module Chart {
 	export interface Props {
+		width: number;
+		height: number;
 		margin?: { top: number; right: number; bottom: number; left: number; };
 	}
 	
 	export var defaultProps: Props = {
+		width: undefined,
+		height: undefined,
 		margin: { top: 20, right: 50, bottom: 30, left: 20 }
 	}
 	
 	export interface State {
 		data: Quote[];
-		width: number;
-		height: number;
 	}
 }
 
