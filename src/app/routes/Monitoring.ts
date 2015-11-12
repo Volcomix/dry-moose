@@ -54,26 +54,16 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 				$lt: moment(dateTime).add({ hours: 12 }).toDate()
 			}
 		}},
-		{ $sort: { dateTime: 1 }}, // Mandatory to make $last work
+		{ $sort: { dateTime: 1 }}, // Make $last work
 		{ $group: {
-			_id: {
-				year: { $year: '$dateTime' },
-				month: { $month: '$dateTime' },
-				day: { $dayOfMonth: '$dateTime' },
-				hour: { $hour: '$dateTime' },
-				minute: { $minute: '$dateTime' }
-			},
-			d: { $last: '$$ROOT' }
-		}},
-		{ $project: {
-			_id: 0,
-			dateTime: { $dateToString: {
-				format: '%Y-%m-%dT%H:%M',
-				date: '$d.dateTime'
+			_id: { $dateToString: {
+				format: '%Y-%m-%dT%H:%M:00.000Z',
+				date: '$dateTime'
 			}},
-			close: '$d.close'
+			close: { $last: '$close' }
 		}},
-		{ $sort: { dateTime: 1 }} // $group unsorted data
+		{ $project: { _id: 0, dateTime: '$_id', close: '$close' }},
+		{ $sort: { dateTime: 1 }} // $group unsorted data so have to sort again
 	])
 	.then(data => res.send(data));
 });
