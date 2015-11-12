@@ -38,7 +38,7 @@ router.get('/:dateTime', function(req, res, next) {
 });
 
 router.get('/minutes/:dateTime', function(req, res, next) {
-	var dateTime = moment.utc(req.params.dateTime);
+	var dateTime = moment(req.params.dateTime);
 	if (dateTime.hour() < 6) {
 		dateTime.startOf('day');
 	} else if (dateTime.hour() >= 18) {
@@ -54,16 +54,26 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 				$lt: moment(dateTime).add({ hours: 12 }).toDate()
 			}
 		}},
-		{ $sort: { dateTime: 1 }}, // Make $last work
+		{ $sort: { dateTime: 1 }}, // $last needs data to be sorted
 		{ $group: {
-			_id: { $dateToString: {
-				format: '%Y-%m-%dT%H:%M:00.000Z',
-				date: '$dateTime'
-			}},
-			close: { $last: '$close' }
+			_id: {
+				year: { $year: '$dateTime' },
+				month: { $month: '$dateTime' },
+				day: { $dayOfMonth: '$dateTime' },
+				hour: { $hour: '$dateTime' },
+				minute: { $minute: '$dateTime' }
+			},
+			d: { $last: '$$ROOT' }
 		}},
-		{ $project: { _id: 0, dateTime: '$_id', close: '$close' }},
-		{ $sort: { dateTime: 1 }} // $group unsorted data so have to sort again
+		{ $sort: { 'd.dateTime': 1 }}, // $group unsorts data so we have to sort again
+		{ $project: { // Get back a partial Quote document
+			_id: 0,
+			dateTime: { $dateToString: {
+				format: '%Y-%m-%dT%H:%M:00.000Z',
+				date: '$d.dateTime'
+			}},
+			close: '$d.close'
+		}}
 	])
 	.then(data => res.send(data));
 });

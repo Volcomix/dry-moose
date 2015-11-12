@@ -30,7 +30,7 @@ router.get('/:dateTime', function (req, res, next) {
     });
 });
 router.get('/minutes/:dateTime', function (req, res, next) {
-    var dateTime = moment.utc(req.params.dateTime);
+    var dateTime = moment(req.params.dateTime);
     if (dateTime.hour() < 6) {
         dateTime.startOf('day');
     }
@@ -49,14 +49,24 @@ router.get('/minutes/:dateTime', function (req, res, next) {
             } },
         { $sort: { dateTime: 1 } },
         { $group: {
-                _id: { $dateToString: {
-                        format: '%Y-%m-%dT%H:%M:00.000Z',
-                        date: '$dateTime'
-                    } },
-                close: { $last: '$close' }
+                _id: {
+                    year: { $year: '$dateTime' },
+                    month: { $month: '$dateTime' },
+                    day: { $dayOfMonth: '$dateTime' },
+                    hour: { $hour: '$dateTime' },
+                    minute: { $minute: '$dateTime' }
+                },
+                d: { $last: '$$ROOT' }
             } },
-        { $project: { _id: 0, dateTime: '$_id', close: '$close' } },
-        { $sort: { dateTime: 1 } } // $group unsorted data so have to sort again
+        { $sort: { 'd.dateTime': 1 } },
+        { $project: {
+                _id: 0,
+                dateTime: { $dateToString: {
+                        format: '%Y-%m-%dT%H:%M:00.000Z',
+                        date: '$d.dateTime'
+                    } },
+                close: '$d.close'
+            } }
     ])
         .then(function (data) { return res.send(data); });
 });
