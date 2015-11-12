@@ -16,6 +16,8 @@ var MonitoringStoreImpl = (function (_super) {
             switch (action.actionType) {
                 case ActionType.QuotesReceived:
                     var receiveAction = action;
+                    _this._startDate = receiveAction.startDate;
+                    _this._endDate = receiveAction.endDate;
                     if (receiveAction.quotes.length) {
                         _this._quotes = receiveAction.quotes;
                     }
@@ -26,6 +28,20 @@ var MonitoringStoreImpl = (function (_super) {
             }
         });
     }
+    Object.defineProperty(MonitoringStoreImpl.prototype, "startDate", {
+        get: function () {
+            return this._startDate;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MonitoringStoreImpl.prototype, "endDate", {
+        get: function () {
+            return this._endDate;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(MonitoringStoreImpl.prototype, "quotes", {
         get: function () {
             return this._quotes;

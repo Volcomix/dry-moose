@@ -47,17 +47,15 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 		dateTime.hour(12).startOf('hour');
 	}
 	
+	var startDate = moment(dateTime).subtract({ hours: 12 }).toDate(),
+		endDate = moment(dateTime).add({ hours: 11, minutes: 59 }).toDate();
+	
 	Q.all([
 		{ collection: 'quotes', field: 'close' },
 		{ collection: 'portfolio', field: 'value'}
 	].map((params: Params) =>
 		Q.ninvoke(DbManager.db.collection(params.collection), 'aggregate', [
-			{ $match: {
-				dateTime: {
-					$gt: moment(dateTime).subtract({ hours: 12 }).toDate(),
-					$lt: moment(dateTime).add({ hours: 12 }).toDate()
-				}
-			}},
+			{ $match: { dateTime: { $gte: startDate, $lte: endDate }}},
 			{ $sort: { dateTime: 1 }}, // $last needs data to be sorted
 			{ $group: {
 				_id: {
@@ -81,7 +79,7 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 		])
 	))
 	.spread((quotes: Quote[], portfolio: Portfolio) => {
-		res.send({ quotes, portfolio });
+		res.send({ startDate, endDate, quotes, portfolio });
 	});
 });
 

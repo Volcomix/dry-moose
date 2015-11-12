@@ -8,14 +8,12 @@ import Portfolio = require('../../../documents/Portfolio');
 
 import MonitoringServerActions = require('../actions/MonitoringServerActions');
 
-function convertDateTime(d: { dateTime: Date }) {
-    d.dateTime = new Date(d.dateTime as any);
-}
-
-function receive(data: { quotes: Quote[], portfolio: Portfolio[]}) {
+function receive(data: MonitoringData) {
     // Datetimes are received from server as strings
-	data.quotes.forEach(convertDateTime);
-    data.portfolio.forEach(convertDateTime);
+    data.startDate = new Date(data.startDate as any);
+    data.endDate = new Date(data.endDate as any);
+	data.quotes.forEach((d: Quote) => d.dateTime = new Date(d.dateTime as any));
+    data.portfolio.forEach((d: Portfolio) => d.dateTime = new Date(d.dateTime as any));
     
 	MonitoringServerActions.receive(data);
 }
@@ -44,4 +42,11 @@ export function get(dateTime: Date) {
 
 export function getLast() {
 	Q.nfcall(d3.json, '/monitoring').then(receive);
+}
+
+export interface MonitoringData {
+    startDate: Date;
+    endDate: Date;
+    quotes: Quote[];
+    portfolio: Portfolio[];
 }

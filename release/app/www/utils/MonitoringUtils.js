@@ -2,13 +2,12 @@
 var Q = require('q');
 var d3 = require('d3');
 var MonitoringServerActions = require('../actions/MonitoringServerActions');
-function convertDateTime(d) {
-    d.dateTime = new Date(d.dateTime);
-}
 function receive(data) {
     // Datetimes are received from server as strings
-    data.quotes.forEach(convertDateTime);
-    data.portfolio.forEach(convertDateTime);
+    data.startDate = new Date(data.startDate);
+    data.endDate = new Date(data.endDate);
+    data.quotes.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
+    data.portfolio.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     MonitoringServerActions.receive(data);
 }
 var delay = Q(null);
