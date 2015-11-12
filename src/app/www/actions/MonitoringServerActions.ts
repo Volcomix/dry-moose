@@ -12,9 +12,8 @@ import MonitoringUtils = require('../utils/MonitoringUtils');
 
 export function receive(data: MonitoringUtils.MonitoringData) {
 	AppDispatcher.dispatch(
-		_.assign<{}, IAction, MonitoringUtils.MonitoringData, {}, Receive>(
-			{ actionType: ActionType.QuotesReceived },
-			data
+		_.assign<IAction, MonitoringUtils.MonitoringData, Receive>(
+			{ actionType: ActionType.QuotesReceived }, data
 		)
 	);
 }
