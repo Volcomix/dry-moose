@@ -29,4 +29,45 @@ router.get('/:dateTime', function (req, res, next) {
         res.send({ quotes: quotes, portfolio: portfolio });
     });
 });
+router.get('/minutes/:dateTime', function (req, res, next) {
+    var dateTime = moment.utc(req.params.dateTime);
+    if (dateTime.hour() < 6) {
+        dateTime.startOf('day');
+    }
+    else if (dateTime.hour() >= 18) {
+        dateTime.endOf('day');
+    }
+    else {
+        dateTime.hour(12).startOf('hour');
+    }
+    Q.ninvoke(DbManager.db.collection('quotes'), 'aggregate', [
+        { $match: {
+                dateTime: {
+                    $gt: moment(dateTime).subtract({ hours: 12 }).toDate(),
+                    $lt: moment(dateTime).add({ hours: 12 }).toDate()
+                }
+            } },
+        { $sort: { dateTime: 1 } },
+        { $group: {
+                _id: {
+                    year: { $year: '$dateTime' },
+                    month: { $month: '$dateTime' },
+                    day: { $dayOfMonth: '$dateTime' },
+                    hour: { $hour: '$dateTime' },
+                    minute: { $minute: '$dateTime' }
+                },
+                d: { $last: '$$ROOT' }
+            } },
+        { $project: {
+                _id: 0,
+                dateTime: { $dateToString: {
+                        format: '%Y-%m-%dT%H:%M',
+                        date: '$d.dateTime'
+                    } },
+                close: '$d.close'
+            } },
+        { $sort: { dateTime: 1 } } // $group unsorted data
+    ])
+        .then(function (data) { return res.send(data); });
+});
 module.exports = router;
