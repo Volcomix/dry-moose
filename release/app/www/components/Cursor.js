@@ -49,8 +49,7 @@ var Cursor;
         height: undefined,
         xScale: undefined,
         yScale: undefined,
-        zoomScaleExtent: [0.5, 10],
-        onZoom: undefined
+        zoomScaleExtent: [0.5, 10]
     };
 })(Cursor || (Cursor = {}));
 module.exports = Cursor;

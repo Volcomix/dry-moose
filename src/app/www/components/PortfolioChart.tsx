@@ -1,6 +1,7 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
 import React = require('react');
+import d3 = require('d3');
 
 import Portfolio = require('../../../documents/Portfolio');
 
@@ -37,7 +38,9 @@ class PortfolioChart
 				xAccessor={(d: Portfolio) => d.dateTime}
 				yAccessor={(d: Portfolio) => d.value}
 				width={this.props.width}
-				height={this.props.height} />
+				height={this.props.height}
+				xScale={this.props.xScale}
+				onZoom={this.props.onZoom} />
 		);
 	}
 	
@@ -48,6 +51,8 @@ module PortfolioChart {
 	export interface Props {
 		width: number;
 		height: number;
+		xScale: d3.time.Scale<Date, number>;
+		onZoom?: Function;
 	}
 	
 	export interface State {

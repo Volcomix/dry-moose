@@ -31,7 +31,7 @@ var QuotesChart = (function (_super) {
         MonitoringStore.removeChangeListener(this.onChange);
     };
     QuotesChart.prototype.render = function () {
-        return (React.createElement(Chart, {"data": this.state.quotes, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.close; }, "width": this.props.width, "height": this.props.height}));
+        return (React.createElement(Chart, {"data": this.state.quotes, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.close; }, "width": this.props.width, "height": this.props.height, "xScale": this.props.xScale, "onZoom": this.props.onZoom}));
     };
     return QuotesChart;
 })(React.Component);

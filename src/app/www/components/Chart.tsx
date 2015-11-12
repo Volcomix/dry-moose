@@ -13,7 +13,6 @@ import Cursor = require('./Cursor');
 
 class Chart extends React.Component<Chart.Props, Chart.State> {
 	
-	private xScale = d3.time.scale<Date, number>();
 	private yScale = d3.scale.linear();
 	
 	render() {
@@ -32,13 +31,13 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 					{React.createElement('clipPath', {id: 'clip'},
 						<rect width={contentWidth} height={contentHeight} />
 					) /* TSX doesn't know clipPath element */}
-					<XAxis height={contentHeight} scale={this.xScale} />
+					<XAxis height={contentHeight} scale={this.props.xScale} />
 					<YAxis width={contentWidth} scale={this.yScale} />
 					<LineSeries
 						data={this.props.data}
 						xAccessor={this.props.xAccessor}
 						yAccessor={this.props.yAccessor}
-						xScale={this.xScale}
+						xScale={this.props.xScale}
 						yScale={this.yScale}
 						clipPath='url(#clip)' />
 					<Cursor
@@ -46,7 +45,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 						xAccessor={this.props.xAccessor}
 						width={contentWidth}
 						height={contentHeight}
-						xScale={this.xScale}
+						xScale={this.props.xScale}
 						yScale={this.yScale}
 						onZoom={this.onZoom} />
 				</g>
@@ -55,21 +54,21 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	}
 	
 	private updateXScale(width: number) {
-		var domain = this.xScale.domain();
+		var domain = this.props.xScale.domain();
 		
-		this.xScale.range([0, width] as any); // range() wants Dates which is wrong
+		this.props.xScale.range([0, width] as any); // range() wants Dates which is wrong
 		
 		if (+domain[0] == 0 && +domain[1] == 1) {
 			var lastDatum = this.props.data[this.props.data.length - 1];
 			var endDateTime = this.props.xAccessor(lastDatum);
 			var startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
-			this.xScale.domain([startDateTime, endDateTime]).nice();
+			this.props.xScale.domain([startDateTime, endDateTime]).nice();
 		}
 	}
 	
 	private updateYScale(height: number) {
 		var bisect = d3.bisector(this.props.xAccessor).left,
-			domain = this.xScale.domain(),
+			domain = this.props.xScale.domain(),
 			i = bisect(this.props.data, domain[0], 1),
 			j = bisect(this.props.data, domain[1], i + 1),
 			domainData = this.props.data.slice(i - 1, j + 1),
@@ -83,7 +82,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private onZoom = () => setTimeout(() => {
 		var data = this.props.data,
-			domain = this.xScale.domain();
+			domain = this.props.xScale.domain();
 		
 		if (domain[0]  < this.props.xAccessor(data[0])) {
 			MonitoringActions.get(domain[0]);
@@ -91,7 +90,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 			MonitoringActions.get(domain[1]);
 		}
 		
-		this.forceUpdate()
+		this.props.onZoom();
 	}, 0); // Force wait UI refresh (improve UI performance)
 }
 
@@ -102,7 +101,9 @@ module Chart {
 		yAccessor: (d: {}) => number;
 		width: number;
 		height: number;
+		xScale: d3.time.Scale<Date, number>;
 		margin?: { top: number; right: number; bottom: number; left: number; };
+		onZoom?: Function;
 	}
 	
 	export var defaultProps: Props = {
@@ -111,6 +112,7 @@ module Chart {
 		yAccessor: undefined,
 		width: undefined,
 		height: undefined,
+		xScale: undefined,
 		margin: { top: 20, right: 80, bottom: 30, left: 20 }
 	}
 	
