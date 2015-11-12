@@ -47,35 +47,47 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 		dateTime.hour(12).startOf('hour');
 	}
 	
-	Q.ninvoke(DbManager.db.collection('quotes'), 'aggregate', [
-		{ $match: {
-			dateTime: {
-				$gt: moment(dateTime).subtract({ hours: 12 }).toDate(),
-				$lt: moment(dateTime).add({ hours: 12 }).toDate()
-			}
-		}},
-		{ $sort: { dateTime: 1 }}, // $last needs data to be sorted
-		{ $group: {
-			_id: {
-				year: { $year: '$dateTime' },
-				month: { $month: '$dateTime' },
-				day: { $dayOfMonth: '$dateTime' },
-				hour: { $hour: '$dateTime' },
-				minute: { $minute: '$dateTime' }
-			},
-			d: { $last: '$$ROOT' }
-		}},
-		{ $sort: { 'd.dateTime': 1 }}, // $group unsorts data so we have to sort again
-		{ $project: { // Get back a partial Quote document
-			_id: 0,
-			dateTime: { $dateToString: {
-				format: '%Y-%m-%dT%H:%M:00.000Z',
-				date: '$d.dateTime'
+	Q.all([
+		{ collection: 'quotes', field: 'close' },
+		{ collection: 'portfolio', field: 'value'}
+	].map((params: Params) =>
+		Q.ninvoke(DbManager.db.collection(params.collection), 'aggregate', [
+			{ $match: {
+				dateTime: {
+					$gt: moment(dateTime).subtract({ hours: 12 }).toDate(),
+					$lt: moment(dateTime).add({ hours: 12 }).toDate()
+				}
 			}},
-			close: '$d.close'
-		}}
-	])
-	.then(data => res.send(data));
+			{ $sort: { dateTime: 1 }}, // $last needs data to be sorted
+			{ $group: {
+				_id: {
+					year: { $year: '$dateTime' },
+					month: { $month: '$dateTime' },
+					day: { $dayOfMonth: '$dateTime' },
+					hour: { $hour: '$dateTime' },
+					minute: { $minute: '$dateTime' }
+				},
+				d: { $last: '$$ROOT' }
+			}},
+			{ $sort: { 'd.dateTime': 1 }}, // $group unsorts data so sort again
+			{ $project: {
+				_id: 0,
+				dateTime: { $dateToString: {
+					format: '%Y-%m-%dT%H:%M:00.000Z',
+					date: '$d.dateTime'
+				}},
+				[params.field]: '$d.' + params.field
+			}}
+		])
+	))
+	.spread((quotes: Quote[], portfolio: Portfolio) => {
+		res.send({ quotes, portfolio });
+	});
 });
+
+interface Params {
+	collection: string;
+	field: string;
+}
 
 export = router;
