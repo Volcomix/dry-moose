@@ -79,7 +79,6 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 		} else if (domain[1] > MonitoringStore.endDate) {
 			MonitoringActions.get(domain[1]);
 		}
-		
 		this.forceUpdate();
 	}, 0); // Force wait UI refresh (improve UI performance)
 }
