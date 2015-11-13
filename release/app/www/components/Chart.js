@@ -51,7 +51,8 @@ var Chart = (function (_super) {
         var bisect = d3.bisector(this.props.xAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.data, domain[0], 1), j = bisect(this.props.data, domain[1], i + 1), domainData = this.props.data.slice(i - 1, j + 1), extent = d3.extent(domainData, this.props.yAccessor);
         this.yScale.range([height, 0]);
         if (extent[0] != extent[1]) {
-            this.yScale.domain(extent).nice();
+            var padding = this.props.yDomainPadding * (extent[1] - extent[0]);
+            this.yScale.domain([extent[0] - padding, extent[1] + padding]).nice();
         }
     };
     return Chart;
@@ -65,7 +66,8 @@ var Chart;
         width: undefined,
         height: undefined,
         xScale: undefined,
-        margin: { top: 20, right: 80, bottom: 30, left: 20 }
+        margin: { top: 20, right: 80, bottom: 30, left: 20 },
+        yDomainPadding: 0.05
     };
 })(Chart || (Chart = {}));
 module.exports = Chart;

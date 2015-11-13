@@ -76,7 +76,8 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		
 		this.yScale.range([height, 0]);
 		if (extent[0] != extent[1]) {
-			this.yScale.domain(extent).nice();
+			var padding = this.props.yDomainPadding * (extent[1] - extent[0]);
+			this.yScale.domain([extent[0] - padding, extent[1] + padding]).nice();
 		}
 	}
 	
@@ -103,6 +104,7 @@ module Chart {
 		height: number;
 		xScale: d3.time.Scale<Date, number>;
 		margin?: { top: number; right: number; bottom: number; left: number; };
+		yDomainPadding?: number;
 		onZoom?: Function;
 	}
 	
@@ -113,7 +115,8 @@ module Chart {
 		width: undefined,
 		height: undefined,
 		xScale: undefined,
-		margin: { top: 20, right: 80, bottom: 30, left: 20 }
+		margin: { top: 20, right: 80, bottom: 30, left: 20 },
+		yDomainPadding: 0.05
 	}
 	
 	export interface State {
