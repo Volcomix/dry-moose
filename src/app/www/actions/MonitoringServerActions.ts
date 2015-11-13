@@ -4,18 +4,18 @@ import _ = require('lodash');
 
 import Quote = require('../../../documents/Quote');
 import Portfolio = require('../../../documents/Portfolio');
+import MonitoringData = require('../../../documents/MonitoringData');
 
 import IAction = require('./IAction');
 import AppDispatcher = require('../dispatcher/AppDispatcher');
 import ActionType = require('../constants/ActionType');
-import MonitoringUtils = require('../utils/MonitoringUtils');
 
-export function receive(data: MonitoringUtils.MonitoringData) {
+export function receive(data: MonitoringData) {
 	AppDispatcher.dispatch(
-		_.assign<IAction, MonitoringUtils.MonitoringData, Receive>(
+		_.assign<IAction, MonitoringData, Receive>(
 			{ actionType: ActionType.QuotesReceived }, data
 		)
 	);
 }
 
-export interface Receive extends IAction, MonitoringUtils.MonitoringData {}
+export interface Receive extends IAction, MonitoringData {}

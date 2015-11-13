@@ -5,6 +5,7 @@ import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
 import Portfolio = require('../../../documents/Portfolio');
+import MonitoringData = require('../../../documents/MonitoringData');
 
 import MonitoringServerActions = require('../actions/MonitoringServerActions');
 
@@ -42,11 +43,4 @@ export function get(dateTime: Date) {
 
 export function getLast() {
 	Q.nfcall(d3.json, '/monitoring').then(receive);
-}
-
-export interface MonitoringData {
-    startDate: Date;
-    endDate: Date;
-    quotes: Quote[];
-    portfolio: Portfolio[];
 }

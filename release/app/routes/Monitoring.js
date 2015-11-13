@@ -29,8 +29,26 @@ router.get('/:dateTime', function (req, res, next) {
         res.send({ quotes: quotes, portfolio: portfolio });
     });
 });
+router.get('/minutes/last', function (req, res, next) {
+    Q.all(['quotes', 'portfolio'].map(function (collection) {
+        return Q.ninvoke(DbManager.db.collection(collection), 'aggregate', [
+            { $group: { _id: null, endDate: { $max: '$dateTime' } } }
+        ]);
+    }))
+        .spread(function (lastQuote, lastPortfolio) {
+        return getByMinute(moment.max(moment(lastQuote[0].endDate), moment(lastPortfolio[0].endDate)));
+    })
+        .then(function (data) { return res.send(data); });
+});
 router.get('/minutes/:dateTime', function (req, res, next) {
-    var dateTime = moment(req.params.dateTime);
+    getByMinute(moment(req.params.dateTime)).then(function (data) { return res.send(data); });
+});
+/**
+ * Get monitoring data grouped by minute, around a given dateTime.
+ * The dateTime parameter is mutated by this method to round the dateTime.
+ * @param dateTime - The dateTime to get monitoring data
+ */
+function getByMinute(dateTime) {
     if (dateTime.hour() < 6) {
         dateTime.startOf('day');
     }
@@ -41,7 +59,7 @@ router.get('/minutes/:dateTime', function (req, res, next) {
         dateTime.hour(12).startOf('hour');
     }
     var startDate = moment(dateTime).subtract({ hours: 12 }).toDate(), endDate = moment(dateTime).add({ hours: 11, minutes: 59 }).toDate();
-    Q.all([
+    return Q.all([
         { collection: 'quotes', field: 'close' },
         { collection: 'portfolio', field: 'value' }
     ].map(function (params) {
@@ -73,7 +91,7 @@ router.get('/minutes/:dateTime', function (req, res, next) {
         var _a;
     }))
         .spread(function (quotes, portfolio) {
-        res.send({ startDate: startDate, endDate: endDate, quotes: quotes, portfolio: portfolio });
+        return ({ startDate: startDate, endDate: endDate, quotes: quotes, portfolio: portfolio });
     });
-});
+}
 module.exports = router;

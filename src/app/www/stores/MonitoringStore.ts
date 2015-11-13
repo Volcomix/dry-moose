@@ -2,13 +2,13 @@
 
 import Quote = require('../../../documents/Quote');
 import Portfolio = require('../../../documents/Portfolio');
+import MonitoringData = require('../../../documents/MonitoringData');
 
 import AbstractStore = require('./AbstractStore');
 import IStore = require('./IStore');
 import AppDispatcher = require('../dispatcher/AppDispatcher');
 import MonitoringServerActions = require('../actions/MonitoringServerActions');
 import ActionType = require('../constants/ActionType');
-import MonitoringUtils = require('../utils/MonitoringUtils');
 
 class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 	
@@ -53,7 +53,7 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 	}
 }
 
-interface MonitoringStore extends IStore, MonitoringUtils.MonitoringData {}
+interface MonitoringStore extends IStore, MonitoringData {}
 
 var MonitoringStore: MonitoringStore = new MonitoringStoreImpl();
 

@@ -7,6 +7,7 @@ import moment = require('moment');
 import DbManager = require('../../database/DbManager');
 import Quote = require('../../documents/Quote');
 import Portfolio = require('../../documents/Portfolio');
+import MonitoringData = require('../../documents/MonitoringData');
 
 var router = express.Router();
 
@@ -18,7 +19,7 @@ router.get('/', function(req, res, next) {
 			{ $sort: { dateTime: 1 }}
 		])
 	))
-	.spread((quotes: Quote[], portfolio: Portfolio) => {
+	.spread((quotes: Quote[], portfolio: Portfolio[]) => {
 		res.send({ quotes, portfolio });
 	})
 });
@@ -32,13 +33,36 @@ router.get('/:dateTime', function(req, res, next) {
 			}
 		}).sort({ dateTime: 1 }), 'toArray')
 	))
-	.spread((quotes: Quote[], portfolio: Portfolio) => {
+	.spread((quotes: Quote[], portfolio: Portfolio[]) => {
 		res.send({ quotes, portfolio });
 	});
 });
 
+router.get('/minutes/last', function(req, res, next) {
+	Q.all(['quotes', 'portfolio'].map(collection =>
+		Q.ninvoke(DbManager.db.collection(collection), 'aggregate', [
+			{ $group: { _id: null, endDate: { $max: '$dateTime' }}}
+		])
+	))
+	.spread((lastQuote: [{ endDate: Date }], lastPortfolio: [{ endDate: Date }]) =>
+		getByMinute(moment.max(
+			moment(lastQuote[0].endDate),
+			moment(lastPortfolio[0].endDate)
+		))
+	)
+	.then(data => res.send(data));
+});
+
 router.get('/minutes/:dateTime', function(req, res, next) {
-	var dateTime = moment(req.params.dateTime);
+	getByMinute(moment(req.params.dateTime)).then(data => res.send(data));
+});
+
+/**
+ * Get monitoring data grouped by minute, around a given dateTime.
+ * The dateTime parameter is mutated by this method to round the dateTime.
+ * @param dateTime - The dateTime to get monitoring data
+ */
+function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
 	if (dateTime.hour() < 6) {
 		dateTime.startOf('day');
 	} else if (dateTime.hour() >= 18) {
@@ -50,7 +74,7 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 	var startDate = moment(dateTime).subtract({ hours: 12 }).toDate(),
 		endDate = moment(dateTime).add({ hours: 11, minutes: 59 }).toDate();
 	
-	Q.all([
+	return Q.all([
 		{ collection: 'quotes', field: 'close' },
 		{ collection: 'portfolio', field: 'value'}
 	].map((params: Params) =>
@@ -78,10 +102,10 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 			}}
 		])
 	))
-	.spread((quotes: Quote[], portfolio: Portfolio) => {
-		res.send({ startDate, endDate, quotes, portfolio });
-	});
-});
+	.spread<MonitoringData>((quotes: Quote[], portfolio: Portfolio[]) =>
+		({ startDate, endDate, quotes, portfolio })
+	);
+}
 
 interface Params {
 	collection: string;
