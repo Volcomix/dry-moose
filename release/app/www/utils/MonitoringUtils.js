@@ -15,7 +15,7 @@ var retrieveDateTime;
 function retrieveData() {
     if (retrieveDateTime) {
         delay = Q.delay(1000).then(retrieveData);
-        Q.nfcall(d3.json, '/monitoring/' + retrieveDateTime.toISOString())
+        Q.nfcall(d3.json, '/monitoring/minutes/' + retrieveDateTime.toISOString())
             .then(receive);
         retrieveDateTime = undefined;
     }
@@ -28,6 +28,6 @@ function get(dateTime) {
 }
 exports.get = get;
 function getLast() {
-    Q.nfcall(d3.json, '/monitoring').then(receive);
+    Q.nfcall(d3.json, '/monitoring/minutes/last').then(receive);
 }
 exports.getLast = getLast;

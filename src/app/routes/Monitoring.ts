@@ -11,33 +11,6 @@ import MonitoringData = require('../../documents/MonitoringData');
 
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-	Q.all(['quotes', 'portfolio'].map(collection =>
-		Q.ninvoke(DbManager.db.collection(collection), 'aggregate', [
-			{ $sort: { dateTime: -1 }},
-			{ $limit: 1000},
-			{ $sort: { dateTime: 1 }}
-		])
-	))
-	.spread((quotes: Quote[], portfolio: Portfolio[]) => {
-		res.send({ quotes, portfolio });
-	})
-});
-
-router.get('/:dateTime', function(req, res, next) {
-	Q.all(['quotes', 'portfolio'].map(collection =>
-		Q.ninvoke(DbManager.db.collection(collection).find({
-			dateTime: {
-				$gt: moment(req.params.dateTime).subtract({ hours: 8 }).toDate(),
-				$lt: moment(req.params.dateTime).add({ hours: 8 }).toDate()
-			}
-		}).sort({ dateTime: 1 }), 'toArray')
-	))
-	.spread((quotes: Quote[], portfolio: Portfolio[]) => {
-		res.send({ quotes, portfolio });
-	});
-});
-
 router.get('/minutes/last', function(req, res, next) {
 	Q.all(['quotes', 'portfolio'].map(collection =>
 		Q.ninvoke(DbManager.db.collection(collection), 'aggregate', [
@@ -58,7 +31,7 @@ router.get('/minutes/:dateTime', function(req, res, next) {
 });
 
 /**
- * Get monitoring data grouped by minute, around a given dateTime.
+ * Get monitoring data by minute, around a given dateTime.
  * The dateTime parameter is mutated by this method to round the dateTime.
  * @param dateTime - The dateTime to get monitoring data
  */
@@ -80,25 +53,11 @@ function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
 	].map((params: Params) =>
 		Q.ninvoke(DbManager.db.collection(params.collection), 'aggregate', [
 			{ $match: { dateTime: { $gte: startDate, $lte: endDate }}},
-			{ $sort: { dateTime: 1 }}, // $last needs data to be sorted
-			{ $group: {
-				_id: {
-					year: { $year: '$dateTime' },
-					month: { $month: '$dateTime' },
-					day: { $dayOfMonth: '$dateTime' },
-					hour: { $hour: '$dateTime' },
-					minute: { $minute: '$dateTime' }
-				},
-				d: { $last: '$$ROOT' }
-			}},
-			{ $sort: { 'd.dateTime': 1 }}, // $group unsorts data so sort again
+			{ $sort: { dateTime: 1 }},
 			{ $project: {
 				_id: 0,
-				dateTime: { $dateToString: {
-					format: '%Y-%m-%dT%H:%M:00.000Z',
-					date: '$d.dateTime'
-				}},
-				[params.field]: '$d.' + params.field
+				dateTime: 1,
+				[params.field]: 1
 			}}
 		])
 	))
