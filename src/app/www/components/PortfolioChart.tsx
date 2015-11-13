@@ -40,7 +40,7 @@ class PortfolioChart
 				width={this.props.width}
 				height={this.props.height}
 				xScale={this.props.xScale}
-				onZoom={this.props.onZoom} />
+				zoom={this.props.zoom} />
 		);
 	}
 	
@@ -52,7 +52,7 @@ module PortfolioChart {
 		width: number;
 		height: number;
 		xScale: d3.time.Scale<Date, number>;
-		onZoom?: Function;
+		zoom: d3.behavior.Zoom<{}>;
 	}
 	
 	export interface State {

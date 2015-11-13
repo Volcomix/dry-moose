@@ -31,7 +31,7 @@ var PortfolioChart = (function (_super) {
         MonitoringStore.removeChangeListener(this.onChange);
     };
     PortfolioChart.prototype.render = function () {
-        return (React.createElement(Chart, {"data": this.state.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height, "xScale": this.props.xScale, "onZoom": this.props.onZoom}));
+        return (React.createElement(Chart, {"data": this.state.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height, "xScale": this.props.xScale, "zoom": this.props.zoom}));
     };
     return PortfolioChart;
 })(React.Component);

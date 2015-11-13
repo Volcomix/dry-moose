@@ -13,21 +13,18 @@ var Cursor = (function (_super) {
     function Cursor(props) {
         var _this = this;
         _super.call(this, props);
-        this.zoom = d3.behavior.zoom();
         this.clearPosition = function () { return _this.setState({ mouse: undefined }); };
         this.updatePosition = function () { return _this.setState({ mouse: d3.mouse(_this.pane) }); };
-        this.zoom.scaleExtent(this.props.zoomScaleExtent).x(this.props.xScale);
         this.state = { mouse: undefined };
     }
     Cursor.prototype.componentDidMount = function () {
         // Use d3.event to make d3.mouse work
-        d3.select(this.pane).on('mousemove', this.updatePosition);
-        this.zoom.on('zoom', this.props.onZoom);
-        d3.select(this.pane).call(this.zoom);
+        var pane = d3.select(this.pane);
+        pane.on('mousemove', this.updatePosition);
+        pane.call(this.props.zoom);
     };
     Cursor.prototype.componentWillUnmount = function () {
         d3.select(this.pane).on('mousemove', null);
-        this.zoom.on('zoom', null);
     };
     Cursor.prototype.render = function () {
         var _this = this;
@@ -49,7 +46,7 @@ var Cursor;
         height: undefined,
         xScale: undefined,
         yScale: undefined,
-        zoomScaleExtent: [0.5, 10]
+        zoom: undefined
     };
 })(Cursor || (Cursor = {}));
 module.exports = Cursor;

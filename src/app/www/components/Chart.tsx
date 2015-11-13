@@ -4,7 +4,6 @@ import React = require('react');
 import d3 = require('d3');
 import moment = require('moment');
 
-import MonitoringActions = require('../actions/MonitoringActions');
 import MonitoringStore = require('../stores/MonitoringStore');
 
 import XAxis = require('./XAxis');
@@ -48,7 +47,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 						height={contentHeight}
 						xScale={this.props.xScale}
 						yScale={this.yScale}
-						onZoom={this.onZoom} />
+						zoom={this.props.zoom} />
 				</g>
 			</svg>
 		);
@@ -61,6 +60,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 			var endDateTime = MonitoringStore.endDate;
 			var startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
 			this.props.xScale.domain([startDateTime, endDateTime]).nice();
+			this.props.zoom.x(this.props.xScale as any)
 		}
 	}
 	
@@ -78,17 +78,6 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 			this.yScale.domain([extent[0] - padding, extent[1] + padding]).nice();
 		}
 	}
-	
-	private onZoom = () => setTimeout(() => {
-		var domain = this.props.xScale.domain();
-		if (domain[0]  < MonitoringStore.startDate) {
-			MonitoringActions.get(domain[0]);
-		} else if (domain[1] > MonitoringStore.endDate) {
-			MonitoringActions.get(domain[1]);
-		}
-		
-		this.props.onZoom();
-	}, 0); // Force wait UI refresh (improve UI performance)
 }
 
 module Chart {
@@ -99,9 +88,9 @@ module Chart {
 		width: number;
 		height: number;
 		xScale: d3.time.Scale<Date, number>;
+		zoom: d3.behavior.Zoom<{}>;
 		margin?: { top: number; right: number; bottom: number; left: number; };
 		yDomainPadding?: number;
-		onZoom?: Function;
 	}
 	
 	export var defaultProps: Props = {
@@ -111,6 +100,7 @@ module Chart {
 		width: undefined,
 		height: undefined,
 		xScale: undefined,
+		zoom: undefined,
 		margin: { top: 20, right: 80, bottom: 30, left: 20 },
 		yDomainPadding: 0.05
 	}
