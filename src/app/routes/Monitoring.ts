@@ -12,40 +12,41 @@ import MonitoringData = require('../../documents/MonitoringData');
 var router = express.Router();
 
 router.get('/minutes/last', function(req, res, next) {
+	var lastDate: moment.Moment;
 	Q.all(['quotes', 'portfolio'].map(collection =>
 		Q.ninvoke(DbManager.db.collection(collection), 'aggregate', [
 			{ $group: { _id: null, endDate: { $max: '$dateTime' }}}
 		])
 	))
-	.spread((lastQuote: [{ endDate: Date }], lastPortfolio: [{ endDate: Date }]) =>
-		getByMinute(moment.max(
+	.spread((lastQuote: [{ endDate: Date }], lastPortfolio: [{ endDate: Date }]) => {
+		lastDate = moment.max(
 			moment(lastQuote[0].endDate),
 			moment(lastPortfolio[0].endDate)
-		))
-	)
-	.then(data => res.send(data));
+		);
+		return getByMinute(lastDate);
+	})
+	.then(data => {
+		data.endDate = lastDate.toDate();
+		res.send(data)
+	});
 });
 
 router.get('/minutes/:dateTime', function(req, res, next) {
 	getByMinute(moment(req.params.dateTime)).then(data => res.send(data));
 });
 
-/**
- * Get monitoring data by minute, around a given dateTime.
- * The dateTime parameter is mutated by this method to round the dateTime.
- * @param dateTime - The dateTime to get monitoring data
- */
 function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
-	if (dateTime.hour() < 6) {
-		dateTime.startOf('day');
-	} else if (dateTime.hour() >= 18) {
-		dateTime.endOf('day');
+	var roundedDateTime = dateTime.clone(); // Next operations mutates Moment object
+	if (roundedDateTime.hour() < 6) {
+		roundedDateTime.startOf('day');
+	} else if (roundedDateTime.hour() >= 18) {
+		roundedDateTime.endOf('day');
 	} else {
-		dateTime.hour(12).startOf('hour');
+		roundedDateTime.hour(12).startOf('hour');
 	}
 	
-	var startDate = moment(dateTime).subtract({ hours: 12 }).toDate(),
-		endDate = moment(dateTime).add({ hours: 11, minutes: 59 }).toDate();
+	var startDate = moment(roundedDateTime).subtract({ hours: 12 }).toDate(),
+		endDate = moment(roundedDateTime).add({ hours: 11, minutes: 59 }).toDate();
 	
 	return Q.all([
 		{ collection: 'quotes', field: 'close' },

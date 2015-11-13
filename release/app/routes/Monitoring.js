@@ -5,35 +5,36 @@ var moment = require('moment');
 var DbManager = require('../../database/DbManager');
 var router = express.Router();
 router.get('/minutes/last', function (req, res, next) {
+    var lastDate;
     Q.all(['quotes', 'portfolio'].map(function (collection) {
         return Q.ninvoke(DbManager.db.collection(collection), 'aggregate', [
             { $group: { _id: null, endDate: { $max: '$dateTime' } } }
         ]);
     }))
         .spread(function (lastQuote, lastPortfolio) {
-        return getByMinute(moment.max(moment(lastQuote[0].endDate), moment(lastPortfolio[0].endDate)));
+        lastDate = moment.max(moment(lastQuote[0].endDate), moment(lastPortfolio[0].endDate));
+        return getByMinute(lastDate);
     })
-        .then(function (data) { return res.send(data); });
+        .then(function (data) {
+        data.endDate = lastDate.toDate();
+        res.send(data);
+    });
 });
 router.get('/minutes/:dateTime', function (req, res, next) {
     getByMinute(moment(req.params.dateTime)).then(function (data) { return res.send(data); });
 });
-/**
- * Get monitoring data by minute, around a given dateTime.
- * The dateTime parameter is mutated by this method to round the dateTime.
- * @param dateTime - The dateTime to get monitoring data
- */
 function getByMinute(dateTime) {
-    if (dateTime.hour() < 6) {
-        dateTime.startOf('day');
+    var roundedDateTime = dateTime.clone(); // Next operations mutates Moment object
+    if (roundedDateTime.hour() < 6) {
+        roundedDateTime.startOf('day');
     }
-    else if (dateTime.hour() >= 18) {
-        dateTime.endOf('day');
+    else if (roundedDateTime.hour() >= 18) {
+        roundedDateTime.endOf('day');
     }
     else {
-        dateTime.hour(12).startOf('hour');
+        roundedDateTime.hour(12).startOf('hour');
     }
-    var startDate = moment(dateTime).subtract({ hours: 12 }).toDate(), endDate = moment(dateTime).add({ hours: 11, minutes: 59 }).toDate();
+    var startDate = moment(roundedDateTime).subtract({ hours: 12 }).toDate(), endDate = moment(roundedDateTime).add({ hours: 11, minutes: 59 }).toDate();
     return Q.all([
         { collection: 'quotes', field: 'close' },
         { collection: 'portfolio', field: 'value' }

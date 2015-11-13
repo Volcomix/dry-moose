@@ -5,6 +5,7 @@ import d3 = require('d3');
 import moment = require('moment');
 
 import MonitoringActions = require('../actions/MonitoringActions');
+import MonitoringStore = require('../stores/MonitoringStore');
 
 import XAxis = require('./XAxis');
 import YAxis = require('./YAxis');
@@ -54,13 +55,10 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	}
 	
 	private updateXScale(width: number) {
-		var domain = this.props.xScale.domain();
-		
 		this.props.xScale.range([0, width] as any); // range() wants Dates which is wrong
-		
+		var domain = this.props.xScale.domain();
 		if (+domain[0] == 0 && +domain[1] == 1) {
-			var lastDatum = this.props.data[this.props.data.length - 1];
-			var endDateTime = this.props.xAccessor(lastDatum);
+			var endDateTime = MonitoringStore.endDate;
 			var startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
 			this.props.xScale.domain([startDateTime, endDateTime]).nice();
 		}
@@ -82,12 +80,10 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	}
 	
 	private onZoom = () => setTimeout(() => {
-		var data = this.props.data,
-			domain = this.props.xScale.domain();
-		
-		if (domain[0]  < this.props.xAccessor(data[0])) {
+		var domain = this.props.xScale.domain();
+		if (domain[0]  < MonitoringStore.startDate) {
 			MonitoringActions.get(domain[0]);
-		} else if (domain[1] > this.props.xAccessor(data[data.length - 1])) {
+		} else if (domain[1] > MonitoringStore.endDate) {
 			MonitoringActions.get(domain[1]);
 		}
 		
