@@ -5,6 +5,7 @@ import d3 = require('d3');
 
 import Portfolio = require('../../../documents/Portfolio');
 
+import Margin = require('./common/Margin');
 import MonitoringStore = require('../stores/MonitoringStore');
 
 import Chart = require('./Chart');
@@ -24,7 +25,7 @@ class PortfolioChart
 	}
 	
 	componentDidMount() {
-		MonitoringStore.addChangeListener(this.onChange)
+		MonitoringStore.addChangeListener(this.onChange);
 	}
 	
 	componentWillUnmount() {
@@ -39,6 +40,7 @@ class PortfolioChart
 				yAccessor={(d: Portfolio) => d.value}
 				width={this.props.width}
 				height={this.props.height}
+				margin={this.props.margin}
 				xScale={this.props.xScale}
 				zoom={this.props.zoom} />
 		);
@@ -51,6 +53,7 @@ module PortfolioChart {
 	export interface Props {
 		width: number;
 		height: number;
+		margin: Margin;
 		xScale: d3.time.Scale<Date, number>;
 		zoom: d3.behavior.Zoom<{}>;
 	}

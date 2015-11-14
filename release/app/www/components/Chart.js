@@ -6,8 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
-var moment = require('moment');
-var MonitoringStore = require('../stores/MonitoringStore');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
 var LineSeries = require('./LineSeries');
@@ -22,19 +20,8 @@ var Chart = (function (_super) {
         if (!this.props.data)
             return React.createElement("span", null, "Loading data...");
         var margin = this.props.margin, contentWidth = this.props.width - margin.left - margin.right, contentHeight = this.props.height - margin.top - margin.bottom;
-        this.updateXScale(contentWidth);
         this.updateYScale(contentHeight);
         return (React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.props.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.yScale}), React.createElement(LineSeries, {"data": this.props.data, "xAccessor": this.props.xAccessor, "yAccessor": this.props.yAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'}), React.createElement(Cursor, {"data": this.props.data, "xAccessor": this.props.xAccessor, "width": contentWidth, "height": contentHeight, "xScale": this.props.xScale, "yScale": this.yScale, "zoom": this.props.zoom}))));
-    };
-    Chart.prototype.updateXScale = function (width) {
-        this.props.xScale.range([0, width]); // range() wants Dates which is wrong
-        var domain = this.props.xScale.domain();
-        if (+domain[0] == 0 && +domain[1] == 1) {
-            var endDateTime = MonitoringStore.endDate;
-            var startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
-            this.props.xScale.domain([startDateTime, endDateTime]).nice();
-            this.props.zoom.x(this.props.xScale);
-        }
     };
     Chart.prototype.updateYScale = function (height) {
         var bisect = d3.bisector(this.props.xAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.data, domain[0], 1), j = bisect(this.props.data, domain[1], i + 1), domainData = this.props.data.slice(i - 1, j + 1), extent = d3.extent(domainData, this.props.yAccessor);
@@ -54,9 +41,9 @@ var Chart;
         yAccessor: undefined,
         width: undefined,
         height: undefined,
+        margin: undefined,
         xScale: undefined,
         zoom: undefined,
-        margin: { top: 20, right: 80, bottom: 30, left: 20 },
         yDomainPadding: 0.05
     };
 })(Chart || (Chart = {}));

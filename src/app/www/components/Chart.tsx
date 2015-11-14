@@ -2,9 +2,8 @@
 
 import React = require('react');
 import d3 = require('d3');
-import moment = require('moment');
 
-import MonitoringStore = require('../stores/MonitoringStore');
+import Margin = require('./common/Margin');
 
 import XAxis = require('./XAxis');
 import YAxis = require('./YAxis');
@@ -22,7 +21,6 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 			contentWidth = this.props.width - margin.left - margin.right,
 			contentHeight = this.props.height - margin.top - margin.bottom;
 		
-		this.updateXScale(contentWidth);
 		this.updateYScale(contentHeight);
 		
 		return (
@@ -53,17 +51,6 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		);
 	}
 	
-	private updateXScale(width: number) {
-		this.props.xScale.range([0, width] as any); // range() wants Dates which is wrong
-		var domain = this.props.xScale.domain();
-		if (+domain[0] == 0 && +domain[1] == 1) {
-			var endDateTime = MonitoringStore.endDate;
-			var startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
-			this.props.xScale.domain([startDateTime, endDateTime]).nice();
-			this.props.zoom.x(this.props.xScale as any)
-		}
-	}
-	
 	private updateYScale(height: number) {
 		var bisect = d3.bisector(this.props.xAccessor).left,
 			domain = this.props.xScale.domain(),
@@ -87,9 +74,9 @@ module Chart {
 		yAccessor: (d: {}) => number;
 		width: number;
 		height: number;
+		margin: Margin;
 		xScale: d3.time.Scale<Date, number>;
 		zoom: d3.behavior.Zoom<{}>;
-		margin?: { top: number; right: number; bottom: number; left: number; };
 		yDomainPadding?: number;
 	}
 	
@@ -99,9 +86,9 @@ module Chart {
 		yAccessor: undefined,
 		width: undefined,
 		height: undefined,
+		margin: undefined,
 		xScale: undefined,
 		zoom: undefined,
-		margin: { top: 20, right: 80, bottom: 30, left: 20 },
 		yDomainPadding: 0.05
 	}
 	
