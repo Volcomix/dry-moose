@@ -45,7 +45,7 @@ class XCursor extends React.Component<XCursor.Props, XCursor.State> {
 			d = d0;
 		}
 		
-		if (Math.abs(+this.props.accessor(d) - +x0) > this.props.snapThreshold) {
+		if (!d || Math.abs(+this.props.accessor(d) - +x0) > this.props.snapThreshold) {
 			return x0;
 		}
 		

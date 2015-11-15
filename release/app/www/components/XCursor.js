@@ -36,7 +36,7 @@ var XCursor = (function (_super) {
         else {
             d = d0;
         }
-        if (Math.abs(+this.props.accessor(d) - +x0) > this.props.snapThreshold) {
+        if (!d || Math.abs(+this.props.accessor(d) - +x0) > this.props.snapThreshold) {
             return x0;
         }
         return this.props.accessor(d);
