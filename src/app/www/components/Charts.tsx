@@ -1,7 +1,5 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
-declare var componentHandler; // Material Design Lite
-
 import React = require('react');
 import d3 = require('d3');
 import moment = require('moment');
@@ -14,13 +12,13 @@ import MonitoringStore = require('../stores/MonitoringStore');
 
 import QuotesChart = require('./QuotesChart');
 import PortfolioChart = require('./PortfolioChart');
+import Loading = require('./Loading');
 
 class Charts extends React.Component<Charts.Props, Charts.State> {
 	
 	private mainContainer: HTMLElement;
 	private quotesChartContainer: HTMLElement;
 	private portfolioChartContainer: HTMLElement;
-	private loadingSpinner: HTMLElement;
 	private xScale = d3.time.scale<Date, number>();
 	private zoom = d3.behavior.zoom();
 	
@@ -52,8 +50,6 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	}
 	
 	componentDidMount() {
-		componentHandler.upgradeElement(this.loadingSpinner);
-		
 		MonitoringStore.addChangeListener(this.onChange);
 		window.addEventListener('resize', this.onChange);
 		this.zoom.on('zoom', this.onZoom);
@@ -93,15 +89,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 					zoom={this.zoom} />
 			);
 		} else {
-			loading = (
-				<div className='overlay'>
-					<div
-						style={{width: 128, height: 128}}
-						className='mdl-spinner mdl-js-spinner is-active'
-						ref={ref => this.loadingSpinner = ref}>
-					</div>
-				</div>
-			);
+			loading = <Loading />;
 		}
 		
 		return (

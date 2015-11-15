@@ -11,6 +11,7 @@ var MonitoringActions = require('../actions/MonitoringActions');
 var MonitoringStore = require('../stores/MonitoringStore');
 var QuotesChart = require('./QuotesChart');
 var PortfolioChart = require('./PortfolioChart');
+var Loading = require('./Loading');
 var Charts = (function (_super) {
     __extends(Charts, _super);
     function Charts(props) {
@@ -66,7 +67,6 @@ var Charts = (function (_super) {
         configurable: true
     });
     Charts.prototype.componentDidMount = function () {
-        componentHandler.upgradeElement(this.loadingSpinner);
         MonitoringStore.addChangeListener(this.onChange);
         window.addEventListener('resize', this.onChange);
         this.zoom.on('zoom', this.onZoom);
@@ -86,7 +86,7 @@ var Charts = (function (_super) {
             portfolioChart = (React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": this.state.mainWidth, "height": this.state.portfolioChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}));
         }
         else {
-            loading = (React.createElement("div", {"className": 'overlay'}, React.createElement("div", {"style": { width: 128, height: 128 }, "className": 'mdl-spinner mdl-js-spinner is-active', "ref": function (ref) { return _this.loadingSpinner = ref; }})));
+            loading = React.createElement(Loading, null);
         }
         return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, quotesChart), React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, portfolioChart), loading));
     };

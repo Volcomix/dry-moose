@@ -24,6 +24,11 @@ body {
 	align-items: center;
 }
 
+.overlay .mdl-spinner {
+	width: 112px;
+	height: 112px;
+}
+
 .axis path,
 .axis line {
 	stroke: black;
