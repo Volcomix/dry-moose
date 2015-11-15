@@ -15,8 +15,6 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		if (!this.props.data) return <span>Loading data...</span>;
-		
 		var margin = this.props.margin,
 			contentWidth = this.props.width - margin.left - margin.right,
 			contentHeight = this.props.height - margin.top - margin.bottom;

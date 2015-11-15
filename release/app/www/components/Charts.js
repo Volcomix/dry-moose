@@ -21,10 +21,10 @@ var Charts = (function (_super) {
         this.onChange = function () { return _this.setState(_this.chartsState); };
         this.onZoom = function () { return setTimeout(function () {
             var domain = _this.xScale.domain();
-            if (domain[0] < MonitoringStore.startDate) {
+            if (domain[0] < _this.state.monitoringData.startDate) {
                 MonitoringActions.get(domain[0]);
             }
-            else if (domain[1] > MonitoringStore.endDate) {
+            else if (domain[1] > _this.state.monitoringData.endDate) {
                 MonitoringActions.get(domain[1]);
             }
             _this.forceUpdate();
@@ -32,13 +32,34 @@ var Charts = (function (_super) {
         this.zoom.scaleExtent(this.props.zoomScaleExtent);
         this.state = this.chartsState;
     }
+    Object.defineProperty(Charts.prototype, "mainWidth", {
+        get: function () {
+            return this.mainContainer && this.mainContainer.offsetWidth;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Charts.prototype, "quotesChartHeight", {
+        get: function () {
+            return this.quotesChartContainer && this.quotesChartContainer.offsetHeight;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Charts.prototype, "portfolioChartHeight", {
+        get: function () {
+            return this.portfolioChartContainer && this.portfolioChartContainer.offsetHeight;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Charts.prototype, "chartsState", {
         get: function () {
             return {
-                loaded: !!MonitoringStore.endDate,
-                mainWidth: this.mainContainer && this.mainContainer.offsetWidth,
-                quotesChartHeight: this.quotesChartContainer && this.quotesChartContainer.offsetHeight,
-                portfolioChartHeight: this.portfolioChartContainer && this.portfolioChartContainer.offsetHeight
+                monitoringData: MonitoringStore.data,
+                mainWidth: this.mainWidth,
+                quotesChartHeight: this.quotesChartHeight,
+                portfolioChartHeight: this.portfolioChartHeight
             };
         },
         enumerable: true,
@@ -47,8 +68,8 @@ var Charts = (function (_super) {
     Charts.prototype.componentDidMount = function () {
         MonitoringStore.addChangeListener(this.onChange);
         window.addEventListener('resize', this.onChange);
-        this.onChange();
         this.zoom.on('zoom', this.onZoom);
+        this.onChange();
     };
     Charts.prototype.componentWillUnmount = function () {
         MonitoringStore.removeChangeListener(this.onChange);
@@ -57,10 +78,13 @@ var Charts = (function (_super) {
     };
     Charts.prototype.render = function () {
         var _this = this;
-        if (this.state.loaded) {
+        var quotesChart, portfolioChart;
+        if (this.state.monitoringData) {
             this.updateXScale();
+            quotesChart = (React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "width": this.state.mainWidth, "height": this.state.quotesChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}));
+            portfolioChart = (React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": this.state.mainWidth, "height": this.state.portfolioChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}));
         }
-        return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, React.createElement(QuotesChart, {"width": this.state.mainWidth, "height": this.state.quotesChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom})), React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, React.createElement(PortfolioChart, {"width": this.state.mainWidth, "height": this.state.portfolioChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}))));
+        return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, quotesChart), React.createElement("div", {"style": { height: '50%' }, "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, portfolioChart)));
     };
     Charts.prototype.updateXScale = function () {
         var margin = this.props.margin, contentWidth = this.state.mainWidth - margin.left - margin.right, domain = this.xScale.domain();
@@ -70,7 +94,7 @@ var Charts = (function (_super) {
         }
     };
     Charts.prototype.initXDomain = function () {
-        var endDateTime = MonitoringStore.endDate, startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
+        var endDateTime = this.state.monitoringData.endDate, startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
         this.xScale.domain([startDateTime, endDateTime]).nice();
         this.zoom.x(this.xScale);
     };

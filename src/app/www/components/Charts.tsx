@@ -4,6 +4,8 @@ import React = require('react');
 import d3 = require('d3');
 import moment = require('moment');
 
+import MonitoringData = require('../../../documents/MonitoringData');
+
 import Margin = require('./common/Margin');
 import MonitoringActions = require('../actions/MonitoringActions');
 import MonitoringStore = require('../stores/MonitoringStore');
@@ -18,16 +20,25 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	private portfolioChartContainer: HTMLDivElement;
 	private xScale = d3.time.scale<Date, number>();
 	private zoom = d3.behavior.zoom();
-		
+	
+	private get mainWidth() {
+		return this.mainContainer && this.mainContainer.offsetWidth;
+	}
+	
+	private get quotesChartHeight() {
+		return this.quotesChartContainer && this.quotesChartContainer.offsetHeight;
+	}
+	
+	private get portfolioChartHeight() {
+		return this.portfolioChartContainer && this.portfolioChartContainer.offsetHeight;
+	}
+	
 	private get chartsState(): Charts.State {
 		return {
-			loaded: !!MonitoringStore.endDate,
-			mainWidth:
-				this.mainContainer && this.mainContainer.offsetWidth,
-			quotesChartHeight:
-				this.quotesChartContainer && this.quotesChartContainer.offsetHeight,
-			portfolioChartHeight:
-				this.portfolioChartContainer && this.portfolioChartContainer.offsetHeight
+			monitoringData: MonitoringStore.data,
+			mainWidth: this.mainWidth,
+			quotesChartHeight: this.quotesChartHeight,
+			portfolioChartHeight: this.portfolioChartHeight
 		};
 	}
 	
@@ -40,8 +51,9 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	componentDidMount() {
 		MonitoringStore.addChangeListener(this.onChange);
 		window.addEventListener('resize', this.onChange);
-		this.onChange();
 		this.zoom.on('zoom', this.onZoom);
+		
+		this.onChange();
 	}
 	
 	componentWillUnmount() {
@@ -51,9 +63,31 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	}
 	
 	render() {
-		if (this.state.loaded) {
+		var quotesChart: JSX.Element,
+			portfolioChart: JSX.Element;
+			
+		if (this.state.monitoringData) {
 			this.updateXScale();
+			quotesChart = (
+				<QuotesChart
+					quotes={this.state.monitoringData.quotes}
+					width={this.state.mainWidth}
+					height={this.state.quotesChartHeight}
+					margin={this.props.margin}
+					xScale={this.xScale}
+					zoom={this.zoom} />
+			);
+			portfolioChart = (
+				<PortfolioChart
+					portfolio={this.state.monitoringData.portfolio}
+					width={this.state.mainWidth}
+					height={this.state.portfolioChartHeight}
+					margin={this.props.margin}
+					xScale={this.xScale}
+					zoom={this.zoom} />
+			);
 		}
+		
 		return (
 			<div
 				style={{ height: '100%' }}
@@ -61,22 +95,12 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 				<div
 					style={{ height: '50%' }}
 					ref={(ref: any) => this.quotesChartContainer = ref}>
-					<QuotesChart
-						width={this.state.mainWidth}
-						height={this.state.quotesChartHeight}
-						margin={this.props.margin}
-						xScale={this.xScale}
-						zoom={this.zoom} />
+					{quotesChart}
 				</div>
 				<div
 					style={{ height: '50%' }}
 					ref={(ref: any) => this.portfolioChartContainer = ref}>
-					<PortfolioChart
-						width={this.state.mainWidth}
-						height={this.state.portfolioChartHeight}
-						margin={this.props.margin}
-						xScale={this.xScale}
-						zoom={this.zoom} />
+					{portfolioChart}
 				</div>
 			</div>
 		);
@@ -95,7 +119,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	}
 	
 	private initXDomain() {
-		var endDateTime = MonitoringStore.endDate,
+		var endDateTime = this.state.monitoringData.endDate,
 			startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
 		
 		this.xScale.domain([startDateTime, endDateTime]).nice();
@@ -106,9 +130,9 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	
 	private onZoom = () => setTimeout(() => {
 		var domain = this.xScale.domain();
-		if (domain[0]  < MonitoringStore.startDate) {
+		if (domain[0]  < this.state.monitoringData.startDate) {
 			MonitoringActions.get(domain[0]);
-		} else if (domain[1] > MonitoringStore.endDate) {
+		} else if (domain[1] > this.state.monitoringData.endDate) {
 			MonitoringActions.get(domain[1]);
 		}
 		this.forceUpdate();
@@ -127,7 +151,7 @@ module Charts {
 	}
 	
 	export interface State {
-		loaded: boolean;
+		monitoringData: MonitoringData;
 		mainWidth: number;
 		quotesChartHeight: number;
 		portfolioChartHeight: number;

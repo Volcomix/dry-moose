@@ -1,7 +1,5 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
-import Quote = require('../../../documents/Quote');
-import Portfolio = require('../../../documents/Portfolio');
 import MonitoringData = require('../../../documents/MonitoringData');
 
 import AbstractStore = require('./AbstractStore');
@@ -12,25 +10,10 @@ import ActionType = require('../constants/ActionType');
 
 class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 	
-	private _startDate: Date;
-	private _endDate: Date;
-	private _quotes: Quote[];
-	private _portfolio: Portfolio[];
+	private _data: MonitoringData;
 	
-	get startDate() {
-		return this._startDate;
-	}
-	
-	get endDate() {
-		return this._endDate;
-	}
-	
-	get quotes() {
-		return this._quotes;
-	}
-	
-	get portfolio() {
-		return this._portfolio;
+	get data() {
+		return this._data;
 	}
 	
 	constructor() {
@@ -39,21 +22,16 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 			switch(action.actionType) {
 				case ActionType.QuotesReceived:
 					var receiveAction = action as MonitoringServerActions.Receive;
-					this._startDate = receiveAction.startDate;
-					this._endDate = receiveAction.endDate;
-					if (receiveAction.quotes.length) {
-						this._quotes = receiveAction.quotes;
-					}
-					if (receiveAction.portfolio.length) {
-						this._portfolio = receiveAction.portfolio;
-					}
+					this._data = receiveAction.data;
 					this.emitChange();
 			}
 		});
 	}
 }
 
-interface MonitoringStore extends IStore, MonitoringData {}
+interface MonitoringStore extends IStore {
+	data: MonitoringData;
+}
 
 var MonitoringStore: MonitoringStore = new MonitoringStoreImpl();
 

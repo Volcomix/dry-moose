@@ -16,42 +16,14 @@ var MonitoringStoreImpl = (function (_super) {
             switch (action.actionType) {
                 case ActionType.QuotesReceived:
                     var receiveAction = action;
-                    _this._startDate = receiveAction.startDate;
-                    _this._endDate = receiveAction.endDate;
-                    if (receiveAction.quotes.length) {
-                        _this._quotes = receiveAction.quotes;
-                    }
-                    if (receiveAction.portfolio.length) {
-                        _this._portfolio = receiveAction.portfolio;
-                    }
+                    _this._data = receiveAction.data;
                     _this.emitChange();
             }
         });
     }
-    Object.defineProperty(MonitoringStoreImpl.prototype, "startDate", {
+    Object.defineProperty(MonitoringStoreImpl.prototype, "data", {
         get: function () {
-            return this._startDate;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MonitoringStoreImpl.prototype, "endDate", {
-        get: function () {
-            return this._endDate;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MonitoringStoreImpl.prototype, "quotes", {
-        get: function () {
-            return this._quotes;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MonitoringStoreImpl.prototype, "portfolio", {
-        get: function () {
-            return this._portfolio;
+            return this._data;
         },
         enumerable: true,
         configurable: true

@@ -6,35 +6,14 @@ import d3 = require('d3');
 import Quote = require('../../../documents/Quote');
 
 import Margin = require('./common/Margin');
-import MonitoringStore = require('../stores/MonitoringStore');
 
 import Chart = require('./Chart');
 
 class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> {
-	
-	private get stateFromStores(): QuotesChart.State {
-		return {
-			quotes: MonitoringStore.quotes
-		};
-	}
-	
-	constructor(props) {
-		super(props);
-		this.state = this.stateFromStores;
-	}
-	
-	componentDidMount() {
-		MonitoringStore.addChangeListener(this.onChange);
-	}
-	
-	componentWillUnmount() {
-		MonitoringStore.removeChangeListener(this.onChange);
-	}
-	
 	render() {
 		return (
 			<Chart
-				data={this.state.quotes}
+				data={this.props.quotes}
 				xAccessor={(d: Quote) => d.dateTime}
 				yAccessor={(d: Quote) => d.close}
 				width={this.props.width}
@@ -44,12 +23,11 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 				zoom={this.props.zoom} />
 		);
 	}
-	
-	private onChange = () => this.setState(this.stateFromStores);
 }
 
 module QuotesChart {
 	export interface Props {
+		quotes: Quote[];
 		width: number;
 		height: number;
 		margin: Margin;
@@ -58,7 +36,6 @@ module QuotesChart {
 	}
 	
 	export interface State {
-		quotes: Quote[];
 	}
 }
 
