@@ -10,6 +10,9 @@ import Margin = require('./common/Margin');
 import Chart = require('./Chart');
 
 class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> {
+	
+	private static yTickFormat = d3.format(',.5f');
+	
 	render() {
 		return (
 			<Chart
@@ -20,6 +23,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 				height={this.props.height}
 				margin={this.props.margin}
 				xScale={this.props.xScale}
+				yTickFormat={QuotesChart.yTickFormat}
 				zoom={this.props.zoom} />
 		);
 	}

@@ -5,13 +5,13 @@ import d3 = require('d3');
 
 class YAxis extends React.Component<YAxis.Props, YAxis.State> {
 	
-	private axis = d3.svg.axis()
-		.tickFormat(d3.format(',.5f'))
-		.orient('right');
+	private axis = d3.svg.axis().orient('right');
 	
 	constructor(props) {
 		super(props);
-		this.axis.scale(this.props.scale);
+		this.axis
+			.tickFormat(this.props.tickFormat)
+			.scale(this.props.scale);
 	}
 	
 	render() {
@@ -29,6 +29,7 @@ module YAxis {
 	export interface Props {
 		width: number;
 		scale: d3.scale.Linear<number, number>;
+		tickFormat: (t: any) => string;
 	}
 	
 	export interface State {

@@ -27,8 +27,13 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 					{React.createElement('clipPath', {id: 'clip'},
 						<rect width={contentWidth} height={contentHeight} />
 					) /* TSX doesn't know clipPath element */}
-					<XAxis height={contentHeight} scale={this.props.xScale} />
-					<YAxis width={contentWidth} scale={this.yScale} />
+					<XAxis
+						height={contentHeight}
+						scale={this.props.xScale} />
+					<YAxis
+						width={contentWidth}
+						scale={this.yScale}
+						tickFormat={this.props.yTickFormat} />
 					<LineSeries
 						data={this.props.data}
 						xAccessor={this.props.xAccessor}
@@ -74,6 +79,7 @@ module Chart {
 		height: number;
 		margin: Margin;
 		xScale: d3.time.Scale<Date, number>;
+		yTickFormat: (t: any) => string;
 		zoom: d3.behavior.Zoom<{}>;
 		yDomainPadding?: number;
 	}
@@ -86,6 +92,7 @@ module Chart {
 		height: undefined,
 		margin: undefined,
 		xScale: undefined,
+		yTickFormat: undefined,
 		zoom: undefined,
 		yDomainPadding: 0.05
 	}

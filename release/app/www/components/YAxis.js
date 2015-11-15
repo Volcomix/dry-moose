@@ -10,10 +10,10 @@ var YAxis = (function (_super) {
     __extends(YAxis, _super);
     function YAxis(props) {
         _super.call(this, props);
-        this.axis = d3.svg.axis()
-            .tickFormat(d3.format(',.5f'))
-            .orient('right');
-        this.axis.scale(this.props.scale);
+        this.axis = d3.svg.axis().orient('right');
+        this.axis
+            .tickFormat(this.props.tickFormat)
+            .scale(this.props.scale);
     }
     YAxis.prototype.render = function () {
         var _this = this;

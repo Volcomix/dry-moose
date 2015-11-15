@@ -11,6 +11,9 @@ import Chart = require('./Chart');
 
 class PortfolioChart
 	extends React.Component<PortfolioChart.Props, PortfolioChart.State> {
+	
+	private static yTickFormat = d3.format(',.2f');
+	
 	render() {
 		return (
 			<Chart
@@ -21,6 +24,7 @@ class PortfolioChart
 				height={this.props.height}
 				margin={this.props.margin}
 				xScale={this.props.xScale}
+				yTickFormat={PortfolioChart.yTickFormat}
 				zoom={this.props.zoom} />
 		);
 	}
