@@ -1,5 +1,7 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
+declare var componentHandler; // Material Design Lite
+
 import React = require('react');
 import d3 = require('d3');
 import moment = require('moment');
@@ -15,9 +17,10 @@ import PortfolioChart = require('./PortfolioChart');
 
 class Charts extends React.Component<Charts.Props, Charts.State> {
 	
-	private mainContainer: HTMLDivElement;
-	private quotesChartContainer: HTMLDivElement;
-	private portfolioChartContainer: HTMLDivElement;
+	private mainContainer: HTMLElement;
+	private quotesChartContainer: HTMLElement;
+	private portfolioChartContainer: HTMLElement;
+	private loadingSpinner: HTMLElement;
 	private xScale = d3.time.scale<Date, number>();
 	private zoom = d3.behavior.zoom();
 	
@@ -49,6 +52,8 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	}
 	
 	componentDidMount() {
+		componentHandler.upgradeElement(this.loadingSpinner);
+		
 		MonitoringStore.addChangeListener(this.onChange);
 		window.addEventListener('resize', this.onChange);
 		this.zoom.on('zoom', this.onZoom);
@@ -64,7 +69,8 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	
 	render() {
 		var quotesChart: JSX.Element,
-			portfolioChart: JSX.Element;
+			portfolioChart: JSX.Element,
+			loading: JSX.Element;
 			
 		if (this.state.monitoringData) {
 			this.updateXScale();
@@ -86,22 +92,33 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 					xScale={this.xScale}
 					zoom={this.zoom} />
 			);
+		} else {
+			loading = (
+				<div className='overlay'>
+					<div
+						style={{width: 128, height: 128}}
+						className='mdl-spinner mdl-js-spinner is-active'
+						ref={ref => this.loadingSpinner = ref}>
+					</div>
+				</div>
+			);
 		}
 		
 		return (
 			<div
 				style={{ height: '100%' }}
-				ref={(ref: any) => this.mainContainer = ref}>
+				ref={ref => this.mainContainer = ref}>
 				<div
 					style={{ height: '50%' }}
-					ref={(ref: any) => this.quotesChartContainer = ref}>
+					ref={ref => this.quotesChartContainer = ref}>
 					{quotesChart}
 				</div>
 				<div
 					style={{ height: '50%' }}
-					ref={(ref: any) => this.portfolioChartContainer = ref}>
+					ref={ref => this.portfolioChartContainer = ref}>
 					{portfolioChart}
 				</div>
+				{loading}
 			</div>
 		);
 	}
