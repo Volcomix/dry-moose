@@ -17,6 +17,7 @@ class PortfolioChart
 	render() {
 		return (
 			<Chart
+				title='Portfolio'
 				data={this.props.portfolio}
 				xAccessor={(d: Portfolio) => d.dateTime}
 				yAccessor={(d: Portfolio) => d.value}

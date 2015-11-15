@@ -22,35 +22,40 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		this.updateYScale(contentHeight);
 		
 		return (
-			<svg width={this.props.width} height={this.props.height}>
-				<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
-					{React.createElement('clipPath', {id: 'clip'},
-						<rect width={contentWidth} height={contentHeight} />
-					) /* TSX doesn't know clipPath element */}
-					<XAxis
-						height={contentHeight}
-						scale={this.props.xScale} />
-					<YAxis
-						width={contentWidth}
-						scale={this.yScale}
-						tickFormat={this.props.yTickFormat} />
-					<LineSeries
-						data={this.props.data}
-						xAccessor={this.props.xAccessor}
-						yAccessor={this.props.yAccessor}
-						xScale={this.props.xScale}
-						yScale={this.yScale}
-						clipPath='url(#clip)' />
-					<Cursor
-						data={this.props.data}
-						xAccessor={this.props.xAccessor}
-						width={contentWidth}
-						height={contentHeight}
-						xScale={this.props.xScale}
-						yScale={this.yScale}
-						zoom={this.props.zoom} />
-				</g>
-			</svg>
+			<div className='chart'>
+				<div className='mdl-typography--title mdl-color-text--grey-700'>
+					{this.props.title}
+				</div>
+				<svg width={this.props.width} height={this.props.height}>
+					<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
+						{React.createElement('clipPath', {id: 'clip'},
+							<rect width={contentWidth} height={contentHeight} />
+						) /* TSX doesn't know clipPath element */}
+						<XAxis
+							height={contentHeight}
+							scale={this.props.xScale} />
+						<YAxis
+							width={contentWidth}
+							scale={this.yScale}
+							tickFormat={this.props.yTickFormat} />
+						<LineSeries
+							data={this.props.data}
+							xAccessor={this.props.xAccessor}
+							yAccessor={this.props.yAccessor}
+							xScale={this.props.xScale}
+							yScale={this.yScale}
+							clipPath='url(#clip)' />
+						<Cursor
+							data={this.props.data}
+							xAccessor={this.props.xAccessor}
+							width={contentWidth}
+							height={contentHeight}
+							xScale={this.props.xScale}
+							yScale={this.yScale}
+							zoom={this.props.zoom} />
+					</g>
+				</svg>
+			</div>
 		);
 	}
 	
@@ -81,6 +86,7 @@ module Chart {
 		xScale: d3.time.Scale<Date, number>;
 		yTickFormat: (t: any) => string;
 		zoom: d3.behavior.Zoom<{}>;
+		title?: string;
 		yDomainPadding?: number;
 	}
 	
@@ -94,7 +100,7 @@ module Chart {
 		xScale: undefined,
 		yTickFormat: undefined,
 		zoom: undefined,
-		yDomainPadding: 0.05
+		yDomainPadding: 0.1
 	}
 	
 	export interface State {

@@ -13,7 +13,7 @@ var QuotesChart = (function (_super) {
         _super.apply(this, arguments);
     }
     QuotesChart.prototype.render = function () {
-        return (React.createElement(Chart, {"data": this.props.quotes, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.close; }, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}));
+        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.close; }, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}));
     };
     QuotesChart.yTickFormat = d3.format(',.5f');
     return QuotesChart;

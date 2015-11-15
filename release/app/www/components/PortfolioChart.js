@@ -13,7 +13,7 @@ var PortfolioChart = (function (_super) {
         _super.apply(this, arguments);
     }
     PortfolioChart.prototype.render = function () {
-        return (React.createElement(Chart, {"data": this.props.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yTickFormat": PortfolioChart.yTickFormat, "zoom": this.props.zoom}));
+        return (React.createElement(Chart, {"title": 'Portfolio', "data": this.props.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yTickFormat": PortfolioChart.yTickFormat, "zoom": this.props.zoom}));
     };
     PortfolioChart.yTickFormat = d3.format(',.2f');
     return PortfolioChart;

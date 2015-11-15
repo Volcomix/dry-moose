@@ -16,6 +16,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 	render() {
 		return (
 			<Chart
+				title='Euro/U.S. Dollar'
 				data={this.props.quotes}
 				xAccessor={(d: Quote) => d.dateTime}
 				yAccessor={(d: Quote) => d.close}

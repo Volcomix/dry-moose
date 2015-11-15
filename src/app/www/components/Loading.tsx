@@ -1,6 +1,5 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
-
-declare var componentHandler; // Material Design Lite
+/// <reference path="./common/material-design-lite.d.ts" />
 
 import React = require('react');
 
