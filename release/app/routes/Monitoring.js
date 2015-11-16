@@ -6,13 +6,9 @@ var DbManager = require('../../database/DbManager');
 var router = express.Router();
 router.get('/minutes/last', function (req, res, next) {
     var lastDate;
-    Q.all(['quotes', 'portfolio'].map(function (collection) {
-        return Q.ninvoke(DbManager.db.collection(collection), 'aggregate', [
-            { $group: { _id: null, endDate: { $max: '$dateTime' } } }
-        ]);
-    }))
-        .spread(function (lastQuote, lastPortfolio) {
-        lastDate = moment.max(moment(lastQuote[0].endDate), moment(lastPortfolio[0].endDate));
+    Q.all([getLastQuoteDate(), getLastPortfolioDate(), getLastOptionDate()])
+        .then(function (results) {
+        lastDate = moment.max.apply(moment, results.map(function (result) { return moment(result[0].endDate); }));
         return getByMinute(lastDate);
     })
         .then(function (data) {
@@ -36,24 +32,60 @@ function getByMinute(dateTime) {
     }
     var startDate = moment(roundedDateTime).subtract({ hours: 12 }).toDate(), endDate = moment(roundedDateTime).add({ hours: 11, minutes: 59 }).toDate();
     return Q.all([
-        { collection: 'quotes', field: 'close' },
-        { collection: 'portfolio', field: 'value' }
-    ].map(function (params) {
-        return Q.ninvoke(DbManager.db.collection(params.collection), 'aggregate', [
-            { $match: { dateTime: { $gte: startDate, $lte: endDate } } },
-            { $sort: { dateTime: 1 } },
-            { $project: (_a = {
-                        _id: 0,
-                        dateTime: 1
-                    },
-                    _a[params.field] = 1,
-                    _a
-                ) }
-        ]);
-        var _a;
-    }))
-        .spread(function (quotes, portfolio) {
-        return ({ startDate: startDate, endDate: endDate, quotes: quotes, portfolio: portfolio });
+        getQuotes(startDate, endDate),
+        getPortfolio(startDate, endDate),
+        getOptions(startDate, endDate)
+    ])
+        .spread(function (quotes, portfolio, options) {
+        return ({ startDate: startDate, endDate: endDate, quotes: quotes, portfolio: portfolio, options: options });
     });
+}
+function getLastQuoteDate() {
+    return Q.ninvoke(DbManager.db.collection('quotes'), 'aggregate', [
+        { $group: { _id: null, endDate: { $max: '$dateTime' } } }
+    ]);
+}
+function getLastPortfolioDate() {
+    return Q.ninvoke(DbManager.db.collection('portfolio'), 'aggregate', [
+        { $group: { _id: null, endDate: { $max: '$dateTime' } } }
+    ]);
+}
+function getLastOptionDate() {
+    return Q.ninvoke(DbManager.db.collection('options'), 'aggregate', [
+        { $group: { _id: null, endDate: { $max: '$quote.dateTime' } } }
+    ]);
+}
+function getQuotes(startDate, endDate) {
+    return Q.ninvoke(DbManager.db.collection('quotes'), 'aggregate', [
+        { $match: { dateTime: { $gte: startDate, $lte: endDate } } },
+        { $sort: { dateTime: 1 } },
+        { $project: {
+                _id: 0,
+                dateTime: 1,
+                close: 1
+            } }
+    ]);
+}
+function getPortfolio(startDate, endDate) {
+    return Q.ninvoke(DbManager.db.collection('portfolio'), 'aggregate', [
+        { $match: { dateTime: { $gte: startDate, $lte: endDate } } },
+        { $sort: { dateTime: 1 } },
+        { $project: {
+                _id: 0,
+                dateTime: 1,
+                value: 1
+            } }
+    ]);
+}
+function getOptions(startDate, endDate) {
+    return Q.ninvoke(DbManager.db.collection('options'), 'aggregate', [
+        { $match: { 'quote.dateTime': { $gte: startDate, $lte: endDate } } },
+        { $sort: { 'quote.dateTime': 1 } },
+        { $project: {
+                _id: 0,
+                quote: { dateTime: 1, close: 1 },
+                direction: 1
+            } }
+    ]);
 }
 module.exports = router;
