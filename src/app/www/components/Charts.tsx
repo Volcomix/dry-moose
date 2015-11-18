@@ -73,6 +73,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 			quotesChart = (
 				<QuotesChart
 					quotes={this.state.monitoringData.quotes}
+					options={this.state.monitoringData.options}
 					width={this.state.mainWidth}
 					height={this.state.quotesChartHeight}
 					margin={this.props.margin}

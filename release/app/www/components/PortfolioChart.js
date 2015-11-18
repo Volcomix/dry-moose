@@ -11,11 +11,36 @@ var PortfolioChart = (function (_super) {
     __extends(PortfolioChart, _super);
     function PortfolioChart() {
         _super.apply(this, arguments);
+        this.yScale = d3.scale.linear();
+        this.xAccessor = function (d) { return d.dateTime; };
+        this.yAccessor = function (d) { return d.value; };
     }
     PortfolioChart.prototype.render = function () {
-        return (React.createElement(Chart, {"title": 'Portfolio', "data": this.props.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yTickFormat": PortfolioChart.yTickFormat, "zoom": this.props.zoom}));
+        var margin = this.props.margin;
+        this.updateYScale(this.props.height - margin.top - margin.bottom);
+        return (React.createElement(Chart, {"title": 'Portfolio', "data": this.props.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": PortfolioChart.yTickFormat, "zoom": this.props.zoom}));
+    };
+    PortfolioChart.prototype.updateYScale = function (height) {
+        var bisect = d3.bisector(this.xAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.portfolio, domain[0], 1), j = bisect(this.props.portfolio, domain[1], i + 1), domainData = this.props.portfolio.slice(i - 1, j + 1), extent = d3.extent(domainData, this.yAccessor);
+        this.yScale.range([height, 0]);
+        if (extent[0] != extent[1]) {
+            var padding = this.props.yDomainPadding * (extent[1] - extent[0]);
+            this.yScale.domain([extent[0] - padding, extent[1] + padding]).nice();
+        }
     };
     PortfolioChart.yTickFormat = d3.format(',.2f');
     return PortfolioChart;
 })(React.Component);
+var PortfolioChart;
+(function (PortfolioChart) {
+    PortfolioChart.defaultProps = {
+        portfolio: undefined,
+        width: undefined,
+        height: undefined,
+        margin: undefined,
+        xScale: undefined,
+        zoom: undefined,
+        yDomainPadding: 0.1
+    };
+})(PortfolioChart || (PortfolioChart = {}));
 module.exports = PortfolioChart;

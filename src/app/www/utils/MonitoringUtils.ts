@@ -5,6 +5,7 @@ import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
 import Portfolio = require('../../../documents/Portfolio');
+import BinaryOption = require('../../../documents/options/BinaryOption');
 import MonitoringData = require('../../../documents/MonitoringData');
 
 import MonitoringServerActions = require('../actions/MonitoringServerActions');
@@ -15,6 +16,9 @@ function receive(data: MonitoringData) {
     data.endDate = new Date(data.endDate as any);
 	data.quotes.forEach((d: Quote) => d.dateTime = new Date(d.dateTime as any));
     data.portfolio.forEach((d: Portfolio) => d.dateTime = new Date(d.dateTime as any));
+    data.options.forEach(
+        (d: BinaryOption) => d.quote.dateTime = new Date(d.quote.dateTime as any)
+    );
     
 	MonitoringServerActions.receive(data);
 }
