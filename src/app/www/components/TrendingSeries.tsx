@@ -3,9 +3,10 @@
 import React = require('react');
 import d3 = require('d3');
 
+import SeriesProps = require('./common/SeriesProps');
 import ChartConstants = require('../constants/ChartConstants');
 
-class TrendingSeries extends React.Component<Props, State> {
+class TrendingSeries extends React.Component<TrendingSeries.Props, {}> {
 	
 	private getTrends = option => {
 		var accessor = this.props.directionAccessor,
@@ -32,22 +33,11 @@ class TrendingSeries extends React.Component<Props, State> {
 }
 
 module TrendingSeries {
-	export interface Props {
-		data: {}[];
-		xAccessor: (d: {}) => Date;
-		yAccessor: (d: {}) => number;
+	export interface Props extends SeriesProps {
 		directionAccessor: (d: {}) => Direction;
-		xScale: d3.time.Scale<Date, number>;
-		yScale: d3.scale.Linear<number, number>;
-	}
-	
-	export interface State {
 	}
 	
 	export enum Direction { Up, Down }
 }
-
-import Props = TrendingSeries.Props;
-import State = TrendingSeries.State;
 
 export = TrendingSeries;

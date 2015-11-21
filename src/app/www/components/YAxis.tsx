@@ -3,7 +3,7 @@
 import React = require('react');
 import d3 = require('d3');
 
-class YAxis extends React.Component<YAxis.Props, YAxis.State> {
+class YAxis extends React.Component<YAxis.Props, {}> {
 	
 	private axis = d3.svg.axis().orient('right');
 	
@@ -30,9 +30,6 @@ module YAxis {
 		width: number;
 		scale: d3.scale.Linear<number, number>;
 		tickFormat: (t: any) => string;
-	}
-	
-	export interface State {
 	}
 }
 

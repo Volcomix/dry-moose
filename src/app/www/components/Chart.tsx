@@ -11,7 +11,7 @@ import YAxis = require('./YAxis');
 import LineSeries = require('./LineSeries');
 import Cursor = require('./Cursor');
 
-class Chart extends React.Component<Chart.Props, Chart.State> {	
+class Chart extends React.Component<Chart.Props, {}> {	
 	render() {
 		var margin = this.props.margin,
 			contentWidth = this.props.width - margin.left - margin.right,
@@ -70,9 +70,6 @@ module Chart {
 		zoom: d3.behavior.Zoom<{}>;
 		children?: React.ReactNode;
 		title?: string;
-	}
-	
-	export interface State {
 	}
 }
 

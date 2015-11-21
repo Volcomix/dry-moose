@@ -152,7 +152,7 @@ module Charts {
 	}
 	
 	export var defaultProps: Props = {
-		margin: { top: 20, right: 60, bottom: 30, left: 20 },
+		margin: Margin.defaultMargin,
 		zoomScaleExtent: [0.5, 10]
 	}
 	

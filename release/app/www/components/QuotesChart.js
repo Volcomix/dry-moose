@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var BinaryOption = require('../../../documents/options/BinaryOption');
+var ChartProps = require('./common/ChartProps');
 var Chart = require('./Chart');
 var TrendingSeries = require('./TrendingSeries');
 var QuotesChart = (function (_super) {
@@ -43,15 +44,6 @@ var QuotesChart = (function (_super) {
 })(React.Component);
 var QuotesChart;
 (function (QuotesChart) {
-    QuotesChart.defaultProps = {
-        options: undefined,
-        quotes: undefined,
-        width: undefined,
-        height: undefined,
-        margin: undefined,
-        xScale: undefined,
-        zoom: undefined,
-        yDomainPadding: 0.1
-    };
+    QuotesChart.defaultProps = ChartProps.defaultProps;
 })(QuotesChart || (QuotesChart = {}));
 module.exports = QuotesChart;

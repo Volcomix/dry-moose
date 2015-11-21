@@ -3,7 +3,7 @@
 import React = require('react');
 import d3 = require('d3');
 
-class XCursor extends React.Component<XCursor.Props, XCursor.State> {
+class XCursor extends React.Component<XCursor.Props, {}> {
 	
 	private dateFormat = d3.time.format('%Y-%m-%d %H:%M:%S');
 	
@@ -70,9 +70,6 @@ module XCursor {
 		height: undefined,
 		scale: undefined,
 		snapThreshold: 60000
-	}
-	
-	export interface State {
 	}
 }
 

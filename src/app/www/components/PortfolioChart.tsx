@@ -6,10 +6,11 @@ import d3 = require('d3');
 import Portfolio = require('../../../documents/Portfolio');
 
 import Margin = require('./common/Margin');
+import ChartProps = require('./common/ChartProps');
 
 import Chart = require('./Chart');
 
-class PortfolioChart extends React.Component<Props, State> {
+class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
 	private yScale = d3.scale.linear();
 	private static yTickFormat = d3.format(',.2f');
@@ -53,31 +54,11 @@ class PortfolioChart extends React.Component<Props, State> {
 }
 
 module PortfolioChart {
-	export interface Props {
+	export interface Props extends ChartProps {
 		portfolio: Portfolio[];
-		width: number;
-		height: number;
-		margin: Margin;
-		xScale: d3.time.Scale<Date, number>;
-		zoom: d3.behavior.Zoom<{}>;
-		yDomainPadding?: number;
 	}
 	
-	export var defaultProps: Props = {
-		portfolio: undefined,
-		width: undefined,
-		height: undefined,
-		margin: undefined,
-		xScale: undefined,
-		zoom: undefined,
-		yDomainPadding: 0.1
-	}
-	
-	export interface State {
-	}
+	export var defaultProps: Props = ChartProps.defaultProps as Props;
 }
-
-import Props = PortfolioChart.Props;
-import State = PortfolioChart.State;
 
 export = PortfolioChart;

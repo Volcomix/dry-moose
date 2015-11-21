@@ -3,7 +3,7 @@
 import React = require('react');
 import d3 = require('d3');
 
-class XAxis extends React.Component<XAxis.Props, XAxis.State> {
+class XAxis extends React.Component<XAxis.Props, {}> {
 	
 	private axis = d3.svg.axis()
 		.tickFormat(d3.time.format.multi([
@@ -38,9 +38,6 @@ module XAxis {
 	export interface Props {
 		height: number;
 		scale: d3.time.Scale<Date, number>;
-	}
-	
-	export interface State {
 	}
 }
 

@@ -6,6 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
+var ChartProps = require('./common/ChartProps');
 var Chart = require('./Chart');
 var PortfolioChart = (function (_super) {
     __extends(PortfolioChart, _super);
@@ -33,14 +34,6 @@ var PortfolioChart = (function (_super) {
 })(React.Component);
 var PortfolioChart;
 (function (PortfolioChart) {
-    PortfolioChart.defaultProps = {
-        portfolio: undefined,
-        width: undefined,
-        height: undefined,
-        margin: undefined,
-        xScale: undefined,
-        zoom: undefined,
-        yDomainPadding: 0.1
-    };
+    PortfolioChart.defaultProps = ChartProps.defaultProps;
 })(PortfolioChart || (PortfolioChart = {}));
 module.exports = PortfolioChart;

@@ -7,11 +7,12 @@ import Quote = require('../../../documents/Quote');
 import BinaryOption = require('../../../documents/options/BinaryOption');
 
 import Margin = require('./common/Margin');
+import ChartProps = require('./common/ChartProps');
 
 import Chart = require('./Chart');
 import TrendingSeries = require('./TrendingSeries');
 
-class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> {
+class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	private yScale = d3.scale.linear();
 	private static yTickFormat = d3.format(',.5f');
@@ -72,30 +73,12 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 }
 
 module QuotesChart {
-	export interface Props {
+	export interface Props extends ChartProps {
 		quotes: Quote[];
 		options: BinaryOption[];
-		width: number;
-		height: number;
-		margin: Margin;
-		xScale: d3.time.Scale<Date, number>;
-		zoom: d3.behavior.Zoom<{}>;
-		yDomainPadding?: number;
 	}
 	
-	export var defaultProps: Props = {
-		options: undefined,
-		quotes: undefined,
-		width: undefined,
-		height: undefined,
-		margin: undefined,
-		xScale: undefined,
-		zoom: undefined,
-		yDomainPadding: 0.1
-	}
-	
-	export interface State {
-	}
+	export var defaultProps: Props = ChartProps.defaultProps as Props;
 }
 
 export = QuotesChart;

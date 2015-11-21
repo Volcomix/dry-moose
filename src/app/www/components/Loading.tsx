@@ -3,7 +3,7 @@
 
 import React = require('react');
 
-class Loading extends React.Component<Loading.Props, Loading.State> {
+class Loading extends React.Component<{}, {}> {
 	
 	private loadingElement: HTMLElement;
 	
@@ -20,14 +20,6 @@ class Loading extends React.Component<Loading.Props, Loading.State> {
 				</div>
 			</div>
 		);
-	}
-}
-
-module Loading {
-	export interface Props {
-	}
-	
-	export interface State {
 	}
 }
 

@@ -3,7 +3,7 @@
 import React = require('react');
 import d3 = require('d3');
 
-class YCursor extends React.Component<YCursor.Props, YCursor.State> {
+class YCursor extends React.Component<YCursor.Props, {}> {
 	render() {
 		return (
 			<g
@@ -24,9 +24,6 @@ module YCursor {
 		mouseY: number;
 		width: number;
 		scale: d3.scale.Linear<number, number>;
-	}
-	
-	export interface State {
 	}
 }
 

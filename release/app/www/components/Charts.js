@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var moment = require('moment');
+var Margin = require('./common/Margin');
 var MonitoringActions = require('../actions/MonitoringActions');
 var MonitoringStore = require('../stores/MonitoringStore');
 var QuotesChart = require('./QuotesChart');
@@ -107,7 +108,7 @@ var Charts = (function (_super) {
 var Charts;
 (function (Charts) {
     Charts.defaultProps = {
-        margin: { top: 20, right: 60, bottom: 30, left: 20 },
+        margin: Margin.defaultMargin,
         zoomScaleExtent: [0.5, 10]
     };
 })(Charts || (Charts = {}));
