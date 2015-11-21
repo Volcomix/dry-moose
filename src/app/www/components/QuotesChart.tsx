@@ -32,11 +32,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				yTickFormat={QuotesChart.yTickFormat}
 				zoom={this.props.zoom}>
 				<OptionSeries
-					data={this.props.options}
-					xAccessor={this.xOptionAccessor}
-					yAccessor={this.yOptionAccessor}
-					expirationAccessor={this.optionExpirationAccessor}
-					directionAccessor={this.optionDirectionAccessor}
+					options={this.props.options}
 					xScale={this.props.xScale}
 					yScale={this.yScale} />
 			</Chart>
@@ -45,20 +41,6 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	private xQuoteAccessor = (d: Quote) => d.dateTime;
 	private yQuoteAccessor = (d: Quote) => d.close;
-	
-	private xOptionAccessor = (d: BinaryOption) => d.quote.dateTime;
-	private yOptionAccessor = (d: BinaryOption) => d.quote.close;
-	
-	private optionExpirationAccessor = (d: BinaryOption) => d.expiration;
-	
-	private optionDirectionAccessor = (d: BinaryOption) => {
-		switch (d.direction) {
-			case BinaryOption.Direction.Call:
-				return OptionSeries.Direction.Up;
-			case BinaryOption.Direction.Put:
-				return OptionSeries.Direction.Down;
-		}
-	}
 }
 
 module QuotesChart {

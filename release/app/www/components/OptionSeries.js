@@ -5,22 +5,32 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var BinaryOption = require('../../../documents/options/BinaryOption');
 var ChartConstants = require('../constants/ChartConstants');
 var OptionSeries = (function (_super) {
     __extends(OptionSeries, _super);
     function OptionSeries() {
         var _this = this;
         _super.apply(this, arguments);
-        this.getTrends = function (option) {
-            var accessor = _this.props.directionAccessor, direction = OptionSeries.Direction[accessor(option)].toLowerCase(), x1 = _this.props.xScale(_this.props.xAccessor(option)), x2 = _this.props.xScale(_this.props.expirationAccessor(option)), y = _this.props.yScale(_this.props.yAccessor(option));
-            return (React.createElement("g", {"key": +_this.props.xAccessor(option), "transform": 'translate(' + x1 + ', ' + y + ')'}, React.createElement("text", {"className": 'material-icons'}, 'trending_' + direction), React.createElement("circle", {r: 4.5}), React.createElement("line", {"x2": x2 - x1})));
+        this.getOptions = function (option) {
+            var direction, x1 = _this.props.xScale(option.quote.dateTime), x2 = _this.props.xScale(option.expiration), y = _this.props.yScale(option.quote.close);
+            return (React.createElement("g", {"key": +option.quote.dateTime, "transform": 'translate(' + x1 + ', ' + y + ')'}, React.createElement("text", {"className": 'material-icons'}, _this.getDirectionIcon(option)), React.createElement("circle", {r: 4.5}), React.createElement("line", {"x2": x2 - x1})));
         };
     }
+    OptionSeries.prototype.getDirectionIcon = function (option) {
+        switch (option.direction) {
+            case BinaryOption.Direction.Call:
+                return 'trending_up';
+            case BinaryOption.Direction.Put:
+                return 'trending_down';
+        }
+    };
     OptionSeries.prototype.render = function () {
+        // TSX doesn't know clipPath attribute
         return React.createElement('g', {
             className: 'options',
             clipPath: 'url(#' + ChartConstants.clipPath + ')'
-        }, this.props.data.map(this.getTrends)); // TSX doesn't know clipPath attribute
+        }, this.props.options.map(this.getOptions));
     };
     return OptionSeries;
 })(React.Component);

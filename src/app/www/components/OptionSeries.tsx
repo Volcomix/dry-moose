@@ -3,40 +3,51 @@
 import React = require('react');
 import d3 = require('d3');
 
-import SeriesProps = require('./common/SeriesProps');
+import BinaryOption = require('../../../documents/options/BinaryOption')
+
 import ChartConstants = require('../constants/ChartConstants');
 
 class OptionSeries extends React.Component<OptionSeries.Props, {}> {
 	
-	private getTrends = option => {
-		var accessor = this.props.directionAccessor,
-			direction = OptionSeries.Direction[accessor(option)].toLowerCase(),
-			x1 = this.props.xScale(this.props.xAccessor(option)),
-			x2 = this.props.xScale(this.props.expirationAccessor(option)),
-			y = this.props.yScale(this.props.yAccessor(option));
+	private getOptions = (option: BinaryOption) => {
+		var direction: string,
+			x1 = this.props.xScale(option.quote.dateTime),
+			x2 = this.props.xScale(option.expiration),
+			y = this.props.yScale(option.quote.close);
 		return (
 			<g
-				key={+this.props.xAccessor(option)}
+				key={+option.quote.dateTime}
 				transform={'translate(' + x1 + ', ' + y + ')'}>
-				<text className='material-icons'>{'trending_' + direction}</text>
+				<text className='material-icons'>{this.getDirectionIcon(option)}</text>
 				<circle r={4.5} />
 				<line x2={x2 - x1} />
 			</g>
 		);
 	}
 	
+	private getDirectionIcon(option: BinaryOption) {
+		switch (option.direction) {
+			case BinaryOption.Direction.Call:
+				return 'trending_up';
+			case BinaryOption.Direction.Put:
+				return 'trending_down';
+		}
+	}
+	
 	render() {
+		// TSX doesn't know clipPath attribute
 		return React.createElement('g', {
 			className: 'options',
 			clipPath: 'url(#' + ChartConstants.clipPath + ')'
-		}, this.props.data.map(this.getTrends)); // TSX doesn't know clipPath attribute
+		}, this.props.options.map(this.getOptions));
 	}
 }
 
 module OptionSeries {
-	export interface Props extends SeriesProps {
-		expirationAccessor: (d: {}) => Date;
-		directionAccessor: (d: {}) => Direction;
+	export interface Props {
+		options: BinaryOption[];
+		xScale: d3.time.Scale<Date, number>;
+		yScale: d3.scale.Linear<number, number>;
 	}
 	
 	export enum Direction { Up, Down }

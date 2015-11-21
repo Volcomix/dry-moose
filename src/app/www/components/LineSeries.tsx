@@ -3,10 +3,9 @@
 import React = require('react');
 import d3 = require('d3');
 
-import SeriesProps = require('./common/SeriesProps');
 import ChartConstants = require('../constants/ChartConstants');
 
-class LineSeries extends React.Component<SeriesProps, {}> {
+class LineSeries extends React.Component<LineSeries.Props, {}> {
 	
 	private line = d3.svg.line<{}>();
 	
@@ -23,6 +22,16 @@ class LineSeries extends React.Component<SeriesProps, {}> {
 			d: this.line(this.props.data),
 			clipPath: 'url(#' + ChartConstants.clipPath + ')'
 		}); // TSX doesn't know clipPath attribute
+	}
+}
+
+module LineSeries {
+	export interface Props {	
+		data: {}[];
+		xAccessor: (d: {}) => Date;
+		yAccessor: (d: {}) => number;
+		xScale: d3.time.Scale<Date, number>;
+		yScale: d3.scale.Linear<number, number>;
 	}
 }
 
