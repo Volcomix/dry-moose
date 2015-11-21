@@ -16,9 +16,10 @@ function receive(data: MonitoringData) {
     data.endDate = new Date(data.endDate as any);
 	data.quotes.forEach((d: Quote) => d.dateTime = new Date(d.dateTime as any));
     data.portfolio.forEach((d: Portfolio) => d.dateTime = new Date(d.dateTime as any));
-    data.options.forEach(
-        (d: BinaryOption) => d.quote.dateTime = new Date(d.quote.dateTime as any)
-    );
+    data.options.forEach((d: BinaryOption) => {
+        d.quote.dateTime = new Date(d.quote.dateTime as any);
+        d.expiration = new Date(d.expiration as any);
+    });
     
 	MonitoringServerActions.receive(data);
 }

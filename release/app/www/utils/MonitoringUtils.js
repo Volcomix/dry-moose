@@ -8,7 +8,10 @@ function receive(data) {
     data.endDate = new Date(data.endDate);
     data.quotes.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.portfolio.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
-    data.options.forEach(function (d) { return d.quote.dateTime = new Date(d.quote.dateTime); });
+    data.options.forEach(function (d) {
+        d.quote.dateTime = new Date(d.quote.dateTime);
+        d.expiration = new Date(d.expiration);
+    });
     MonitoringServerActions.receive(data);
 }
 var delay = Q(null);

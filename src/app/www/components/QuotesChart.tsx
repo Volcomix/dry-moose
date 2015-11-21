@@ -35,6 +35,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 					data={this.props.options}
 					xAccessor={this.xOptionAccessor}
 					yAccessor={this.yOptionAccessor}
+					expirationAccessor={this.optionExpirationAccessor}
 					directionAccessor={this.optionDirectionAccessor}
 					xScale={this.props.xScale}
 					yScale={this.yScale} />
@@ -47,6 +48,8 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	private xOptionAccessor = (d: BinaryOption) => d.quote.dateTime;
 	private yOptionAccessor = (d: BinaryOption) => d.quote.close;
+	
+	private optionExpirationAccessor = (d: BinaryOption) => d.expiration;
 	
 	private optionDirectionAccessor = (d: BinaryOption) => {
 		switch (d.direction) {

@@ -109,6 +109,7 @@ function getOptions(startDate: Date, endDate: Date): Q.Promise<BinaryOption[]> {
 		{ $project: {
 			_id: 0,
 			quote: { dateTime: 1, close: 1 },
+			expiration: 1,
 			direction: 1
 		}}
 	]);

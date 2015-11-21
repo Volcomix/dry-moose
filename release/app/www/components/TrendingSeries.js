@@ -12,11 +12,8 @@ var TrendingSeries = (function (_super) {
         var _this = this;
         _super.apply(this, arguments);
         this.getTrends = function (option) {
-            var accessor = _this.props.directionAccessor, direction = TrendingSeries.Direction[accessor(option)].toLowerCase();
-            return (React.createElement("g", {"key": +_this.props.xAccessor(option), "className": direction, "transform": 'translate(' +
-                _this.props.xScale(_this.props.xAccessor(option)) + ', ' +
-                _this.props.yScale(_this.props.yAccessor(option)) +
-                ')'}, React.createElement("circle", {r: 4.5}), React.createElement("text", {"className": 'material-icons'}, 'trending_' + direction)));
+            var accessor = _this.props.directionAccessor, direction = TrendingSeries.Direction[accessor(option)].toLowerCase(), x1 = _this.props.xScale(_this.props.xAccessor(option)), x2 = _this.props.xScale(_this.props.expirationAccessor(option)), y = _this.props.yScale(_this.props.yAccessor(option));
+            return (React.createElement("g", {"key": +_this.props.xAccessor(option), "className": direction, "transform": 'translate(' + x1 + ', ' + y + ')'}, React.createElement("text", {"className": 'material-icons'}, 'trending_' + direction), React.createElement("circle", {r: 4.5}), React.createElement("line", {"x2": x2 - x1})));
         };
     }
     TrendingSeries.prototype.render = function () {

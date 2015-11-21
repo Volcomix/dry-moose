@@ -18,6 +18,7 @@ var QuotesChart = (function (_super) {
         this.yQuoteAccessor = function (d) { return d.close; };
         this.xOptionAccessor = function (d) { return d.quote.dateTime; };
         this.yOptionAccessor = function (d) { return d.quote.close; };
+        this.optionExpirationAccessor = function (d) { return d.expiration; };
         this.optionDirectionAccessor = function (d) {
             switch (d.direction) {
                 case BinaryOption.Direction.Call:
@@ -28,7 +29,7 @@ var QuotesChart = (function (_super) {
         };
     }
     QuotesChart.prototype.render = function () {
-        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}, React.createElement(TrendingSeries, {"data": this.props.options, "xAccessor": this.xOptionAccessor, "yAccessor": this.yOptionAccessor, "directionAccessor": this.optionDirectionAccessor, "xScale": this.props.xScale, "yScale": this.yScale})));
+        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}, React.createElement(TrendingSeries, {"data": this.props.options, "xAccessor": this.xOptionAccessor, "yAccessor": this.yOptionAccessor, "expirationAccessor": this.optionExpirationAccessor, "directionAccessor": this.optionDirectionAccessor, "xScale": this.props.xScale, "yScale": this.yScale})));
     };
     QuotesChart.yTickFormat = d3.format(',.5f');
     return QuotesChart;

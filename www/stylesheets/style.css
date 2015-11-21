@@ -51,28 +51,27 @@ path.line {
 	stroke: steelblue;
 }
 
+.trending .up {
+	fill: #4CAF50;
+	stroke: #4CAF50;
+}
+
+.trending .down {
+	fill: #F44336;
+	stroke: #F44336;
+}
+
 .trending text {
 	text-anchor: middle;
-}
-
-.trending .up text {
-	fill: #4CAF50;
-}
-
-.trending .down text {
-	fill: #F44336;
 }
 
 .trending circle {
 	fill: none;
 }
 
-.trending .up circle {
-	stroke: #4CAF50;
-}
-
-.trending .down circle {
-	stroke: #F44336;
+.trending line {
+	fill: none;
+	shape-rendering: crispEdges;
 }
 
 rect.pane {
