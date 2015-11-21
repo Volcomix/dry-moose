@@ -89,7 +89,7 @@ var Charts = (function (_super) {
         else {
             loading = React.createElement(Loading, null);
         }
-        return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"style": { height: '70%' }, "ref": function (ref) { return _this.quotesChartContainer = ref; }}, quotesChart), React.createElement("div", {"style": { height: '30%' }, "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, portfolioChart), loading));
+        return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"className": 'quotes', "ref": function (ref) { return _this.quotesChartContainer = ref; }}, quotesChart), React.createElement("div", {"className": 'portfolio', "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, portfolioChart), loading));
     };
     Charts.prototype.updateXScale = function () {
         var margin = this.props.margin, contentWidth = this.state.mainWidth - margin.left - margin.right, domain = this.xScale.domain();

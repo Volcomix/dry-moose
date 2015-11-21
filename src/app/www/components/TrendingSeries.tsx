@@ -17,7 +17,6 @@ class TrendingSeries extends React.Component<TrendingSeries.Props, {}> {
 		return (
 			<g
 				key={+this.props.xAccessor(option)}
-				className={direction}
 				transform={'translate(' + x1 + ', ' + y + ')'}>
 				<text className='material-icons'>{'trending_' + direction}</text>
 				<circle r={4.5} />

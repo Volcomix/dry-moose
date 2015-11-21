@@ -13,6 +13,14 @@ body {
 	height: 100%;
 }
 
+.quotes {
+	height: 70%;
+}
+
+.portfolio {
+	height: 30%;
+}
+
 .overlay {
 	position: absolute;
 	top: 0px;
@@ -48,29 +56,28 @@ body {
 
 path.line {
 	fill: none;
+}
+
+.quotes path.line {
 	stroke: steelblue;
 }
 
-.trending .up {
-	fill: #4CAF50;
-	stroke: #4CAF50;
+.portfolio path.line {
+	stroke: chocolate;
+	shape-rendering: crispEdges;
 }
 
-.trending .down {
-	fill: #F44336;
-	stroke: #F44336;
+.trending {
+	fill: none;
+	stroke: #3f51b5;
 }
 
 .trending text {
 	text-anchor: middle;
-}
-
-.trending circle {
-	fill: none;
+	fill: #3f51b5;
 }
 
 .trending line {
-	fill: none;
 	shape-rendering: crispEdges;
 }
 
