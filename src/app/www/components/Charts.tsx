@@ -98,12 +98,12 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 				style={{ height: '100%' }}
 				ref={ref => this.mainContainer = ref}>
 				<div
-					style={{ height: '50%' }}
+					style={{ height: '70%' }}
 					ref={ref => this.quotesChartContainer = ref}>
 					{quotesChart}
 				</div>
 				<div
-					style={{ height: '50%' }}
+					style={{ height: '30%' }}
 					ref={ref => this.portfolioChartContainer = ref}>
 					{portfolioChart}
 				</div>
