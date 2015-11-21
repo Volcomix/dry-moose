@@ -59,11 +59,11 @@ path.line {
 }
 
 .quotes path.line {
-	stroke: steelblue;
+	stroke: #2196f3;
 }
 
 .portfolio path.line {
-	stroke: chocolate;
+	stroke: #ff9800;
 	shape-rendering: crispEdges;
 }
 
