@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var ChartConstants = require('../constants/ChartConstants');
 var XAxis = require('./XAxis');
 var YAxis = require('./YAxis');
 var LineSeries = require('./LineSeries');
@@ -16,7 +17,7 @@ var Chart = (function (_super) {
     }
     Chart.prototype.render = function () {
         var margin = this.props.margin, contentWidth = this.props.width - margin.left - margin.right, contentHeight = this.props.height - margin.top - margin.bottom;
-        return (React.createElement("div", {"className": 'chart'}, React.createElement("div", {"className": 'mdl-typography--title mdl-color-text--grey-700'}, this.props.title), React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: 'clip' }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.props.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.props.yScale, "tickFormat": this.props.yTickFormat}), React.createElement(LineSeries, {"data": this.props.data, "xAccessor": this.props.xAccessor, "yAccessor": this.props.yAccessor, "xScale": this.props.xScale, "yScale": this.props.yScale, "clipPath": 'url(#clip)'}), this.props.children, React.createElement(Cursor, {"data": this.props.data, "xAccessor": this.props.xAccessor, "width": contentWidth, "height": contentHeight, "xScale": this.props.xScale, "yScale": this.props.yScale, "zoom": this.props.zoom})))));
+        return (React.createElement("div", {"className": 'chart'}, React.createElement("div", {"className": 'mdl-typography--title mdl-color-text--grey-700'}, this.props.title), React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: ChartConstants.clipPath }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.props.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.props.yScale, "tickFormat": this.props.yTickFormat}), React.createElement(LineSeries, {"data": this.props.data, "xAccessor": this.props.xAccessor, "yAccessor": this.props.yAccessor, "xScale": this.props.xScale, "yScale": this.props.yScale}), this.props.children, React.createElement(Cursor, {"data": this.props.data, "xAccessor": this.props.xAccessor, "width": contentWidth, "height": contentHeight, "xScale": this.props.xScale, "yScale": this.props.yScale, "zoom": this.props.zoom})))));
     };
     return Chart;
 })(React.Component);

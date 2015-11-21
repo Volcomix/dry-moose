@@ -3,6 +3,8 @@
 import React = require('react');
 import d3 = require('d3');
 
+import ChartConstants = require('../constants/ChartConstants');
+
 class TrendingSeries extends React.Component<Props, State> {
 	
 	private getTrends = option => {
@@ -24,7 +26,7 @@ class TrendingSeries extends React.Component<Props, State> {
 	render() {
 		return React.createElement('g', {
 			className: 'trending',
-			clipPath: this.props.clipPath
+			clipPath: 'url(#' + ChartConstants.clipPath + ')'
 		}, this.props.data.map(this.getTrends)); // TSX doesn't know clipPath attribute
 	}
 }
@@ -37,7 +39,6 @@ module TrendingSeries {
 		directionAccessor: (d: {}) => Direction;
 		xScale: d3.time.Scale<Date, number>;
 		yScale: d3.scale.Linear<number, number>;
-		clipPath?: string;
 	}
 	
 	export interface State {

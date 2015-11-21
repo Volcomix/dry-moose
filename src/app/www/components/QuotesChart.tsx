@@ -38,8 +38,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 					yAccessor={(d: BinaryOption) => d.quote.close}
 					directionAccessor={this.directionAccessor}
 					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath='url(#clip)' />
+					yScale={this.yScale} />
 			</Chart>
 		);
 	}

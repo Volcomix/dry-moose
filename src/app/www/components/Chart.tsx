@@ -4,6 +4,7 @@ import React = require('react');
 import d3 = require('d3');
 
 import Margin = require('./common/Margin');
+import ChartConstants = require('../constants/ChartConstants');
 
 import XAxis = require('./XAxis');
 import YAxis = require('./YAxis');
@@ -23,7 +24,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 				</div>
 				<svg width={this.props.width} height={this.props.height}>
 					<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
-						{React.createElement('clipPath', {id: 'clip'},
+						{React.createElement('clipPath', {id: ChartConstants.clipPath},
 							<rect width={contentWidth} height={contentHeight} />
 						) /* TSX doesn't know clipPath element */}
 						<XAxis
@@ -38,8 +39,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 							xAccessor={this.props.xAccessor}
 							yAccessor={this.props.yAccessor}
 							xScale={this.props.xScale}
-							yScale={this.props.yScale}
-							clipPath='url(#clip)' />
+							yScale={this.props.yScale} />
 						{this.props.children}
 						<Cursor
 							data={this.props.data}

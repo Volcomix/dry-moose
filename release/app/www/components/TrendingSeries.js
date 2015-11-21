@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var React = require('react');
+var ChartConstants = require('../constants/ChartConstants');
 var TrendingSeries = (function (_super) {
     __extends(TrendingSeries, _super);
     function TrendingSeries() {
@@ -21,7 +22,7 @@ var TrendingSeries = (function (_super) {
     TrendingSeries.prototype.render = function () {
         return React.createElement('g', {
             className: 'trending',
-            clipPath: this.props.clipPath
+            clipPath: 'url(#' + ChartConstants.clipPath + ')'
         }, this.props.data.map(this.getTrends)); // TSX doesn't know clipPath attribute
     };
     return TrendingSeries;
