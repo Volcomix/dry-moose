@@ -55,12 +55,24 @@ path.line {
 	text-anchor: middle;
 }
 
-.trending .up {
+.trending .up text {
 	fill: #4CAF50;
 }
 
-.trending .down {
+.trending .down text {
 	fill: #F44336;
+}
+
+.trending circle {
+	fill: none;
+}
+
+.trending .up circle {
+	stroke: #4CAF50;
+}
+
+.trending .down circle {
+	stroke: #F44336;
 }
 
 rect.pane {

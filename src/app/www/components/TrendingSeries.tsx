@@ -12,15 +12,16 @@ class TrendingSeries extends React.Component<TrendingSeries.Props, {}> {
 		var accessor = this.props.directionAccessor,
 			direction = TrendingSeries.Direction[accessor(option)].toLowerCase();
 		return (
-			<text
+			<g
 				key={+this.props.xAccessor(option)}
-				className={'material-icons ' + direction}
+				className={direction}
 				transform={'translate(' +
 					this.props.xScale(this.props.xAccessor(option)) + ', ' +
 					this.props.yScale(this.props.yAccessor(option)) +
 				')'}>
-				{'trending_' + direction}
-			</text>
+				<circle r={4.5} />
+				<text className='material-icons'>{'trending_' + direction}</text>
+			</g>
 		);
 	}
 	

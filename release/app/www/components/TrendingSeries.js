@@ -13,10 +13,10 @@ var TrendingSeries = (function (_super) {
         _super.apply(this, arguments);
         this.getTrends = function (option) {
             var accessor = _this.props.directionAccessor, direction = TrendingSeries.Direction[accessor(option)].toLowerCase();
-            return (React.createElement("text", {"key": +_this.props.xAccessor(option), "className": 'material-icons ' + direction, "transform": 'translate(' +
+            return (React.createElement("g", {"key": +_this.props.xAccessor(option), "className": direction, "transform": 'translate(' +
                 _this.props.xScale(_this.props.xAccessor(option)) + ', ' +
                 _this.props.yScale(_this.props.yAccessor(option)) +
-                ')'}, 'trending_' + direction));
+                ')'}, React.createElement("circle", {r: 4.5}), React.createElement("text", {"className": 'material-icons'}, 'trending_' + direction)));
         };
     }
     TrendingSeries.prototype.render = function () {
