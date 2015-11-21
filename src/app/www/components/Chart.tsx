@@ -3,7 +3,7 @@
 import React = require('react');
 import d3 = require('d3');
 
-import Margin = require('./common/Margin');
+import ChartProps = require('./common/ChartProps');
 import ChartConstants = require('../constants/ChartConstants');
 
 import XAxis = require('./XAxis');
@@ -16,6 +16,8 @@ class Chart extends React.Component<Chart.Props, {}> {
 		var margin = this.props.margin,
 			contentWidth = this.props.width - margin.left - margin.right,
 			contentHeight = this.props.height - margin.top - margin.bottom;
+				
+		this.updateYScale(contentHeight);
 		
 		return (
 			<div className='chart'>
@@ -54,22 +56,47 @@ class Chart extends React.Component<Chart.Props, {}> {
 			</div>
 		);
 	}
+	
+	private updateYScale(height: number) {
+		var bisect = d3.bisector(this.props.xAccessor).left,
+			domain = this.props.xScale.domain(),
+			i = bisect(this.props.data, domain[0], 1),
+			j = bisect(this.props.data, domain[1], i + 1),
+			domainData = this.props.data.slice(i - 1, j + 1),
+			extent = d3.extent(domainData, this.props.yAccessor);
+		
+		this.props.yScale.range([height, 0]);
+		if (extent[0] != extent[1]) {
+			var padding = this.props.yDomainPadding * (extent[1] - extent[0]);
+			this.props.yScale.domain([extent[0] - padding, extent[1] + padding]).nice();
+		}
+	}
 }
 
 module Chart {
-	export interface Props {
+	export interface Props extends ChartProps {
 		data: {}[];
 		xAccessor: (d: {}) => Date;
 		yAccessor: (d: {}) => number;
-		width: number;
-		height: number;
-		margin: Margin;
-		xScale: d3.time.Scale<Date, number>;
 		yScale: d3.scale.Linear<number, number>;
 		yTickFormat: (t: any) => string;
-		zoom: d3.behavior.Zoom<{}>;
-		children?: React.ReactNode;
 		title?: string;
+		yDomainPadding?: number;
+		children?: React.ReactNode;
+	}
+	
+	export var defaultProps: Props = {
+		data: undefined,
+		xAccessor: undefined,
+		yAccessor: undefined,
+		width: undefined,
+		height: undefined,
+		margin: undefined,
+		xScale: undefined,
+		yScale: undefined,
+		yTickFormat: undefined,
+		zoom: undefined,
+		yDomainPadding: 0.1
 	}
 }
 
