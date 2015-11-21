@@ -51,6 +51,18 @@ path.line {
 	stroke: steelblue;
 }
 
+.trending text {
+	text-anchor: middle;
+}
+
+.trending .up {
+	fill: #4CAF50;
+}
+
+.trending .down {
+	fill: #F44336;
+}
+
 rect.pane {
 	cursor: crosshair;
 	fill: none;

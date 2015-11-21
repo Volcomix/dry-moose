@@ -9,8 +9,7 @@ import Margin = require('./common/Margin');
 
 import Chart = require('./Chart');
 
-class PortfolioChart
-	extends React.Component<PortfolioChart.Props, PortfolioChart.State> {
+class PortfolioChart extends React.Component<Props, State> {
 	
 	private yScale = d3.scale.linear();
 	private static yTickFormat = d3.format(',.2f');
@@ -77,5 +76,8 @@ module PortfolioChart {
 	export interface State {
 	}
 }
+
+import Props = PortfolioChart.Props;
+import State = PortfolioChart.State;
 
 export = PortfolioChart;

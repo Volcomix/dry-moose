@@ -6,8 +6,9 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
+var BinaryOption = require('../../../documents/options/BinaryOption');
 var Chart = require('./Chart');
-var LineSeries = require('./LineSeries');
+var TrendingSeries = require('./TrendingSeries');
 var QuotesChart = (function (_super) {
     __extends(QuotesChart, _super);
     function QuotesChart() {
@@ -15,11 +16,19 @@ var QuotesChart = (function (_super) {
         this.yScale = d3.scale.linear();
         this.xAccessor = function (d) { return d.dateTime; };
         this.yAccessor = function (d) { return d.close; };
+        this.directionAccessor = function (d) {
+            switch (d.direction) {
+                case BinaryOption.Direction.Call:
+                    return TrendingSeries.Direction.Up;
+                case BinaryOption.Direction.Put:
+                    return TrendingSeries.Direction.Down;
+            }
+        };
     }
     QuotesChart.prototype.render = function () {
         var margin = this.props.margin;
         this.updateYScale(this.props.height - margin.top - margin.bottom);
-        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xAccessor, "yAccessor": this.yAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}, React.createElement(LineSeries, {"data": this.props.options, "xAccessor": function (d) { return d.quote.dateTime; }, "yAccessor": function (d) { return d.quote.close; }, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'})));
+        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xAccessor, "yAccessor": this.yAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}, React.createElement(TrendingSeries, {"data": this.props.options, "xAccessor": function (d) { return d.quote.dateTime; }, "yAccessor": function (d) { return d.quote.close; }, "directionAccessor": this.directionAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": 'url(#clip)'})));
     };
     QuotesChart.prototype.updateYScale = function (height) {
         var bisect = d3.bisector(this.xAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.quotes, domain[0], 1), j = bisect(this.props.quotes, domain[1], i + 1), domainData = this.props.quotes.slice(i - 1, j + 1), extent = d3.extent(domainData, this.yAccessor);

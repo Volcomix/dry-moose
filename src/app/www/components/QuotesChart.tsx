@@ -9,7 +9,7 @@ import BinaryOption = require('../../../documents/options/BinaryOption');
 import Margin = require('./common/Margin');
 
 import Chart = require('./Chart');
-import LineSeries = require('./LineSeries');
+import TrendingSeries = require('./TrendingSeries');
 
 class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> {
 	
@@ -32,10 +32,11 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 				yScale={this.yScale}
 				yTickFormat={QuotesChart.yTickFormat}
 				zoom={this.props.zoom}>
-				<LineSeries
+				<TrendingSeries
 					data={this.props.options}
 					xAccessor={(d: BinaryOption) => d.quote.dateTime}
 					yAccessor={(d: BinaryOption) => d.quote.close}
+					directionAccessor={this.directionAccessor}
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath='url(#clip)' />
@@ -60,6 +61,15 @@ class QuotesChart extends React.Component<QuotesChart.Props, QuotesChart.State> 
 	
 	private xAccessor = (d: Quote) => d.dateTime;
 	private yAccessor = (d: Quote) => d.close;
+	
+	private directionAccessor = (d: BinaryOption) => {
+		switch (d.direction) {
+			case BinaryOption.Direction.Call:
+				return TrendingSeries.Direction.Up;
+			case BinaryOption.Direction.Put:
+				return TrendingSeries.Direction.Down;
+		}
+	}
 }
 
 module QuotesChart {
