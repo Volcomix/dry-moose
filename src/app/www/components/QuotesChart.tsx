@@ -24,8 +24,8 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 			<Chart
 				title='Euro/U.S. Dollar'
 				data={this.props.quotes}
-				xAccessor={this.xAccessor}
-				yAccessor={this.yAccessor}
+				xAccessor={this.xQuoteAccessor}
+				yAccessor={this.yQuoteAccessor}
 				width={this.props.width}
 				height={this.props.height}
 				margin={this.props.margin}
@@ -35,9 +35,9 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				zoom={this.props.zoom}>
 				<TrendingSeries
 					data={this.props.options}
-					xAccessor={(d: BinaryOption) => d.quote.dateTime}
-					yAccessor={(d: BinaryOption) => d.quote.close}
-					directionAccessor={this.directionAccessor}
+					xAccessor={this.xOptionAccessor}
+					yAccessor={this.yOptionAccessor}
+					directionAccessor={this.optionDirectionAccessor}
 					xScale={this.props.xScale}
 					yScale={this.yScale} />
 			</Chart>
@@ -45,12 +45,12 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	}
 	
 	private updateYScale(height: number) {
-		var bisect = d3.bisector(this.xAccessor).left,
+		var bisect = d3.bisector(this.xQuoteAccessor).left,
 			domain = this.props.xScale.domain(),
 			i = bisect(this.props.quotes, domain[0], 1),
 			j = bisect(this.props.quotes, domain[1], i + 1),
 			domainData = this.props.quotes.slice(i - 1, j + 1),
-			extent = d3.extent(domainData, this.yAccessor);
+			extent = d3.extent(domainData, this.yQuoteAccessor);
 		
 		this.yScale.range([height, 0]);
 		if (extent[0] != extent[1]) {
@@ -59,10 +59,13 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 		}
 	}
 	
-	private xAccessor = (d: Quote) => d.dateTime;
-	private yAccessor = (d: Quote) => d.close;
+	private xQuoteAccessor = (d: Quote) => d.dateTime;
+	private yQuoteAccessor = (d: Quote) => d.close;
 	
-	private directionAccessor = (d: BinaryOption) => {
+	private xOptionAccessor = (d: BinaryOption) => d.quote.dateTime;
+	private yOptionAccessor = (d: BinaryOption) => d.quote.close;
+	
+	private optionDirectionAccessor = (d: BinaryOption) => {
 		switch (d.direction) {
 			case BinaryOption.Direction.Call:
 				return TrendingSeries.Direction.Up;

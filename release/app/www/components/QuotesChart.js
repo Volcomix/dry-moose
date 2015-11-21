@@ -15,9 +15,11 @@ var QuotesChart = (function (_super) {
     function QuotesChart() {
         _super.apply(this, arguments);
         this.yScale = d3.scale.linear();
-        this.xAccessor = function (d) { return d.dateTime; };
-        this.yAccessor = function (d) { return d.close; };
-        this.directionAccessor = function (d) {
+        this.xQuoteAccessor = function (d) { return d.dateTime; };
+        this.yQuoteAccessor = function (d) { return d.close; };
+        this.xOptionAccessor = function (d) { return d.quote.dateTime; };
+        this.yOptionAccessor = function (d) { return d.quote.close; };
+        this.optionDirectionAccessor = function (d) {
             switch (d.direction) {
                 case BinaryOption.Direction.Call:
                     return TrendingSeries.Direction.Up;
@@ -29,10 +31,10 @@ var QuotesChart = (function (_super) {
     QuotesChart.prototype.render = function () {
         var margin = this.props.margin;
         this.updateYScale(this.props.height - margin.top - margin.bottom);
-        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xAccessor, "yAccessor": this.yAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}, React.createElement(TrendingSeries, {"data": this.props.options, "xAccessor": function (d) { return d.quote.dateTime; }, "yAccessor": function (d) { return d.quote.close; }, "directionAccessor": this.directionAccessor, "xScale": this.props.xScale, "yScale": this.yScale})));
+        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "zoom": this.props.zoom}, React.createElement(TrendingSeries, {"data": this.props.options, "xAccessor": this.xOptionAccessor, "yAccessor": this.yOptionAccessor, "directionAccessor": this.optionDirectionAccessor, "xScale": this.props.xScale, "yScale": this.yScale})));
     };
     QuotesChart.prototype.updateYScale = function (height) {
-        var bisect = d3.bisector(this.xAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.quotes, domain[0], 1), j = bisect(this.props.quotes, domain[1], i + 1), domainData = this.props.quotes.slice(i - 1, j + 1), extent = d3.extent(domainData, this.yAccessor);
+        var bisect = d3.bisector(this.xQuoteAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.quotes, domain[0], 1), j = bisect(this.props.quotes, domain[1], i + 1), domainData = this.props.quotes.slice(i - 1, j + 1), extent = d3.extent(domainData, this.yQuoteAccessor);
         this.yScale.range([height, 0]);
         if (extent[0] != extent[1]) {
             var padding = this.props.yDomainPadding * (extent[1] - extent[0]);
