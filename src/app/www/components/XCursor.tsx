@@ -2,6 +2,7 @@
 
 import React = require('react');
 import d3 = require('d3');
+import moment = require('moment');
 
 class XCursor extends React.Component<XCursor.Props, {}> {
 	
@@ -23,33 +24,15 @@ class XCursor extends React.Component<XCursor.Props, {}> {
 	}
 	
 	private snapDateTime() {
-		var bisect = d3.bisector(this.props.accessor).left,
-			x0 = this.props.scale.invert(this.props.mouseX),
-            i = bisect(this.props.data, x0, 1),
-            d0 = this.props.data[i - 1],
-            d1 = this.props.data[i],
-            d: {};
-			
-		if (d1) {
-			var domain = this.props.scale.domain();
-			if (this.props.accessor(d1) > domain[1]) {
-				d = d0;
-			} else if (this.props.accessor(d0) < domain[0]) {
-				d = d1;
-			} else if (+x0 - +this.props.accessor(d0) > +this.props.accessor(d1) - +x0) {
-				d = d1;
-			} else {
-				d = d0;
-			}
-		} else {
-			d = d0;
-		}
+		var domain = this.props.scale.domain(),
+			minDateTime = moment(domain[0]).endOf('minute').add({ second: 1 }),
+			maxDateTime = moment(domain[1]).startOf('minute'),
+			dateTime = moment(this.props.scale.invert(this.props.mouseX));
 		
-		if (!d || Math.abs(+this.props.accessor(d) - +x0) > this.props.snapThreshold) {
-			return x0;
-		}
+		// Round to closest minute
+		dateTime.add({ seconds: 30 }).startOf('minute');
 		
-		return this.props.accessor(d);
+		return moment.max(moment.min(dateTime, maxDateTime), minDateTime).toDate();
 	}
 }
 
