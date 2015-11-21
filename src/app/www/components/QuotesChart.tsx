@@ -9,7 +9,7 @@ import BinaryOption = require('../../../documents/options/BinaryOption');
 import ChartProps = require('./common/ChartProps');
 
 import Chart = require('./Chart');
-import TrendingSeries = require('./TrendingSeries');
+import OptionSeries = require('./OptionSeries');
 
 class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
@@ -31,7 +31,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				yScale={this.yScale}
 				yTickFormat={QuotesChart.yTickFormat}
 				zoom={this.props.zoom}>
-				<TrendingSeries
+				<OptionSeries
 					data={this.props.options}
 					xAccessor={this.xOptionAccessor}
 					yAccessor={this.yOptionAccessor}
@@ -54,9 +54,9 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	private optionDirectionAccessor = (d: BinaryOption) => {
 		switch (d.direction) {
 			case BinaryOption.Direction.Call:
-				return TrendingSeries.Direction.Up;
+				return OptionSeries.Direction.Up;
 			case BinaryOption.Direction.Put:
-				return TrendingSeries.Direction.Down;
+				return OptionSeries.Direction.Down;
 		}
 	}
 }

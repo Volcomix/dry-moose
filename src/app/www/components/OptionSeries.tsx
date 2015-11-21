@@ -6,11 +6,11 @@ import d3 = require('d3');
 import SeriesProps = require('./common/SeriesProps');
 import ChartConstants = require('../constants/ChartConstants');
 
-class TrendingSeries extends React.Component<TrendingSeries.Props, {}> {
+class OptionSeries extends React.Component<OptionSeries.Props, {}> {
 	
 	private getTrends = option => {
 		var accessor = this.props.directionAccessor,
-			direction = TrendingSeries.Direction[accessor(option)].toLowerCase(),
+			direction = OptionSeries.Direction[accessor(option)].toLowerCase(),
 			x1 = this.props.xScale(this.props.xAccessor(option)),
 			x2 = this.props.xScale(this.props.expirationAccessor(option)),
 			y = this.props.yScale(this.props.yAccessor(option));
@@ -27,13 +27,13 @@ class TrendingSeries extends React.Component<TrendingSeries.Props, {}> {
 	
 	render() {
 		return React.createElement('g', {
-			className: 'trending',
+			className: 'options',
 			clipPath: 'url(#' + ChartConstants.clipPath + ')'
 		}, this.props.data.map(this.getTrends)); // TSX doesn't know clipPath attribute
 	}
 }
 
-module TrendingSeries {
+module OptionSeries {
 	export interface Props extends SeriesProps {
 		expirationAccessor: (d: {}) => Date;
 		directionAccessor: (d: {}) => Direction;
@@ -42,4 +42,4 @@ module TrendingSeries {
 	export enum Direction { Up, Down }
 }
 
-export = TrendingSeries;
+export = OptionSeries;

@@ -67,17 +67,17 @@ path.line {
 	shape-rendering: crispEdges;
 }
 
-.trending {
+.options {
 	fill: none;
 	stroke: #3f51b5;
 }
 
-.trending text {
+.options text {
 	text-anchor: middle;
 	fill: #3f51b5;
 }
 
-.trending line {
+.options line {
 	shape-rendering: crispEdges;
 }
 

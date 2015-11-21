@@ -6,30 +6,30 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var ChartConstants = require('../constants/ChartConstants');
-var TrendingSeries = (function (_super) {
-    __extends(TrendingSeries, _super);
-    function TrendingSeries() {
+var OptionSeries = (function (_super) {
+    __extends(OptionSeries, _super);
+    function OptionSeries() {
         var _this = this;
         _super.apply(this, arguments);
         this.getTrends = function (option) {
-            var accessor = _this.props.directionAccessor, direction = TrendingSeries.Direction[accessor(option)].toLowerCase(), x1 = _this.props.xScale(_this.props.xAccessor(option)), x2 = _this.props.xScale(_this.props.expirationAccessor(option)), y = _this.props.yScale(_this.props.yAccessor(option));
+            var accessor = _this.props.directionAccessor, direction = OptionSeries.Direction[accessor(option)].toLowerCase(), x1 = _this.props.xScale(_this.props.xAccessor(option)), x2 = _this.props.xScale(_this.props.expirationAccessor(option)), y = _this.props.yScale(_this.props.yAccessor(option));
             return (React.createElement("g", {"key": +_this.props.xAccessor(option), "transform": 'translate(' + x1 + ', ' + y + ')'}, React.createElement("text", {"className": 'material-icons'}, 'trending_' + direction), React.createElement("circle", {r: 4.5}), React.createElement("line", {"x2": x2 - x1})));
         };
     }
-    TrendingSeries.prototype.render = function () {
+    OptionSeries.prototype.render = function () {
         return React.createElement('g', {
-            className: 'trending',
+            className: 'options',
             clipPath: 'url(#' + ChartConstants.clipPath + ')'
         }, this.props.data.map(this.getTrends)); // TSX doesn't know clipPath attribute
     };
-    return TrendingSeries;
+    return OptionSeries;
 })(React.Component);
-var TrendingSeries;
-(function (TrendingSeries) {
+var OptionSeries;
+(function (OptionSeries) {
     (function (Direction) {
         Direction[Direction["Up"] = 0] = "Up";
         Direction[Direction["Down"] = 1] = "Down";
-    })(TrendingSeries.Direction || (TrendingSeries.Direction = {}));
-    var Direction = TrendingSeries.Direction;
-})(TrendingSeries || (TrendingSeries = {}));
-module.exports = TrendingSeries;
+    })(OptionSeries.Direction || (OptionSeries.Direction = {}));
+    var Direction = OptionSeries.Direction;
+})(OptionSeries || (OptionSeries = {}));
+module.exports = OptionSeries;
