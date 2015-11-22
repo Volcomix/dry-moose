@@ -28,7 +28,7 @@ describe('DemoCelebrator', function() {
 					direction: BinaryOption.Direction.Call
 				})
 				.then(function(gain) {
-					gain.should.equal(0);
+					gain.value.should.equal(0);
 				});
 			});
 		});
@@ -53,7 +53,7 @@ describe('DemoCelebrator', function() {
 					direction: BinaryOption.Direction.Call
 				})
 				.then(function(gain) {
-					gain.should.equal(17.5);
+					gain.value.should.equal(17.5);
 				});
 			});
 			it('should return gain for 2nd winning option', function() {
@@ -65,7 +65,7 @@ describe('DemoCelebrator', function() {
 					direction: BinaryOption.Direction.Put
 				})
 				.then(function(gain) {
-					gain.should.equal(17.5);
+					gain.value.should.equal(17.5);
 				});
 			});
 			it('should return no gain for 1st loosing option', function() {
@@ -77,7 +77,7 @@ describe('DemoCelebrator', function() {
 					direction: BinaryOption.Direction.Put
 				})
 				.then(function(gain) {
-					gain.should.equal(0);
+					gain.value.should.equal(0);
 				});
 			});
 			it('should return no gain for 2nd loosing option', function() {
@@ -89,7 +89,7 @@ describe('DemoCelebrator', function() {
 					direction: BinaryOption.Direction.Call
 				})
 				.then(function(gain) {
-					gain.should.equal(0);
+					gain.value.should.equal(0);
 				});
 			});
 		});

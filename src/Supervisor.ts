@@ -100,7 +100,7 @@ class Supervisor {
 		
 		return this.celebrator.getGain(option)
 		.then((gain) => {
-			this.innerPortfolio += gain;
+			this.innerPortfolio += gain.value;
 			
 			return Q.all([
 				Q.ninvoke<void>(DbManager.db.collection('portfolio'), 'insertOne',
@@ -109,12 +109,7 @@ class Supervisor {
 						value: this.innerPortfolio
 					}
 				),
-				Q.ninvoke<void>(DbManager.db.collection('gains'), 'insertOne',
-					<Gain> {
-						dateTime: option.expiration,
-						value: gain
-					}
-				)
+				Q.ninvoke<void>(DbManager.db.collection('gains'), 'insertOne', gain)
 			]);
 		});
 	}

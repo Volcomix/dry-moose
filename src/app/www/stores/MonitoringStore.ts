@@ -41,17 +41,20 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 		super();
 		AppDispatcher.register(action => {
 			switch(action.actionType) {
+				
 				case ActionType.QuotesReceived:
 					var receiveAction = action as MonitoringServerActions.Receive;
 					this._data = receiveAction.data;
 					this.emitChange();
 					break;
+					
 				case ActionType.LastQuotesReceived:
 					var receiveAction = action as MonitoringServerActions.Receive;
 					this._data = receiveAction.data;
 					this.setEndXDomain();
 					this.emitChange();
 					break;
+					
 				case ActionType.FirstQuotesReceived:
 					var receiveAction = action as MonitoringServerActions.Receive;
 					this._data = receiveAction.data;

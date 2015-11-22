@@ -79,16 +79,13 @@ var Supervisor = (function () {
         this.pendingOption = undefined;
         return this.celebrator.getGain(option)
             .then(function (gain) {
-            _this.innerPortfolio += gain;
+            _this.innerPortfolio += gain.value;
             return Q.all([
                 Q.ninvoke(DbManager.db.collection('portfolio'), 'insertOne', {
                     dateTime: option.expiration,
                     value: _this.innerPortfolio
                 }),
-                Q.ninvoke(DbManager.db.collection('gains'), 'insertOne', {
-                    dateTime: option.expiration,
-                    value: gain
-                })
+                Q.ninvoke(DbManager.db.collection('gains'), 'insertOne', gain)
             ]);
         });
     };

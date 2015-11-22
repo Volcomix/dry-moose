@@ -119,11 +119,7 @@ function getQuotes(startDate: Date, endDate: Date): Q.Promise<Quote[]> {
 	return Q.ninvoke<Quote[]>(DbManager.db.collection('quotes'), 'aggregate', [
 		{ $match: { dateTime: { $gte: startDate, $lte: endDate }}},
 		{ $sort: { dateTime: 1 }},
-		{ $project: {
-			_id: 0,
-			dateTime: 1,
-			close: 1
-		}}
+		{ $project: { _id: 0, dateTime: 1, close: 1 }}
 	]);
 }
 
@@ -131,11 +127,7 @@ function getPortfolio(startDate: Date, endDate: Date): Q.Promise<Portfolio[]> {
 	return Q.ninvoke<Portfolio[]>(DbManager.db.collection('portfolio'), 'aggregate', [
 		{ $match: { dateTime: { $gte: startDate, $lte: endDate }}},
 		{ $sort: { dateTime: 1 }},
-		{ $project: {
-			_id: 0,
-			dateTime: 1,
-			value: 1
-		}}
+		{ $project: { _id: 0, dateTime: 1, value: 1 }}
 	]);
 }
 
