@@ -2,6 +2,10 @@
 
 import MonitoringUtils = require('../utils/MonitoringUtils');
 
+export function getFirst() {
+	MonitoringUtils.getFirst();
+}
+
 export function getLast() {
 	MonitoringUtils.getLast();
 }

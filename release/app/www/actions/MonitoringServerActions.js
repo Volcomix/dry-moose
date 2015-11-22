@@ -8,6 +8,13 @@ function receive(data) {
     });
 }
 exports.receive = receive;
+function receiveFirst(data) {
+    AppDispatcher.dispatch({
+        actionType: ActionType.FirstQuotesReceived,
+        data: data
+    });
+}
+exports.receiveFirst = receiveFirst;
 function receiveLast(data) {
     AppDispatcher.dispatch({
         actionType: ActionType.LastQuotesReceived,

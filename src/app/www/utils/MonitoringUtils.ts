@@ -51,6 +51,14 @@ export function get(dateTime: Date) {
     }
 }
 
+export function getFirst() {
+	Q.nfcall(d3.json, '/monitoring/minutes/first')
+    .then(function(data: MonitoringData) {
+        restoreDateTimes(data);
+        MonitoringServerActions.receiveFirst(data);
+    });
+}
+
 export function getLast() {
 	Q.nfcall(d3.json, '/monitoring/minutes/last')
     .then(function(data: MonitoringData) {

@@ -2,6 +2,7 @@
 var ActionType;
 (function (ActionType) {
     ActionType[ActionType["QuotesReceived"] = 0] = "QuotesReceived";
-    ActionType[ActionType["LastQuotesReceived"] = 1] = "LastQuotesReceived";
+    ActionType[ActionType["FirstQuotesReceived"] = 1] = "FirstQuotesReceived";
+    ActionType[ActionType["LastQuotesReceived"] = 2] = "LastQuotesReceived";
 })(ActionType || (ActionType = {}));
 module.exports = ActionType;

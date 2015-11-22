@@ -2,6 +2,7 @@
 
 enum ActionType {
 	QuotesReceived,
+	FirstQuotesReceived,
 	LastQuotesReceived
 }
 

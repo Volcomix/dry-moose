@@ -12,11 +12,24 @@ import MonitoringData = require('../../documents/MonitoringData');
 
 var router = express.Router();
 
+router.get('/minutes/first', function(req, res, next) {
+	var firstDate: moment.Moment;
+	Q.all([getFirstQuoteDate(), getFirstPortfolioDate(), getFirstOptionDate()])
+	.then((results) => {
+		firstDate = moment.min(...results.map(result => moment(result[0].dateTime)));
+		return getByMinute(firstDate);
+	})
+	.then(data => {
+		data.startDate = firstDate.toDate();
+		res.send(data)
+	});
+});
+
 router.get('/minutes/last', function(req, res, next) {
 	var lastDate: moment.Moment;
 	Q.all([getLastQuoteDate(), getLastPortfolioDate(), getLastOptionDate()])
 	.then((results) => {
-		lastDate = moment.max(...results.map(result => moment(result[0].endDate)));
+		lastDate = moment.max(...results.map(result => moment(result[0].dateTime)));
 		return getByMinute(lastDate);
 	})
 	.then(data => {
@@ -54,26 +67,50 @@ function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
 	) => ({ startDate, endDate, quotes, portfolio, options }));
 }
 
-function getLastQuoteDate(): Q.Promise<[{ endDate: Date }]> {
-	return Q.ninvoke<[{ endDate: Date }]>(
+function getFirstQuoteDate(): Q.Promise<[{ dateTime: Date }]> {
+	return Q.ninvoke<[{ dateTime: Date }]>(
 		DbManager.db.collection('quotes'), 'aggregate', [
-			{ $group: { _id: null, endDate: { $max: '$dateTime' }}}
+			{ $group: { _id: null, dateTime: { $min: '$dateTime' }}}
 		]
 	);
 }
 
-function getLastPortfolioDate(): Q.Promise<[{ endDate: Date }]> {
-	return Q.ninvoke<[{ endDate: Date }]>(
+function getFirstPortfolioDate(): Q.Promise<[{ dateTime: Date }]> {
+	return Q.ninvoke<[{ dateTime: Date }]>(
 		DbManager.db.collection('portfolio'), 'aggregate', [
-			{ $group: { _id: null, endDate: { $max: '$dateTime' }}}
+			{ $group: { _id: null, dateTime: { $min: '$dateTime' }}}
 		]
 	);
 }
 
-function getLastOptionDate(): Q.Promise<[{ endDate: Date }]> {
-	return Q.ninvoke<[{ endDate: Date }]>(
+function getFirstOptionDate(): Q.Promise<[{ dateTime: Date }]> {
+	return Q.ninvoke<[{ dateTime: Date }]>(
 		DbManager.db.collection('options'), 'aggregate', [
-			{ $group: { _id: null, endDate: { $max: '$quote.dateTime' }}}
+			{ $group: { _id: null, dateTime: { $min: '$quote.dateTime' }}}
+		]
+	);
+}
+
+function getLastQuoteDate(): Q.Promise<[{ dateTime: Date }]> {
+	return Q.ninvoke<[{ dateTime: Date }]>(
+		DbManager.db.collection('quotes'), 'aggregate', [
+			{ $group: { _id: null, dateTime: { $max: '$dateTime' }}}
+		]
+	);
+}
+
+function getLastPortfolioDate(): Q.Promise<[{ dateTime: Date }]> {
+	return Q.ninvoke<[{ dateTime: Date }]>(
+		DbManager.db.collection('portfolio'), 'aggregate', [
+			{ $group: { _id: null, dateTime: { $max: '$dateTime' }}}
+		]
+	);
+}
+
+function getLastOptionDate(): Q.Promise<[{ dateTime: Date }]> {
+	return Q.ninvoke<[{ dateTime: Date }]>(
+		DbManager.db.collection('options'), 'aggregate', [
+			{ $group: { _id: null, dateTime: { $max: '$quote.dateTime' }}}
 		]
 	);
 }

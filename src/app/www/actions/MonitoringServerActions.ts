@@ -13,6 +13,13 @@ export function receive(data: MonitoringData) {
 	} as Receive);
 }
 
+export function receiveFirst(data: MonitoringData) {
+	AppDispatcher.dispatch({
+		actionType: ActionType.FirstQuotesReceived,
+		data
+	} as Receive);
+}
+
 export function receiveLast(data: MonitoringData) {
 	AppDispatcher.dispatch({
 		actionType: ActionType.LastQuotesReceived,

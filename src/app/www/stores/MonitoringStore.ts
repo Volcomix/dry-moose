@@ -25,6 +25,12 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 		return xDomain;
 	}
 	
+	private setStartXDomain() {
+		var startDateTime = this._data.startDate,
+			endDateTime = moment(startDateTime).add({ hours: 2 }).toDate();
+		this._resetXDomain = [startDateTime, endDateTime];
+	}
+	
 	private setEndXDomain() {
 		var endDateTime = this._data.endDate,
 			startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
@@ -44,6 +50,12 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 					var receiveAction = action as MonitoringServerActions.Receive;
 					this._data = receiveAction.data;
 					this.setEndXDomain();
+					this.emitChange();
+					break;
+				case ActionType.FirstQuotesReceived:
+					var receiveAction = action as MonitoringServerActions.Receive;
+					this._data = receiveAction.data;
+					this.setStartXDomain();
 					this.emitChange();
 					break;
 			}

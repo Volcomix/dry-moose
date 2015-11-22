@@ -37,6 +37,14 @@ function get(dateTime) {
     }
 }
 exports.get = get;
+function getFirst() {
+    Q.nfcall(d3.json, '/monitoring/minutes/first')
+        .then(function (data) {
+        restoreDateTimes(data);
+        MonitoringServerActions.receiveFirst(data);
+    });
+}
+exports.getFirst = getFirst;
 function getLast() {
     Q.nfcall(d3.json, '/monitoring/minutes/last')
         .then(function (data) {

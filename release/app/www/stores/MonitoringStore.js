@@ -26,6 +26,12 @@ var MonitoringStoreImpl = (function (_super) {
                     _this.setEndXDomain();
                     _this.emitChange();
                     break;
+                case ActionType.FirstQuotesReceived:
+                    var receiveAction = action;
+                    _this._data = receiveAction.data;
+                    _this.setStartXDomain();
+                    _this.emitChange();
+                    break;
             }
         });
     }
@@ -45,6 +51,10 @@ var MonitoringStoreImpl = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    MonitoringStoreImpl.prototype.setStartXDomain = function () {
+        var startDateTime = this._data.startDate, endDateTime = moment(startDateTime).add({ hours: 2 }).toDate();
+        this._resetXDomain = [startDateTime, endDateTime];
+    };
     MonitoringStoreImpl.prototype.setEndXDomain = function () {
         var endDateTime = this._data.endDate, startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
         this._resetXDomain = [startDateTime, endDateTime];
