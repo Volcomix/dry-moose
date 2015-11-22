@@ -74,7 +74,10 @@ class Supervisor {
 		.then(() => {
 			return this.getPortfolio();
 		})
-		.then((portfolio) => {			
+		.then((portfolio) => {
+			if (portfolio <= 0) {
+				throw new Error('Portfolio is empty... Game Over!');
+			}
 			var option = this.process(portfolio, quote);
 			if (option) {
 				return this.invest(quote, option);
