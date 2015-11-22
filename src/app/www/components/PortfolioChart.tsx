@@ -28,7 +28,8 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 				xScale={this.props.xScale}
 				yScale={this.yScale}
 				yTickFormat={PortfolioChart.yTickFormat}
-				zoom={this.props.zoom} />
+				zoom={this.props.zoom}
+				yDomainPadding={0.2} />
 		);
 	}
 	
