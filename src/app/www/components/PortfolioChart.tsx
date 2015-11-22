@@ -12,6 +12,7 @@ import Chart = require('./Chart');
 class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
 	private static yTickFormat = d3.format(',.2f');
+	private static clipPath = 'clipPortfolio';
 	
 	private yScale = d3.scale.linear();
 	
@@ -28,6 +29,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 				xScale={this.props.xScale}
 				yScale={this.yScale}
 				yTickFormat={PortfolioChart.yTickFormat}
+				clipPath={PortfolioChart.clipPath}
 				zoom={this.props.zoom}
 				yDomainPadding={0.2} />
 		);

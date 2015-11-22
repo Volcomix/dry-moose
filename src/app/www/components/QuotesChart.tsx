@@ -14,6 +14,7 @@ import OptionSeries = require('./OptionSeries');
 class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	private static yTickFormat = d3.format(',.5f');
+	private static clipPath = 'clipQuotes';
 	
 	private yScale = d3.scale.linear();
 	
@@ -30,11 +31,13 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				xScale={this.props.xScale}
 				yScale={this.yScale}
 				yTickFormat={QuotesChart.yTickFormat}
+				clipPath={QuotesChart.clipPath}
 				zoom={this.props.zoom}>
 				<OptionSeries
 					options={this.props.options}
 					xScale={this.props.xScale}
-					yScale={this.yScale} />
+					yScale={this.yScale}
+					clipPath={QuotesChart.clipPath} />
 			</Chart>
 		);
 	}

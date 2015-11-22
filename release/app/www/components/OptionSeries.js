@@ -6,7 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var BinaryOption = require('../../../documents/options/BinaryOption');
-var ChartConstants = require('../constants/ChartConstants');
 var OptionSeries = (function (_super) {
     __extends(OptionSeries, _super);
     function OptionSeries() {
@@ -29,7 +28,7 @@ var OptionSeries = (function (_super) {
         // TSX doesn't know clipPath attribute
         return React.createElement('g', {
             className: 'options',
-            clipPath: 'url(#' + ChartConstants.clipPath + ')'
+            clipPath: 'url(#' + this.props.clipPath + ')'
         }, this.props.options.map(this.getOptions));
     };
     return OptionSeries;

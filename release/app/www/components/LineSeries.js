@@ -6,7 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
-var ChartConstants = require('../constants/ChartConstants');
 var LineSeries = (function (_super) {
     __extends(LineSeries, _super);
     function LineSeries(props) {
@@ -21,7 +20,7 @@ var LineSeries = (function (_super) {
         return React.createElement('path', {
             className: 'line',
             d: this.line(this.props.data),
-            clipPath: 'url(#' + ChartConstants.clipPath + ')'
+            clipPath: 'url(#' + this.props.clipPath + ')'
         }); // TSX doesn't know clipPath attribute
     };
     return LineSeries;

@@ -4,7 +4,6 @@ import React = require('react');
 import d3 = require('d3');
 
 import ChartProps = require('./common/ChartProps');
-import ChartConstants = require('../constants/ChartConstants');
 
 import XAxis = require('./XAxis');
 import YAxis = require('./YAxis');
@@ -26,7 +25,7 @@ class Chart extends React.Component<Chart.Props, {}> {
 				</div>
 				<svg width={this.props.width} height={this.props.height}>
 					<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
-						{React.createElement('clipPath', {id: ChartConstants.clipPath},
+						{React.createElement('clipPath', {id: this.props.clipPath},
 							<rect width={contentWidth} height={contentHeight} />
 						) /* TSX doesn't know clipPath element */}
 						<XAxis
@@ -41,7 +40,8 @@ class Chart extends React.Component<Chart.Props, {}> {
 							xAccessor={this.props.xAccessor}
 							yAccessor={this.props.yAccessor}
 							xScale={this.props.xScale}
-							yScale={this.props.yScale} />
+							yScale={this.props.yScale}
+							clipPath={this.props.clipPath} />
 						{this.props.children}
 						<Cursor
 							data={this.props.data}
@@ -80,6 +80,7 @@ module Chart {
 		yAccessor: (d: {}) => number;
 		yScale: d3.scale.Linear<number, number>;
 		yTickFormat: (t: any) => string;
+		clipPath: string;
 		title?: string;
 		yDomainPadding?: number;
 		children?: React.ReactNode;
@@ -95,6 +96,7 @@ module Chart {
 		xScale: undefined,
 		yScale: undefined,
 		yTickFormat: undefined,
+		clipPath: undefined,
 		zoom: undefined,
 		yDomainPadding: 0.1
 	}

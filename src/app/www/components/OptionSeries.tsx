@@ -5,8 +5,6 @@ import d3 = require('d3');
 
 import BinaryOption = require('../../../documents/options/BinaryOption')
 
-import ChartConstants = require('../constants/ChartConstants');
-
 class OptionSeries extends React.Component<OptionSeries.Props, {}> {
 	
 	private getOptions = (option: BinaryOption) => {
@@ -38,7 +36,7 @@ class OptionSeries extends React.Component<OptionSeries.Props, {}> {
 		// TSX doesn't know clipPath attribute
 		return React.createElement('g', {
 			className: 'options',
-			clipPath: 'url(#' + ChartConstants.clipPath + ')'
+			clipPath: 'url(#' + this.props.clipPath + ')'
 		}, this.props.options.map(this.getOptions));
 	}
 }
@@ -48,6 +46,7 @@ module OptionSeries {
 		options: BinaryOption[];
 		xScale: d3.time.Scale<Date, number>;
 		yScale: d3.scale.Linear<number, number>;
+		clipPath: string;
 	}
 	
 	export enum Direction { Up, Down }
