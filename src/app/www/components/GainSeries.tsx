@@ -12,15 +12,18 @@ class GainSeries extends React.Component<GainSeries.Props, {}> {
 		var direction: string,
 			option = gain.option,
 			x1 = this.props.xScale(option.quote.dateTime),
-			x2 = this.props.xScale(option.expiration),
-			y = this.props.yScale(option.quote.close);
+			x2 = this.props.xScale(gain.quote.dateTime) - x1,
+			y1 = this.props.yScale(option.quote.close),
+			y2 = this.props.yScale(gain.quote.close) - y1;
 		return (
 			<g
 				key={+gain.dateTime}
-				transform={'translate(' + x1 + ', ' + y + ')'}>
+				className={gain.value ? 'win' : 'lose'}
+				transform={'translate(' + x1 + ', ' + y1 + ')'}>
 				<text className='material-icons'>{this.getDirectionIcon(option)}</text>
 				<circle r={4.5} />
-				<line x2={x2 - x1} />
+				<line className='option' x2={x2} />
+				<line className='expiration' x1={x2} x2={x2} y2={y2} />
 			</g>
 		);
 	}

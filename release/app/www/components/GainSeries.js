@@ -12,8 +12,8 @@ var GainSeries = (function (_super) {
         var _this = this;
         _super.apply(this, arguments);
         this.getGains = function (gain) {
-            var direction, option = gain.option, x1 = _this.props.xScale(option.quote.dateTime), x2 = _this.props.xScale(option.expiration), y = _this.props.yScale(option.quote.close);
-            return (React.createElement("g", {"key": +gain.dateTime, "transform": 'translate(' + x1 + ', ' + y + ')'}, React.createElement("text", {"className": 'material-icons'}, _this.getDirectionIcon(option)), React.createElement("circle", {r: 4.5}), React.createElement("line", {"x2": x2 - x1})));
+            var direction, option = gain.option, x1 = _this.props.xScale(option.quote.dateTime), x2 = _this.props.xScale(gain.quote.dateTime) - x1, y1 = _this.props.yScale(option.quote.close), y2 = _this.props.yScale(gain.quote.close) - y1;
+            return (React.createElement("g", {"key": +gain.dateTime, "className": gain.value ? 'win' : 'lose', "transform": 'translate(' + x1 + ', ' + y1 + ')'}, React.createElement("text", {"className": 'material-icons'}, _this.getDirectionIcon(option)), React.createElement("circle", {r: 4.5}), React.createElement("line", {"className": 'option', "x2": x2}), React.createElement("line", {"className": 'expiration', "x1": x2, "x2": x2, "y2": y2})));
         };
     }
     GainSeries.prototype.getDirectionIcon = function (option) {

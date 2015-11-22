@@ -84,16 +84,34 @@ path.line {
 
 .gains {
 	fill: none;
-	stroke: #3f51b5;
 }
 
 .gains text {
 	text-anchor: middle;
+}
+
+.gains .win {
+	stroke: #3f51b5;
+}
+
+.gains .win text {
 	fill: #3f51b5;
+}
+
+.gains .lose {
+	stroke: #e91e63;
+}
+
+.gains .lose text {
+	fill: #e91e63;
 }
 
 .gains line {
 	shape-rendering: crispEdges;
+}
+
+.gains .expiration {
+	stroke-dasharray: 4, 3;
 }
 
 rect.pane {
@@ -109,7 +127,7 @@ rect.pane:active {
 .cursor line {
 	fill: none;
 	stroke: black;
-	stroke-dasharray: 3,2;
+	stroke-dasharray: 3, 2;
 	stroke-opacity: 0.25;
 	shape-rendering: crispEdges;
 }
