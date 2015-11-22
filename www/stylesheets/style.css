@@ -22,9 +22,18 @@ body {
 }
 
 .chart-controls {
+	pointer-events: none;
 	position: absolute;
 	bottom: 40px;
+	left: 30px;
 	right: 70px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.chart-controls button {
+	pointer-events: auto;
+	margin: 0px;
 }
 
 .overlay {
