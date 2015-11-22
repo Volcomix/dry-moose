@@ -3,5 +3,5 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var MonitoringActions = require('./actions/MonitoringActions');
 var Charts = require('./components/Charts');
-MonitoringActions.getLast();
+MonitoringActions.getFirst();
 ReactDOM.render(React.createElement(Charts, null), document.getElementById('charts'));
