@@ -10,7 +10,8 @@ var ConsoleInvestor = require('./release/investors/ConsoleInvestor');
 var DemoCelebrator = require('./release/celebrators/DemoCelebrator');
 var DemoCapacitor = require('./release/capacitors/DemoCapacitor');
 
-var baseDir = path.join(os.homedir(), os.type() == 'Linux' ? 'Téléchargements' : 'Downloads');
+var downloadDir = os.type() == 'Linux' ? 'Téléchargements' : 'Downloads',
+	baseDir = path.join(os.homedir(), downloadDir);
 
 var rewards = [{
 	countdown: moment({ minutes: 10 }),
@@ -18,10 +19,10 @@ var rewards = [{
 	payout: 0.75
 }];
 
-var processor = new DummyProcessor();
-var investor = new ConsoleInvestor();
-var celebrator = new DemoCelebrator();
-var capacitor = new DemoCapacitor(100);
+var processor = new DummyProcessor(),
+	investor = new ConsoleInvestor(),
+	celebrator = new DemoCelebrator(),
+	capacitor = new DemoCapacitor(100);
 
 new Supervisor(new GenericASCIIM1(path.join(baseDir,
 	'HISTDATA_COM_ASCII_EURUSD_M1201506/DAT_ASCII_EURUSD_M1_201506.csv'
