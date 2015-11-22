@@ -7,11 +7,11 @@ import moment = require('moment');
 import DbManager = require('../../database/DbManager');
 import Quote = require('../../documents/Quote');
 import Portfolio = require('../../documents/Portfolio');
-import BinaryOption = require('../../documents/options/BinaryOption');
+import Gain = require('../../documents/Gain');
 import MonitoringData = require('../../documents/MonitoringData');
 import QuotesService = require('./services/QuotesService');
 import PortfolioService = require('./services/PortfolioService');
-import OptionsService = require('./services/OptionsService');
+import GainsService = require('./services/GainsService');
 
 var router = express.Router();
 
@@ -20,7 +20,7 @@ router.get('/minutes/first', function(req, res, next) {
 	Q.all([
 		QuotesService.getFirstDate(),
 		PortfolioService.getFirstDate(),
-		OptionsService.getFirstDate()])
+		GainsService.getFirstDate()])
 	.then((results) => {
 		firstDate = moment.min(...results.map(result => moment(result[0].dateTime)));
 		return getByMinute(firstDate);
@@ -36,7 +36,7 @@ router.get('/minutes/last', function(req, res, next) {
 	Q.all([
 		QuotesService.getLastDate(),
 		PortfolioService.getLastDate(),
-		OptionsService.getLastDate()])
+		GainsService.getLastDate()])
 	.then((results) => {
 		lastDate = moment.max(...results.map(result => moment(result[0].dateTime)));
 		return getByMinute(lastDate);
@@ -67,13 +67,13 @@ function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
 	return Q.all<{}>([
 		QuotesService.get(startDate, endDate),
 		PortfolioService.get(startDate, endDate),
-		OptionsService.get(startDate, endDate)
+		GainsService.get(startDate, endDate)
 	])
 	.spread<MonitoringData>((
 		quotes: Quote[],
 		portfolio: Portfolio[],
-		options: BinaryOption[]
-	) => ({ startDate, endDate, quotes, portfolio, options }));
+		gains: Gain[]
+	) => ({ startDate, endDate, quotes, portfolio, gains }));
 }
 
 export = router;

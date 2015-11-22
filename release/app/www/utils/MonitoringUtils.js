@@ -12,9 +12,11 @@ function restoreDateTimes(data) {
     data.endDate = new Date(data.endDate);
     data.quotes.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.portfolio.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
-    data.options.forEach(function (d) {
+    data.gains.forEach(function (d) {
+        d.option.quote.dateTime = new Date(d.option.quote.dateTime);
+        d.option.expiration = new Date(d.option.expiration);
         d.quote.dateTime = new Date(d.quote.dateTime);
-        d.expiration = new Date(d.expiration);
+        d.dateTime = new Date(d.dateTime);
     });
 }
 var delay = Q(null);

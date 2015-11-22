@@ -4,14 +4,14 @@ var Q = require('q');
 var moment = require('moment');
 var QuotesService = require('./services/QuotesService');
 var PortfolioService = require('./services/PortfolioService');
-var OptionsService = require('./services/OptionsService');
+var GainsService = require('./services/GainsService');
 var router = express.Router();
 router.get('/minutes/first', function (req, res, next) {
     var firstDate;
     Q.all([
         QuotesService.getFirstDate(),
         PortfolioService.getFirstDate(),
-        OptionsService.getFirstDate()])
+        GainsService.getFirstDate()])
         .then(function (results) {
         firstDate = moment.min.apply(moment, results.map(function (result) { return moment(result[0].dateTime); }));
         return getByMinute(firstDate);
@@ -26,7 +26,7 @@ router.get('/minutes/last', function (req, res, next) {
     Q.all([
         QuotesService.getLastDate(),
         PortfolioService.getLastDate(),
-        OptionsService.getLastDate()])
+        GainsService.getLastDate()])
         .then(function (results) {
         lastDate = moment.max.apply(moment, results.map(function (result) { return moment(result[0].dateTime); }));
         return getByMinute(lastDate);
@@ -54,10 +54,10 @@ function getByMinute(dateTime) {
     return Q.all([
         QuotesService.get(startDate, endDate),
         PortfolioService.get(startDate, endDate),
-        OptionsService.get(startDate, endDate)
+        GainsService.get(startDate, endDate)
     ])
-        .spread(function (quotes, portfolio, options) {
-        return ({ startDate: startDate, endDate: endDate, quotes: quotes, portfolio: portfolio, options: options });
+        .spread(function (quotes, portfolio, gains) {
+        return ({ startDate: startDate, endDate: endDate, quotes: quotes, portfolio: portfolio, gains: gains });
     });
 }
 module.exports = router;

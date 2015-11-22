@@ -4,12 +4,12 @@ import React = require('react');
 import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
-import BinaryOption = require('../../../documents/options/BinaryOption');
+import Gain = require('../../../documents/Gain');
 
 import ChartProps = require('./common/ChartProps');
 
 import Chart = require('./Chart');
-import OptionSeries = require('./OptionSeries');
+import GainSeries = require('./GainSeries');
 
 class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
@@ -33,8 +33,8 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				yTickFormat={QuotesChart.yTickFormat}
 				clipPath={QuotesChart.clipPath}
 				zoom={this.props.zoom}>
-				<OptionSeries
-					options={this.props.options}
+				<GainSeries
+					gains={this.props.gains}
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={QuotesChart.clipPath} />
@@ -49,7 +49,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 module QuotesChart {
 	export interface Props extends ChartProps {
 		quotes: Quote[];
-		options: BinaryOption[];
+		gains: Gain[];
 	}
 }
 

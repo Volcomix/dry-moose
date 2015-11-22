@@ -5,7 +5,7 @@ import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
 import Portfolio = require('../../../documents/Portfolio');
-import BinaryOption = require('../../../documents/options/BinaryOption');
+import Gain = require('../../../documents/Gain');
 import MonitoringData = require('../../../documents/MonitoringData');
 
 import MonitoringServerActions = require('../actions/MonitoringServerActions');
@@ -20,9 +20,11 @@ function restoreDateTimes(data: MonitoringData) {
     data.endDate = new Date(data.endDate as any);
 	data.quotes.forEach((d: Quote) => d.dateTime = new Date(d.dateTime as any));
     data.portfolio.forEach((d: Portfolio) => d.dateTime = new Date(d.dateTime as any));
-    data.options.forEach((d: BinaryOption) => {
+    data.gains.forEach((d: Gain) => {
+        d.option.quote.dateTime = new Date(d.option.quote.dateTime as any);
+        d.option.expiration = new Date(d.option.expiration as any);
         d.quote.dateTime = new Date(d.quote.dateTime as any);
-        d.expiration = new Date(d.expiration as any);
+        d.dateTime = new Date(d.dateTime as any);
     });
 }
 

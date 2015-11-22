@@ -2,14 +2,14 @@
 
 import Quote = require('./Quote');
 import Portfolio = require('./Portfolio');
-import BinaryOption = require('./options/BinaryOption');
+import Gain = require('./Gain');
 
 interface MonitoringData {
     startDate: Date;
     endDate: Date;
     quotes: Quote[];
     portfolio: Portfolio[];
-    options: BinaryOption[];
+    gains: Gain[];
 }
 
 export = MonitoringData;

@@ -3,18 +3,20 @@
 import React = require('react');
 import d3 = require('d3');
 
-import BinaryOption = require('../../../documents/options/BinaryOption')
+import Gain = require('../../../documents/Gain');
+import BinaryOption = require('../../../documents/options/BinaryOption');
 
-class OptionSeries extends React.Component<OptionSeries.Props, {}> {
+class GainSeries extends React.Component<GainSeries.Props, {}> {
 	
-	private getOptions = (option: BinaryOption) => {
+	private getGains = (gain: Gain) => {
 		var direction: string,
+			option = gain.option,
 			x1 = this.props.xScale(option.quote.dateTime),
 			x2 = this.props.xScale(option.expiration),
 			y = this.props.yScale(option.quote.close);
 		return (
 			<g
-				key={+option.quote.dateTime}
+				key={+gain.dateTime}
 				transform={'translate(' + x1 + ', ' + y + ')'}>
 				<text className='material-icons'>{this.getDirectionIcon(option)}</text>
 				<circle r={4.5} />
@@ -35,15 +37,15 @@ class OptionSeries extends React.Component<OptionSeries.Props, {}> {
 	render() {
 		// TSX doesn't know clipPath attribute
 		return React.createElement('g', {
-			className: 'options',
+			className: 'gains',
 			clipPath: 'url(#' + this.props.clipPath + ')'
-		}, this.props.options.map(this.getOptions));
+		}, this.props.gains.map(this.getGains));
 	}
 }
 
-module OptionSeries {
+module GainSeries {
 	export interface Props {
-		options: BinaryOption[];
+		gains: Gain[];
 		xScale: d3.time.Scale<Date, number>;
 		yScale: d3.scale.Linear<number, number>;
 		clipPath: string;
@@ -52,4 +54,4 @@ module OptionSeries {
 	export enum Direction { Up, Down }
 }
 
-export = OptionSeries;
+export = GainSeries;
