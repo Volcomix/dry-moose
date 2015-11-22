@@ -21,6 +21,12 @@ body {
 	height: 30%;
 }
 
+.chart-controls {
+	position: absolute;
+	bottom: 40px;
+	right: 70px;
+}
+
 .overlay {
 	position: absolute;
 	top: 0px;

@@ -12,6 +12,7 @@ import MonitoringStore = require('../stores/MonitoringStore');
 
 import QuotesChart = require('./QuotesChart');
 import PortfolioChart = require('./PortfolioChart');
+import ChartControls = require('./ChartControls');
 import Loading = require('./Loading');
 
 class Charts extends React.Component<Charts.Props, Charts.State> {
@@ -66,6 +67,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	render() {
 		var quotesChart: JSX.Element,
 			portfolioChart: JSX.Element,
+			controls: JSX.Element,
 			loading: JSX.Element;
 			
 		if (this.state.monitoringData) {
@@ -89,6 +91,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 					xScale={this.xScale}
 					zoom={this.zoom} />
 			);
+			controls = <ChartControls />;
 		} else {
 			loading = <Loading />;
 		}
@@ -107,6 +110,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 					ref={ref => this.portfolioChartContainer = ref}>
 					{portfolioChart}
 				</div>
+				{controls}
 				{loading}
 			</div>
 		);

@@ -12,6 +12,7 @@ var MonitoringActions = require('../actions/MonitoringActions');
 var MonitoringStore = require('../stores/MonitoringStore');
 var QuotesChart = require('./QuotesChart');
 var PortfolioChart = require('./PortfolioChart');
+var ChartControls = require('./ChartControls');
 var Loading = require('./Loading');
 var Charts = (function (_super) {
     __extends(Charts, _super);
@@ -80,16 +81,17 @@ var Charts = (function (_super) {
     };
     Charts.prototype.render = function () {
         var _this = this;
-        var quotesChart, portfolioChart, loading;
+        var quotesChart, portfolioChart, controls, loading;
         if (this.state.monitoringData) {
             this.updateXScale();
             quotesChart = (React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "options": this.state.monitoringData.options, "width": this.state.mainWidth, "height": this.state.quotesChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}));
             portfolioChart = (React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": this.state.mainWidth, "height": this.state.portfolioChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}));
+            controls = React.createElement(ChartControls, null);
         }
         else {
             loading = React.createElement(Loading, null);
         }
-        return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"className": 'quotes', "ref": function (ref) { return _this.quotesChartContainer = ref; }}, quotesChart), React.createElement("div", {"className": 'portfolio', "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, portfolioChart), loading));
+        return (React.createElement("div", {"style": { height: '100%' }, "ref": function (ref) { return _this.mainContainer = ref; }}, React.createElement("div", {"className": 'quotes', "ref": function (ref) { return _this.quotesChartContainer = ref; }}, quotesChart), React.createElement("div", {"className": 'portfolio', "ref": function (ref) { return _this.portfolioChartContainer = ref; }}, portfolioChart), controls, loading));
     };
     Charts.prototype.updateXScale = function () {
         var margin = this.props.margin, contentWidth = this.state.mainWidth - margin.left - margin.right, domain = this.xScale.domain();
