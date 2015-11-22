@@ -10,8 +10,12 @@ import MonitoringData = require('../../../documents/MonitoringData');
 
 import MonitoringServerActions = require('../actions/MonitoringServerActions');
 
-function receive(data: MonitoringData) {
-    // Datetimes are received from server as strings
+/**
+ * Convert all dateTime fields from string to Date. REST services could not
+ * send Date objects.
+ * @param data - The received to data to convert
+ */
+function restoreDateTimes(data: MonitoringData) {
     data.startDate = new Date(data.startDate as any);
     data.endDate = new Date(data.endDate as any);
 	data.quotes.forEach((d: Quote) => d.dateTime = new Date(d.dateTime as any));
@@ -20,8 +24,6 @@ function receive(data: MonitoringData) {
         d.quote.dateTime = new Date(d.quote.dateTime as any);
         d.expiration = new Date(d.expiration as any);
     });
-    
-	MonitoringServerActions.receive(data);
 }
 
 var delay = Q<void>(null);
@@ -32,7 +34,10 @@ function retrieveData() {
         delay = Q.delay(1000).then(retrieveData);
         
         Q.nfcall(d3.json, '/monitoring/minutes/' + retrieveDateTime.toISOString())
-        .then(receive);
+        .then(function(data: MonitoringData) {
+            restoreDateTimes(data);
+            MonitoringServerActions.receive(data);
+        });
         
         retrieveDateTime = undefined;
     }
@@ -47,5 +52,9 @@ export function get(dateTime: Date) {
 }
 
 export function getLast() {
-	Q.nfcall(d3.json, '/monitoring/minutes/last').then(receive);
+	Q.nfcall(d3.json, '/monitoring/minutes/last')
+    .then(function(data: MonitoringData) {
+        restoreDateTimes(data);
+        MonitoringServerActions.receiveLast(data);
+    });
 }

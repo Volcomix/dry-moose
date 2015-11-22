@@ -6,7 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
-var moment = require('moment');
 var Margin = require('./common/Margin');
 var MonitoringActions = require('../actions/MonitoringActions');
 var MonitoringStore = require('../stores/MonitoringStore');
@@ -30,7 +29,7 @@ var Charts = (function (_super) {
             else if (domain[1] > _this.state.monitoringData.endDate) {
                 MonitoringActions.get(domain[1]);
             }
-            _this.forceUpdate();
+            _this.onChange();
         }, 0); }; // Force wait UI refresh (improve UI performance)
         this.zoom.scaleExtent(this.props.zoomScaleExtent);
         this.state = this.chartsState;
@@ -60,6 +59,7 @@ var Charts = (function (_super) {
         get: function () {
             return {
                 monitoringData: MonitoringStore.data,
+                resetXDomain: MonitoringStore.resetXDomain,
                 mainWidth: this.mainWidth,
                 quotesChartHeight: this.quotesChartHeight,
                 portfolioChartHeight: this.portfolioChartHeight
@@ -96,14 +96,10 @@ var Charts = (function (_super) {
     Charts.prototype.updateXScale = function () {
         var margin = this.props.margin, contentWidth = this.state.mainWidth - margin.left - margin.right, domain = this.xScale.domain();
         this.xScale.range([0, contentWidth]); // range() wants Dates which is wrong
-        if (+domain[0] == 0 && +domain[1] == 1) {
-            this.initXDomain();
+        if (this.state.resetXDomain) {
+            this.xScale.domain(this.state.resetXDomain);
+            this.zoom.x(this.xScale);
         }
-    };
-    Charts.prototype.initXDomain = function () {
-        var endDateTime = this.state.monitoringData.endDate, startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
-        this.xScale.domain([startDateTime, endDateTime]).nice();
-        this.zoom.x(this.xScale);
     };
     return Charts;
 })(React.Component);

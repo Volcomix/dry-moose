@@ -13,9 +13,9 @@ var ChartControls = (function (_super) {
         _super.apply(this, arguments);
     }
     ChartControls.prototype.render = function () {
-        return (React.createElement("div", {"className": 'chart-controls'}, React.createElement(Button, {"onClick": this.goLast}, React.createElement("i", {"className": "material-icons"}, "skip_next"))));
+        return (React.createElement("div", {"className": 'chart-controls'}, React.createElement(Button, {"onClick": this.goToEnd}, React.createElement("i", {"className": "material-icons"}, "skip_next"))));
     };
-    ChartControls.prototype.goLast = function () {
+    ChartControls.prototype.goToEnd = function () {
         MonitoringActions.getLast();
     };
     return ChartControls;

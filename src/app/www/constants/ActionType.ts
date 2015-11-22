@@ -1,7 +1,8 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
 enum ActionType {
-	QuotesReceived
+	QuotesReceived,
+	LastQuotesReceived
 }
 
 export = ActionType;

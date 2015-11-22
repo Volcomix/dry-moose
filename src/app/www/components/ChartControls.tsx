@@ -10,14 +10,14 @@ class ChartControls extends React.Component<{}, {}> {
 	render() {
 		return (
 			<div className='chart-controls'>
-				<Button onClick={this.goLast}>
+				<Button onClick={this.goToEnd}>
 					<i className="material-icons">skip_next</i>
 				</Button>
 			</div>
 		);
 	}
 	
-	private goLast() {
+	private goToEnd() {
 		MonitoringActions.getLast();
 	}
 }

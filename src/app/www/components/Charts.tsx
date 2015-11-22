@@ -38,6 +38,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 	private get chartsState(): Charts.State {
 		return {
 			monitoringData: MonitoringStore.data,
+			resetXDomain: MonitoringStore.resetXDomain,
 			mainWidth: this.mainWidth,
 			quotesChartHeight: this.quotesChartHeight,
 			portfolioChartHeight: this.portfolioChartHeight
@@ -123,17 +124,10 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 		
 		this.xScale.range([0, contentWidth] as any); // range() wants Dates which is wrong
 		
-		if (+domain[0] == 0 && +domain[1] == 1) {
-			this.initXDomain();
+		if (this.state.resetXDomain) {
+			this.xScale.domain(this.state.resetXDomain);
+			this.zoom.x(this.xScale as any);
 		}
-	}
-	
-	private initXDomain() {
-		var endDateTime = this.state.monitoringData.endDate,
-			startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
-		
-		this.xScale.domain([startDateTime, endDateTime]).nice();
-		this.zoom.x(this.xScale as any)
 	}
 	
 	private onChange = () => this.setState(this.chartsState);
@@ -145,7 +139,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 		} else if (domain[1] > this.state.monitoringData.endDate) {
 			MonitoringActions.get(domain[1]);
 		}
-		this.forceUpdate();
+		this.onChange();
 	}, 0); // Force wait UI refresh (improve UI performance)
 }
 
@@ -162,6 +156,7 @@ module Charts {
 	
 	export interface State {
 		monitoringData: MonitoringData;
+		resetXDomain: Date[];
 		mainWidth: number;
 		quotesChartHeight: number;
 		portfolioChartHeight: number;

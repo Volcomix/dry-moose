@@ -7,7 +7,17 @@ import AppDispatcher = require('../dispatcher/AppDispatcher');
 import ActionType = require('../constants/ActionType');
 
 export function receive(data: MonitoringData) {
-	AppDispatcher.dispatch({ actionType: ActionType.QuotesReceived, data } as Receive);
+	AppDispatcher.dispatch({
+		actionType: ActionType.QuotesReceived,
+		data
+	} as Receive);
+}
+
+export function receiveLast(data: MonitoringData) {
+	AppDispatcher.dispatch({
+		actionType: ActionType.LastQuotesReceived,
+		data
+	} as Receive);
 }
 
 export interface Receive extends IAction {
