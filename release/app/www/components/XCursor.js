@@ -28,12 +28,9 @@ var XCursor = (function (_super) {
 var XCursor;
 (function (XCursor) {
     XCursor.defaultProps = {
-        data: undefined,
-        accessor: undefined,
         mouseX: undefined,
         height: undefined,
         scale: undefined,
-        snapThreshold: 60000
     };
 })(XCursor || (XCursor = {}));
 module.exports = XCursor;

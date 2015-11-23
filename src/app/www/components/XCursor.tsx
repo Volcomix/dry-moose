@@ -38,21 +38,15 @@ class XCursor extends React.Component<XCursor.Props, {}> {
 
 module XCursor {
 	export interface Props {
-		data: {}[];
-		accessor: (d: {}) => Date;
 		mouseX: number;
 		height: number;
 		scale: d3.time.Scale<Date, number>;
-		snapThreshold?: number;
 	}
 	
 	export var defaultProps: Props = {
-		data: undefined,
-		accessor: undefined,
 		mouseX: undefined,
 		height: undefined,
 		scale: undefined,
-		snapThreshold: 60000
 	}
 }
 

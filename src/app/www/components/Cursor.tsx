@@ -31,14 +31,14 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 			yCursor: JSX.Element;
 		
 		if (this.state.mouse) {
-			xCursor = (
+			/*xCursor = (
 				<XCursor
 					data={this.props.data}
 					accessor={this.props.xAccessor}
 					mouseX={this.state.mouse[0]}
 					height={this.props.height}
 					scale={this.props.xScale} />
-			);
+			);*/
 			yCursor = (
 				<YCursor
 					mouseY={this.state.mouse[1]}

@@ -8,6 +8,7 @@ var React = require('react');
 var d3 = require('d3');
 var MonitoringActions = require('../actions/MonitoringActions');
 var ZoomActions = require('../actions/ZoomActions');
+var XCursor = require('./XCursor');
 var XAxis = (function (_super) {
     __extends(XAxis, _super);
     function XAxis(props) {
@@ -36,14 +37,28 @@ var XAxis = (function (_super) {
             }
             setTimeout(ZoomActions.zoom, 0); // Force wait UI refresh
         };
+        this.onMouseMove = function () { return _this.setState(_this.xAxisState); };
+        this.onMouseOut = function () { return _this.setState(XAxis.defaultState); };
         this.axis.scale(this.props.scale);
+        this.state = XAxis.defaultState;
     }
+    Object.defineProperty(XAxis.prototype, "xAxisState", {
+        get: function () {
+            return { mouseX: d3.mouse(this.pane)[0] };
+        },
+        enumerable: true,
+        configurable: true
+    });
     XAxis.prototype.componentDidMount = function () {
         this.zoom.on('zoom', this.onZoom);
-        d3.select(this.pane).call(this.zoom);
+        // Use d3.event to make d3.mouse work
+        var pane = d3.select(this.pane);
+        pane.on('mousemove', this.onMouseMove);
+        pane.call(this.zoom);
     };
     XAxis.prototype.componentWillUnmount = function () {
         this.zoom.on('zoom', null);
+        d3.select(this.pane).on('mousemove', null);
     };
     XAxis.prototype.render = function () {
         var _this = this;
@@ -54,8 +69,18 @@ var XAxis = (function (_super) {
             this.zoom.x(this.props.scale);
         }
         this.axis.tickSize(-this.props.height, 0);
-        return (React.createElement("g", null, React.createElement("rect", {"className": 'pane', "ref": function (ref) { return _this.pane = ref; }, "width": this.props.width, "height": this.props.height}), React.createElement("g", {"className": 'x axis', "transform": 'translate(0, ' + this.props.height + ')', "ref": function (ref) { return d3.select(ref).call(_this.axis); }})));
+        var xCursor;
+        if (this.state.mouseX) {
+            xCursor = (React.createElement(XCursor, {"mouseX": this.state.mouseX, "height": this.props.height, "scale": this.props.scale}));
+        }
+        return (React.createElement("g", null, React.createElement("g", {"className": 'x axis', "transform": 'translate(0, ' + this.props.height + ')', "ref": function (ref) { return d3.select(ref).call(_this.axis); }}), xCursor, React.createElement("rect", {"className": 'pane', "ref": function (ref) { return _this.pane = ref; }, "width": this.props.width, "height": this.props.height, "onMouseOut": this.onMouseOut})));
     };
     return XAxis;
 })(React.Component);
+var XAxis;
+(function (XAxis) {
+    XAxis.defaultState = {
+        mouseX: undefined
+    };
+})(XAxis || (XAxis = {}));
 module.exports = XAxis;

@@ -7,8 +7,9 @@ import MonitoringData = require('../../../documents/MonitoringData');
 
 import MonitoringActions = require('../actions/MonitoringActions');
 import ZoomActions = require('../actions/ZoomActions');
+import XCursor = require('./XCursor');
 
-class XAxis extends React.Component<XAxis.Props, {}> {
+class XAxis extends React.Component<XAxis.Props, XAxis.State> {
 	
 	private zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
 	
@@ -25,20 +26,30 @@ class XAxis extends React.Component<XAxis.Props, {}> {
 		]))
 		.orient('bottom');
 		
-		private pane: SVGElement;
+	private pane: SVGElement;
+	
+	private get xAxisState() {
+		return { mouseX: d3.mouse(this.pane)[0] };
+	}
 	
 	constructor(props) {
 		super(props);
 		this.axis.scale(this.props.scale);
+		this.state = XAxis.defaultState;
 	}
 	
 	componentDidMount() {
 		this.zoom.on('zoom', this.onZoom);
-		d3.select(this.pane).call(this.zoom);
+		
+		// Use d3.event to make d3.mouse work
+		var pane = d3.select(this.pane);
+		pane.on('mousemove', this.onMouseMove);
+		pane.call(this.zoom);
 	}
 	
 	componentWillUnmount() {
 		this.zoom.on('zoom', null);
+		d3.select(this.pane).on('mousemove', null);
 	}
 	
 	render() {
@@ -51,17 +62,30 @@ class XAxis extends React.Component<XAxis.Props, {}> {
 		}
 		
 		this.axis.tickSize(-this.props.height, 0);
+		
+		var xCursor: JSX.Element
+		if (this.state.mouseX) {
+			xCursor = (
+				<XCursor
+					mouseX={this.state.mouseX}
+					height={this.props.height}
+					scale={this.props.scale} />
+			);
+		}
+		
 		return (
 			<g>
-				<rect
-					className='pane'
-					ref={ref => this.pane = ref}
-					width={this.props.width}
-					height={this.props.height} />
 				<g
 					className='x axis'
 					transform={'translate(0, ' + this.props.height + ')'}
 					ref={(ref: any) => d3.select(ref).call(this.axis)} />
+				{xCursor}
+				<rect
+					className='pane'
+					ref={ref => this.pane = ref}
+					width={this.props.width}
+					height={this.props.height}
+					onMouseOut={this.onMouseOut} />
 			</g>
 		);
 	}
@@ -75,6 +99,9 @@ class XAxis extends React.Component<XAxis.Props, {}> {
 		}
 		setTimeout(ZoomActions.zoom, 0); // Force wait UI refresh
 	};
+	
+	private onMouseMove = () => this.setState(this.xAxisState);
+	private onMouseOut = () => this.setState(XAxis.defaultState);
 }
 
 module XAxis {
@@ -85,6 +112,14 @@ module XAxis {
 		height: number;
 		scale: d3.time.Scale<Date, number>;
 	}
+	
+	export interface State {
+		mouseX: number;
+	}
+	
+	export var defaultState = {
+		mouseX: undefined
+	};
 }
 
 export = XAxis;
