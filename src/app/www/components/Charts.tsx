@@ -122,7 +122,8 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 			contentWidth = this.state.mainWidth - margin.left - margin.right,
 			domain = this.xScale.domain();
 		
-		this.xScale.range([0, contentWidth] as any); // range() wants Dates which is wrong
+		// range() wants Dates which is wrong
+		this.xScale.range([0, contentWidth] as any);
 		
 		if (this.state.resetXDomain) {
 			this.xScale.domain(this.state.resetXDomain);

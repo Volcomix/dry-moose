@@ -2,6 +2,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var MonitoringActions = require('./actions/MonitoringActions');
-var Charts = require('./components/Charts');
+var Chart = require('./components/Chart');
 MonitoringActions.getFirst();
-ReactDOM.render(React.createElement(Charts, null), document.getElementById('charts'));
+ReactDOM.render(React.createElement(Chart, null), document.getElementById('react'));

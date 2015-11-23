@@ -95,7 +95,8 @@ var Charts = (function (_super) {
     };
     Charts.prototype.updateXScale = function () {
         var margin = this.props.margin, contentWidth = this.state.mainWidth - margin.left - margin.right, domain = this.xScale.domain();
-        this.xScale.range([0, contentWidth]); // range() wants Dates which is wrong
+        // range() wants Dates which is wrong
+        this.xScale.range([0, contentWidth]);
         if (this.state.resetXDomain) {
             this.xScale.domain(this.state.resetXDomain);
             this.zoom.x(this.xScale);

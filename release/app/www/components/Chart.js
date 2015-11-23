@@ -6,45 +6,45 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
+var MonitoringStore = require('../stores/MonitoringStore');
 var XAxis = require('./XAxis');
-var YAxis = require('./YAxis');
-var LineSeries = require('./LineSeries');
-var Cursor = require('./Cursor');
 var Chart = (function (_super) {
     __extends(Chart, _super);
-    function Chart() {
-        _super.apply(this, arguments);
+    function Chart(props) {
+        var _this = this;
+        _super.call(this, props);
+        this.xScale = d3.time.scale();
+        this.onChange = function () { return _this.setState(_this.chartState); };
+        this.state = this.chartState;
     }
+    Object.defineProperty(Chart.prototype, "chartState", {
+        get: function () {
+            var rect = this.svg && this.svg.getBoundingClientRect();
+            return {
+                monitoringData: MonitoringStore.data,
+                resetXDomain: MonitoringStore.resetXDomain,
+                width: rect ? rect.width : 0,
+                height: rect ? rect.height : 0
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Chart.prototype.componentDidMount = function () {
+        MonitoringStore.addChangeListener(this.onChange);
+        window.addEventListener('resize', this.onChange);
+        this.onChange();
+    };
+    Chart.prototype.componentWillUnmount = function () {
+        MonitoringStore.removeChangeListener(this.onChange);
+        window.removeEventListener('resize', this.onChange);
+    };
     Chart.prototype.render = function () {
-        var margin = this.props.margin, contentWidth = this.props.width - margin.left - margin.right, contentHeight = this.props.height - margin.top - margin.bottom;
-        this.updateYScale(contentHeight);
-        return (React.createElement("div", {"className": 'chart'}, React.createElement("div", {"className": 'mdl-typography--title mdl-color-text--grey-700'}, this.props.title), React.createElement("svg", {"width": this.props.width, "height": this.props.height}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement('clipPath', { id: this.props.clipPath }, React.createElement("rect", {"width": contentWidth, "height": contentHeight})) /* TSX doesn't know clipPath element */, React.createElement(XAxis, {"height": contentHeight, "scale": this.props.xScale}), React.createElement(YAxis, {"width": contentWidth, "scale": this.props.yScale, "tickFormat": this.props.yTickFormat}), React.createElement(LineSeries, {"data": this.props.data, "xAccessor": this.props.xAccessor, "yAccessor": this.props.yAccessor, "xScale": this.props.xScale, "yScale": this.props.yScale, "clipPath": this.props.clipPath}), this.props.children, React.createElement(Cursor, {"data": this.props.data, "xAccessor": this.props.xAccessor, "width": contentWidth, "height": contentHeight, "xScale": this.props.xScale, "yScale": this.props.yScale, "zoom": this.props.zoom})))));
+        var _this = this;
+        var margin = Chart.margin, width = this.state.width - margin.left - margin.right, height = this.state.height - margin.top - margin.bottom;
+        return (React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"monitoringData": this.state.monitoringData, "resetXDomain": this.state.resetXDomain, "width": width, "height": height, "scale": this.xScale}))));
     };
-    Chart.prototype.updateYScale = function (height) {
-        var bisect = d3.bisector(this.props.xAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.data, domain[0], 1), j = bisect(this.props.data, domain[1], i + 1), domainData = this.props.data.slice(i - 1, j + 1), extent = d3.extent(domainData, this.props.yAccessor);
-        this.props.yScale.range([height, 0]);
-        if (extent[0] != extent[1]) {
-            var padding = this.props.yDomainPadding * (extent[1] - extent[0]);
-            this.props.yScale.domain([extent[0] - padding, extent[1] + padding]).nice();
-        }
-    };
+    Chart.margin = { top: 20, right: 60, bottom: 30, left: 20 };
     return Chart;
 })(React.Component);
-var Chart;
-(function (Chart) {
-    Chart.defaultProps = {
-        data: undefined,
-        xAccessor: undefined,
-        yAccessor: undefined,
-        width: undefined,
-        height: undefined,
-        margin: undefined,
-        xScale: undefined,
-        yScale: undefined,
-        yTickFormat: undefined,
-        clipPath: undefined,
-        zoom: undefined,
-        yDomainPadding: 0.1
-    };
-})(Chart || (Chart = {}));
 module.exports = Chart;

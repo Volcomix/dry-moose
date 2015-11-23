@@ -5,8 +5,8 @@ import ReactDOM = require('react-dom');
 
 import MonitoringActions = require('./actions/MonitoringActions');
 
-import Charts = require('./components/Charts');
+import Chart = require('./components/Chart');
 
 MonitoringActions.getFirst();
 
-ReactDOM.render(<Charts />, document.getElementById('charts'));
+ReactDOM.render(<Chart />, document.getElementById('react'));

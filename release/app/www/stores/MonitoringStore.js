@@ -32,6 +32,9 @@ var MonitoringStoreImpl = (function (_super) {
                     _this.setStartXDomain();
                     _this.emitChange();
                     break;
+                case ActionType.Zoom:
+                    _this.emitChange();
+                    break;
             }
         });
     }

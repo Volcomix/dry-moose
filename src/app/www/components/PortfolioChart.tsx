@@ -7,7 +7,7 @@ import Portfolio = require('../../../documents/Portfolio');
 
 import ChartProps = require('./common/ChartProps');
 
-import Chart = require('./Chart');
+import BaseChart = require('./BaseChart');
 
 class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
@@ -18,7 +18,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
 	render() {
 		return (
-			<Chart
+			<BaseChart
 				title='Portfolio'
 				data={this.props.portfolio}
 				xAccessor={(d: Portfolio) => d.dateTime}

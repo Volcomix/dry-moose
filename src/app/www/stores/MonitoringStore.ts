@@ -61,6 +61,10 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 					this.setStartXDomain();
 					this.emitChange();
 					break;
+				
+				case ActionType.Zoom:
+					this.emitChange();
+					break;
 			}
 		});
 	}

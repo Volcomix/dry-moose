@@ -6,7 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
-var Chart = require('./Chart');
+var BaseChart = require('./BaseChart');
 var GainSeries = require('./GainSeries');
 var QuotesChart = (function (_super) {
     __extends(QuotesChart, _super);
@@ -17,7 +17,7 @@ var QuotesChart = (function (_super) {
         this.yQuoteAccessor = function (d) { return d.close; };
     }
     QuotesChart.prototype.render = function () {
-        return (React.createElement(Chart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "clipPath": QuotesChart.clipPath, "zoom": this.props.zoom}, React.createElement(GainSeries, {"gains": this.props.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
+        return (React.createElement(BaseChart, {"title": 'Euro/U.S. Dollar', "data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": QuotesChart.yTickFormat, "clipPath": QuotesChart.clipPath, "zoom": this.props.zoom}, React.createElement(GainSeries, {"gains": this.props.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
     };
     QuotesChart.yTickFormat = d3.format(',.5f');
     QuotesChart.clipPath = 'clipQuotes';

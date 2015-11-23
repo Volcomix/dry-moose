@@ -3,7 +3,8 @@
 enum ActionType {
 	QuotesReceived,
 	FirstQuotesReceived,
-	LastQuotesReceived
+	LastQuotesReceived,
+	Zoom
 }
 
 export = ActionType;
