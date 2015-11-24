@@ -12,7 +12,7 @@ import Cursor = require('./Cursor');
 
 class BaseChart extends React.Component<BaseChart.Props, {}> {	
 	render() {
-		var margin = this.props.margin,
+		var margin: any = {},//this.props.margin,
 			contentWidth = this.props.width - margin.left - margin.right,
 			contentHeight = this.props.height - margin.top - margin.bottom;
 				
@@ -30,11 +30,11 @@ class BaseChart extends React.Component<BaseChart.Props, {}> {
 						) /* TSX doesn't know clipPath element */}
 						{/*<XAxis
 							height={contentHeight}
-							scale={this.props.xScale} />*/}
+							scale={this.props.xScale} />
 						<YAxis
 							width={contentWidth}
-							scale={this.props.yScale}
-							tickFormat={this.props.yTickFormat} />
+							yScale={this.props.yScale}
+							tickFormat={this.props.yTickFormat} />*/}
 						<LineSeries
 							data={this.props.data}
 							xAccessor={this.props.xAccessor}
@@ -50,7 +50,7 @@ class BaseChart extends React.Component<BaseChart.Props, {}> {
 							height={contentHeight}
 							xScale={this.props.xScale}
 							yScale={this.props.yScale}
-							zoom={this.props.zoom} />
+							zoom={null/*this.props.zoom*/} />
 					</g>
 				</svg>
 			</div>
@@ -92,12 +92,12 @@ module BaseChart {
 		yAccessor: undefined,
 		width: undefined,
 		height: undefined,
-		margin: undefined,
+		//margin: undefined,
 		xScale: undefined,
 		yScale: undefined,
 		yTickFormat: undefined,
 		clipPath: undefined,
-		zoom: undefined,
+		//zoom: undefined,
 		yDomainPadding: 0.1
 	}
 }

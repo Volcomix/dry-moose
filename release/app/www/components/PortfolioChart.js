@@ -6,7 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
-var BaseChart = require('./BaseChart');
 var PortfolioChart = (function (_super) {
     __extends(PortfolioChart, _super);
     function PortfolioChart() {
@@ -16,7 +15,7 @@ var PortfolioChart = (function (_super) {
         this.yAccessor = function (d) { return d.value; };
     }
     PortfolioChart.prototype.render = function () {
-        return (React.createElement(BaseChart, {"title": 'Portfolio', "data": this.props.portfolio, "xAccessor": function (d) { return d.dateTime; }, "yAccessor": function (d) { return d.value; }, "width": this.props.width, "height": this.props.height, "margin": this.props.margin, "xScale": this.props.xScale, "yScale": this.yScale, "yTickFormat": PortfolioChart.yTickFormat, "clipPath": PortfolioChart.clipPath, "zoom": this.props.zoom, "yDomainPadding": 0.2}));
+        return (React.createElement("g", null));
     };
     PortfolioChart.yTickFormat = d3.format(',.2f');
     PortfolioChart.clipPath = 'clipPortfolio';

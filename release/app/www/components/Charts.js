@@ -84,8 +84,8 @@ var Charts = (function (_super) {
         var quotesChart, portfolioChart, controls, loading;
         if (this.state.monitoringData) {
             this.updateXScale();
-            quotesChart = (React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": this.state.mainWidth, "height": this.state.quotesChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}));
-            portfolioChart = (React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": this.state.mainWidth, "height": this.state.portfolioChartHeight, "margin": this.props.margin, "xScale": this.xScale, "zoom": this.zoom}));
+            quotesChart = (React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": this.state.mainWidth, "height": this.state.quotesChartHeight, "xScale": this.xScale}));
+            portfolioChart = (React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": this.state.mainWidth, "height": this.state.portfolioChartHeight, "xScale": this.xScale}));
             controls = React.createElement(ChartControls, null);
         }
         else {

@@ -7,6 +7,7 @@ import MonitoringData = require('../../../documents/MonitoringData');
 
 import MonitoringStore = require('../stores/MonitoringStore');
 
+import QuotesChart = require('./QuotesChart');
 import XAxis = require('./XAxis');
 
 class Chart extends React.Component<{}, Chart.State> {
@@ -43,12 +44,25 @@ class Chart extends React.Component<{}, Chart.State> {
 	}
 	
 	render() {
-		var margin = Chart.margin,
-			width = this.state.width - margin.left - margin.right,
-			height = this.state.height - margin.top - margin.bottom;		
-		return (
-			<svg ref={ref => this.svg = ref}>
+		var content: JSX.Element;
+		
+		if (this.state.monitoringData) {
+			
+			var margin = Chart.margin,
+				width = this.state.width - margin.left - margin.right,
+				height = this.state.height - margin.top - margin.bottom,
+				dividerY = height / 2;
+			
+			content = (
 				<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
+					<QuotesChart
+						quotes={this.state.monitoringData.quotes}
+						gains={this.state.monitoringData.gains}
+						width={width}
+						height={dividerY}
+						xScale={this.xScale} />
+					<g transform={'translate(0, ' + dividerY + ')'}>
+					</g>
 					<XAxis
 						monitoringData={this.state.monitoringData}
 						resetXDomain={this.state.resetXDomain}
@@ -56,7 +70,11 @@ class Chart extends React.Component<{}, Chart.State> {
 						height={height}
 						scale={this.xScale} />
 				</g>
-			</svg>
+			);
+		}
+		
+		return (
+			<svg ref={ref => this.svg = ref}>{content}</svg>
 		);
 	}
 	

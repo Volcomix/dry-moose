@@ -18,7 +18,8 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
 	render() {
 		return (
-			<BaseChart
+			<g>
+			{/*<BaseChart
 				title='Portfolio'
 				data={this.props.portfolio}
 				xAccessor={(d: Portfolio) => d.dateTime}
@@ -31,7 +32,8 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 				yTickFormat={PortfolioChart.yTickFormat}
 				clipPath={PortfolioChart.clipPath}
 				zoom={this.props.zoom}
-				yDomainPadding={0.2} />
+				yDomainPadding={0.2} />*/}
+			</g>
 		);
 	}
 	

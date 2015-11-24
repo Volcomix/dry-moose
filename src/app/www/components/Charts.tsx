@@ -79,18 +79,14 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 					gains={this.state.monitoringData.gains}
 					width={this.state.mainWidth}
 					height={this.state.quotesChartHeight}
-					margin={this.props.margin}
-					xScale={this.xScale}
-					zoom={this.zoom} />
+					xScale={this.xScale} />
 			);
 			portfolioChart = (
 				<PortfolioChart
 					portfolio={this.state.monitoringData.portfolio}
 					width={this.state.mainWidth}
 					height={this.state.portfolioChartHeight}
-					margin={this.props.margin}
-					xScale={this.xScale}
-					zoom={this.zoom} />
+					xScale={this.xScale} />
 			);
 			controls = <ChartControls />;
 		} else {

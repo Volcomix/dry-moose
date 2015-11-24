@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var MonitoringStore = require('../stores/MonitoringStore');
+var QuotesChart = require('./QuotesChart');
 var XAxis = require('./XAxis');
 var Chart = (function (_super) {
     __extends(Chart, _super);
@@ -41,8 +42,12 @@ var Chart = (function (_super) {
     };
     Chart.prototype.render = function () {
         var _this = this;
-        var margin = Chart.margin, width = this.state.width - margin.left - margin.right, height = this.state.height - margin.top - margin.bottom;
-        return (React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"monitoringData": this.state.monitoringData, "resetXDomain": this.state.resetXDomain, "width": width, "height": height, "scale": this.xScale}))));
+        var content;
+        if (this.state.monitoringData) {
+            var margin = Chart.margin, width = this.state.width - margin.left - margin.right, height = this.state.height - margin.top - margin.bottom, dividerY = height / 2;
+            content = (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": dividerY, "xScale": this.xScale}), React.createElement("g", {"transform": 'translate(0, ' + dividerY + ')'}), React.createElement(XAxis, {"monitoringData": this.state.monitoringData, "resetXDomain": this.state.resetXDomain, "width": width, "height": height, "scale": this.xScale})));
+        }
+        return (React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, content));
     };
     Chart.margin = { top: 20, right: 60, bottom: 30, left: 20 };
     return Chart;

@@ -8,8 +8,8 @@ import Gain = require('../../../documents/Gain');
 
 import ChartProps = require('./common/ChartProps');
 
-import BaseChart = require('./BaseChart');
 import GainSeries = require('./GainSeries');
+import YAxis = require('./YAxis');
 
 class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
@@ -20,7 +20,18 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	render() {
 		return (
-			<BaseChart
+			<g>
+				<YAxis
+					data={this.props.quotes}
+					xAccessor={this.xQuoteAccessor}
+					yAccessor={this.yQuoteAccessor}
+					width={this.props.width}
+					height={this.props.height}
+					xScale={this.props.xScale}
+					yScale={this.yScale}
+					tickFormat={QuotesChart.yTickFormat} />
+			
+			{/*<BaseChart
 				title='Euro/U.S. Dollar'
 				data={this.props.quotes}
 				xAccessor={this.xQuoteAccessor}
@@ -38,7 +49,8 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={QuotesChart.clipPath} />
-			</BaseChart>
+			</BaseChart>*/}
+			</g>
 		);
 	}
 	
