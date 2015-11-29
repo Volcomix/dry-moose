@@ -67,7 +67,7 @@ var Chart = (function (_super) {
                     this.xScale.domain(this.state.resetXDomain);
                     this.zoom.x(this.xScale);
                 }
-                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom}))));
+                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom})), React.createElement("g", {"className": 'divider'}, React.createElement("line", {"x2": width, "y1": quotesHeight, "y2": quotesHeight}), React.createElement("rect", {"transform": 'translate(0, ' + (quotesHeight - 4) + ')', "width": width, "height": 7}))));
             }
         },
         enumerable: true,

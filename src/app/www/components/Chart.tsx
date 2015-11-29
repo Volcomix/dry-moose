@@ -87,6 +87,13 @@ class Chart extends React.Component<{}, Chart.State> {
 							xScale={this.xScale}
 							zoom={this.zoom} />
 					</g>
+					<g className='divider'>
+						<line x2={width} y1={quotesHeight} y2={quotesHeight} />
+						<rect
+							transform={'translate(0, ' + (quotesHeight - 4) + ')'}
+							width={width}
+							height={7} />
+					</g>
 				</g>
 			);
 		}
