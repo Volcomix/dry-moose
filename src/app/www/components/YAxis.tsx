@@ -16,9 +16,16 @@ class YAxis extends React.Component<YAxis.Props, {}> {
 			.tickSize(-this.props.width, 0);
 		return (
 			<g>
+				{React.createElement('clipPath', { id: this.props.clipPath },
+					<rect
+						transform={'translate(' + -this.props.width + ', 0)'}
+						width={this.props.width + 100}
+						height={this.props.height} />
+				) /* TSX doesn't know clipPath element */}
 				<g
 					className='y axis'
 					transform={'translate(' + this.props.width + ', 0)'}
+					clipPath={'url(#' + this.props.clipPath + ')'}
 					ref={(ref: any) => d3.select(ref).call(this.axis)} />
 				<YCursor
 					width={this.props.width}
@@ -37,6 +44,7 @@ module YAxis {
 		height: number;
 		scale: d3.scale.Linear<number, number>;
 		zoom: d3.behavior.Zoom<{}>;
+		clipPath: string;
 		tickFormat: (t: any) => string;
 	}
 }

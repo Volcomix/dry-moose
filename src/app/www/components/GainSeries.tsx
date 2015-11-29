@@ -38,11 +38,11 @@ class GainSeries extends React.Component<GainSeries.Props, {}> {
 	}
 	
 	render() {
-		// TSX doesn't know clipPath attribute
-		return React.createElement('g', {
-			className: 'gains',
-			clipPath: 'url(#' + this.props.clipPath + ')'
-		}, this.props.gains.map(this.getGain));
+		return (
+			<g className='gains' clipPath={'url(#' + this.props.clipPath + ')'}>
+				{this.props.gains.map(this.getGain)}
+			</g>
+		);
 	}
 }
 

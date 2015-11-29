@@ -37,6 +37,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 					height={this.props.height}
 					scale={this.yScale}
 					zoom={this.props.zoom}
+					clipPath={PortfolioChart.clipPath + 'Axis'}
 					tickFormat={PortfolioChart.yTickFormat} />
 			</g>
 		);
@@ -53,7 +54,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 		this.yScale.range([this.props.height, 0]);
 		if (extent[0] != extent[1]) {
 			var padding = PortfolioChart.yDomainPadding * (extent[1] - extent[0]);
-			this.yScale.domain([extent[0] - padding, extent[1] + padding]).nice();
+			this.yScale.domain([extent[0] - padding, extent[1] + padding]);
 		}
 	}
 	

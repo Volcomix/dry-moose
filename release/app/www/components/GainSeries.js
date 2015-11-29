@@ -25,11 +25,7 @@ var GainSeries = (function (_super) {
         }
     };
     GainSeries.prototype.render = function () {
-        // TSX doesn't know clipPath attribute
-        return React.createElement('g', {
-            className: 'gains',
-            clipPath: 'url(#' + this.props.clipPath + ')'
-        }, this.props.gains.map(this.getGain));
+        return (React.createElement("g", {"className": 'gains', "clipPath": 'url(#' + this.props.clipPath + ')'}, this.props.gains.map(this.getGain)));
     };
     return GainSeries;
 })(React.Component);

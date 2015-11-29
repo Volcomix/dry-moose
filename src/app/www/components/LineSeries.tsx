@@ -11,11 +11,12 @@ class LineSeries extends React.Component<LineSeries.Props, {}> {
 		this.line
 			.x(d => this.props.xScale(this.props.xAccessor(d)))
 			.y(d => this.props.yScale(this.props.yAccessor(d)));
-		return React.createElement('path', {
-			className: 'line',
-			d: this.line(this.props.data),
-			clipPath: 'url(#' + this.props.clipPath + ')'
-		}); // TSX doesn't know clipPath attribute
+		return (
+			<path
+				className='line'
+				d={this.line(this.props.data)}
+				clipPath={'url(#' + this.props.clipPath + ')'} />
+		);
 	}
 }
 
