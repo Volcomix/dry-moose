@@ -73,7 +73,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 			
 		if (this.state.monitoringData) {
 			this.updateXScale();
-			quotesChart = (
+			/*quotesChart = (
 				<QuotesChart
 					quotes={this.state.monitoringData.quotes}
 					gains={this.state.monitoringData.gains}
@@ -87,7 +87,7 @@ class Charts extends React.Component<Charts.Props, Charts.State> {
 					width={this.state.mainWidth}
 					height={this.state.portfolioChartHeight}
 					xScale={this.xScale} />
-			);
+			);*/
 			controls = <ChartControls />;
 		} else {
 			loading = <Loading />;

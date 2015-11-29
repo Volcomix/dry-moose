@@ -7,15 +7,28 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var MonitoringStore = require('../stores/MonitoringStore');
-var QuotesChart = require('./QuotesChart');
+var MonitoringActions = require('../actions/MonitoringActions');
 var XAxis = require('./XAxis');
+var QuotesChart = require('./QuotesChart');
+var PortfolioChart = require('./PortfolioChart');
 var Chart = (function (_super) {
     __extends(Chart, _super);
     function Chart(props) {
         var _this = this;
         _super.call(this, props);
         this.xScale = d3.time.scale();
+        this.zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
         this.onChange = function () { return _this.setState(_this.chartState); };
+        this.onZoom = function () {
+            var domain = _this.xScale.domain();
+            if (domain[0] < _this.state.monitoringData.startDate) {
+                MonitoringActions.get(domain[0]);
+            }
+            else if (domain[1] > _this.state.monitoringData.endDate) {
+                MonitoringActions.get(domain[1]);
+            }
+            setTimeout(_this.onChange, 0); // Force wait UI refresh
+        };
         this.state = this.chartState;
     }
     Object.defineProperty(Chart.prototype, "chartState", {
@@ -34,20 +47,33 @@ var Chart = (function (_super) {
     Chart.prototype.componentDidMount = function () {
         MonitoringStore.addChangeListener(this.onChange);
         window.addEventListener('resize', this.onChange);
+        this.zoom.on('zoom', this.onZoom);
         this.onChange();
     };
     Chart.prototype.componentWillUnmount = function () {
         MonitoringStore.removeChangeListener(this.onChange);
         window.removeEventListener('resize', this.onChange);
+        this.zoom.on('zoom', null);
     };
+    Object.defineProperty(Chart.prototype, "chart", {
+        get: function () {
+            if (this.state.monitoringData) {
+                var margin = Chart.margin, width = this.state.width - margin.left - margin.right, height = this.state.height - margin.top - margin.bottom, quotesHeight = Math.round(height * 2 / 3), portfolioHeight = height - quotesHeight;
+                // range() wants Dates which is wrong
+                this.xScale.range([0, width]);
+                if (this.state.resetXDomain) {
+                    this.xScale.domain(this.state.resetXDomain);
+                    this.zoom.x(this.xScale);
+                }
+                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom}))));
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     Chart.prototype.render = function () {
         var _this = this;
-        var content;
-        if (this.state.monitoringData) {
-            var margin = Chart.margin, width = this.state.width - margin.left - margin.right, height = this.state.height - margin.top - margin.bottom, dividerY = height / 2;
-            content = (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": dividerY, "xScale": this.xScale}), React.createElement("g", {"transform": 'translate(0, ' + dividerY + ')'}), React.createElement(XAxis, {"monitoringData": this.state.monitoringData, "resetXDomain": this.state.resetXDomain, "width": width, "height": height, "scale": this.xScale})));
-        }
-        return (React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, content));
+        return React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, this.chart);
     };
     Chart.margin = { top: 20, right: 60, bottom: 30, left: 20 };
     return Chart;

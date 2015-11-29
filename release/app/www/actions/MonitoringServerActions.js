@@ -3,21 +3,21 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var ActionType = require('../constants/ActionType');
 function receive(data) {
     AppDispatcher.dispatch({
-        actionType: ActionType.QuotesReceived,
+        actionType: ActionType.ReceiveQuotes,
         data: data
     });
 }
 exports.receive = receive;
 function receiveFirst(data) {
     AppDispatcher.dispatch({
-        actionType: ActionType.FirstQuotesReceived,
+        actionType: ActionType.ReceiveFirstQuotes,
         data: data
     });
 }
 exports.receiveFirst = receiveFirst;
 function receiveLast(data) {
     AppDispatcher.dispatch({
-        actionType: ActionType.LastQuotesReceived,
+        actionType: ActionType.ReceiveLastQuotes,
         data: data
     });
 }

@@ -42,7 +42,7 @@ var BaseChart;
         yScale: undefined,
         yTickFormat: undefined,
         clipPath: undefined,
-        //zoom: undefined,
+        zoom: undefined,
         yDomainPadding: 0.1
     };
 })(BaseChart || (BaseChart = {}));

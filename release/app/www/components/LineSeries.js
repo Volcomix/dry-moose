@@ -8,15 +8,15 @@ var React = require('react');
 var d3 = require('d3');
 var LineSeries = (function (_super) {
     __extends(LineSeries, _super);
-    function LineSeries(props) {
-        var _this = this;
-        _super.call(this, props);
+    function LineSeries() {
+        _super.apply(this, arguments);
         this.line = d3.svg.line();
+    }
+    LineSeries.prototype.render = function () {
+        var _this = this;
         this.line
             .x(function (d) { return _this.props.xScale(_this.props.xAccessor(d)); })
             .y(function (d) { return _this.props.yScale(_this.props.yAccessor(d)); });
-    }
-    LineSeries.prototype.render = function () {
         return React.createElement('path', {
             className: 'line',
             d: this.line(this.props.data),

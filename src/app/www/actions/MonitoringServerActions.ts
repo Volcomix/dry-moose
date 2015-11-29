@@ -8,21 +8,21 @@ import ActionType = require('../constants/ActionType');
 
 export function receive(data: MonitoringData) {
 	AppDispatcher.dispatch({
-		actionType: ActionType.QuotesReceived,
+		actionType: ActionType.ReceiveQuotes,
 		data
 	} as Receive);
 }
 
 export function receiveFirst(data: MonitoringData) {
 	AppDispatcher.dispatch({
-		actionType: ActionType.FirstQuotesReceived,
+		actionType: ActionType.ReceiveFirstQuotes,
 		data
 	} as Receive);
 }
 
 export function receiveLast(data: MonitoringData) {
 	AppDispatcher.dispatch({
-		actionType: ActionType.LastQuotesReceived,
+		actionType: ActionType.ReceiveLastQuotes,
 		data
 	} as Receive);
 }

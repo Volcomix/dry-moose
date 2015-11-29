@@ -8,7 +8,7 @@ import BinaryOption = require('../../../documents/options/BinaryOption');
 
 class GainSeries extends React.Component<GainSeries.Props, {}> {
 	
-	private getGains = (gain: Gain) => {
+	private getGain = (gain: Gain) => {
 		var direction: string,
 			option = gain.option,
 			x1 = this.props.xScale(option.quote.dateTime),
@@ -42,7 +42,7 @@ class GainSeries extends React.Component<GainSeries.Props, {}> {
 		return React.createElement('g', {
 			className: 'gains',
 			clipPath: 'url(#' + this.props.clipPath + ')'
-		}, this.props.gains.map(this.getGains));
+		}, this.props.gains.map(this.getGain));
 	}
 }
 

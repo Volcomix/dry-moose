@@ -15,24 +15,21 @@ var MonitoringStoreImpl = (function (_super) {
         _super.call(this);
         AppDispatcher.register(function (action) {
             switch (action.actionType) {
-                case ActionType.QuotesReceived:
+                case ActionType.ReceiveQuotes:
                     var receiveAction = action;
                     _this._data = receiveAction.data;
                     _this.emitChange();
                     break;
-                case ActionType.LastQuotesReceived:
+                case ActionType.ReceiveLastQuotes:
                     var receiveAction = action;
                     _this._data = receiveAction.data;
                     _this.setEndXDomain();
                     _this.emitChange();
                     break;
-                case ActionType.FirstQuotesReceived:
+                case ActionType.ReceiveFirstQuotes:
                     var receiveAction = action;
                     _this._data = receiveAction.data;
                     _this.setStartXDomain();
-                    _this.emitChange();
-                    break;
-                case ActionType.Zoom:
                     _this.emitChange();
                     break;
             }

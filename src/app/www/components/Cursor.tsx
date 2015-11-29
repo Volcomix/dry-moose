@@ -39,12 +39,12 @@ class Cursor extends React.Component<Cursor.Props, Cursor.State> {
 					height={this.props.height}
 					scale={this.props.xScale} />
 			);*/
-			yCursor = (
+			/*yCursor = (
 				<YCursor
 					mouseY={this.state.mouse[1]}
 					width={this.props.width}
 					scale={this.props.yScale} />
-			);
+			);*/
 		}
 		
 		return (

@@ -9,8 +9,6 @@ var d3 = require('d3');
 var Margin = require('./common/Margin');
 var MonitoringActions = require('../actions/MonitoringActions');
 var MonitoringStore = require('../stores/MonitoringStore');
-var QuotesChart = require('./QuotesChart');
-var PortfolioChart = require('./PortfolioChart');
 var ChartControls = require('./ChartControls');
 var Loading = require('./Loading');
 var Charts = (function (_super) {
@@ -84,8 +82,21 @@ var Charts = (function (_super) {
         var quotesChart, portfolioChart, controls, loading;
         if (this.state.monitoringData) {
             this.updateXScale();
-            quotesChart = (React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": this.state.mainWidth, "height": this.state.quotesChartHeight, "xScale": this.xScale}));
-            portfolioChart = (React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": this.state.mainWidth, "height": this.state.portfolioChartHeight, "xScale": this.xScale}));
+            /*quotesChart = (
+                <QuotesChart
+                    quotes={this.state.monitoringData.quotes}
+                    gains={this.state.monitoringData.gains}
+                    width={this.state.mainWidth}
+                    height={this.state.quotesChartHeight}
+                    xScale={this.xScale} />
+            );
+            portfolioChart = (
+                <PortfolioChart
+                    portfolio={this.state.monitoringData.portfolio}
+                    width={this.state.mainWidth}
+                    height={this.state.portfolioChartHeight}
+                    xScale={this.xScale} />
+            );*/
             controls = React.createElement(ChartControls, null);
         }
         else {

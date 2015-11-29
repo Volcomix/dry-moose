@@ -6,7 +6,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var d3 = require('d3');
-var YCursor = require('./YCursor');
 var Cursor = (function (_super) {
     __extends(Cursor, _super);
     function Cursor(props) {
@@ -29,15 +28,6 @@ var Cursor = (function (_super) {
         var _this = this;
         var xCursor, yCursor;
         if (this.state.mouse) {
-            /*xCursor = (
-                <XCursor
-                    data={this.props.data}
-                    accessor={this.props.xAccessor}
-                    mouseX={this.state.mouse[0]}
-                    height={this.props.height}
-                    scale={this.props.xScale} />
-            );*/
-            yCursor = (React.createElement(YCursor, {"mouseY": this.state.mouse[1], "width": this.props.width, "scale": this.props.yScale}));
         }
         return (React.createElement("g", null, xCursor, yCursor, React.createElement("rect", {"className": 'pane', "ref": function (pane) { return _this.pane = pane; }, "width": this.props.width, "height": this.props.height, "onMouseOut": this.clearPosition})));
     };
