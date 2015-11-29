@@ -11,6 +11,8 @@ var MonitoringActions = require('../actions/MonitoringActions');
 var XAxis = require('./XAxis');
 var QuotesChart = require('./QuotesChart');
 var PortfolioChart = require('./PortfolioChart');
+var ChartControls = require('./ChartControls');
+var Loading = require('./Loading');
 var Chart = (function (_super) {
     __extends(Chart, _super);
     function Chart(props) {
@@ -71,9 +73,27 @@ var Chart = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Chart.prototype, "controls", {
+        get: function () {
+            if (this.state.monitoringData) {
+                return React.createElement(ChartControls, null);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Chart.prototype, "loading", {
+        get: function () {
+            if (!this.state.monitoringData) {
+                return React.createElement(Loading, null);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     Chart.prototype.render = function () {
         var _this = this;
-        return React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, this.chart);
+        return (React.createElement("div", {"style": { height: '100%' }}, React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, this.chart), this.controls, this.loading));
     };
     Chart.margin = { top: 20, right: 60, bottom: 30, left: 20 };
     return Chart;

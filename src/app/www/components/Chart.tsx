@@ -11,6 +11,8 @@ import MonitoringActions = require('../actions/MonitoringActions');
 import XAxis = require('./XAxis');
 import QuotesChart = require('./QuotesChart');
 import PortfolioChart = require('./PortfolioChart');
+import ChartControls = require('./ChartControls');
+import Loading = require('./Loading');
 
 class Chart extends React.Component<{}, Chart.State> {
 	
@@ -90,8 +92,26 @@ class Chart extends React.Component<{}, Chart.State> {
 		}
 	}
 	
+	private get controls() {
+		if (this.state.monitoringData) {
+			return <ChartControls />;
+		}
+	}
+	
+	private get loading() {
+		if (!this.state.monitoringData) {
+			return <Loading />;
+		}
+	}
+	
 	render() {
-		return <svg ref={ref => this.svg = ref}>{this.chart}</svg>;
+		return (
+			<div style={{ height: '100%' }}>
+				<svg ref={ref => this.svg = ref}>{this.chart}</svg>
+				{this.controls}
+				{this.loading}
+			</div>
+		);
 	}
 	
 	private onChange = () => this.setState(this.chartState);
