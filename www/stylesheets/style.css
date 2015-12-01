@@ -49,10 +49,10 @@ svg {
 	height: 112px;
 }
 
-.chart .mdl-typography--title {
-	position: absolute;
-	margin-top: 24px;
-	margin-left: 24px;
+text.mdl-typography--title {
+	fill: currentColor;
+	dominant-baseline: text-before-edge;
+	transform: translate(4px, 4px);
 }
 
 .axis path,

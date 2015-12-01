@@ -24,6 +24,9 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 		this.updateYScale();
 		return (
 			<g className='quotes'>
+				<text className='mdl-typography--title mdl-color-text--grey-700'>
+					Euro/U.S. Dollar
+				</text>
 				{React.createElement('clipPath', { id: QuotesChart.clipPath },
 					<rect width={this.props.width} height={this.props.height} />
 				) /* TSX doesn't know clipPath element */}

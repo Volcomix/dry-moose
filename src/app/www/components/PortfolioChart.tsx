@@ -22,6 +22,9 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 		this.updateYScale();
 		return (
 			<g className='portfolio'>
+				<text className='mdl-typography--title mdl-color-text--grey-700'>
+					Portfolio
+				</text>
 				{React.createElement('clipPath', { id: PortfolioChart.clipPath },
 					<rect width={this.props.width} height={this.props.height} />
 				) /* TSX doesn't know clipPath element */}
