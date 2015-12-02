@@ -16,7 +16,7 @@ import Loading = require('./Loading');
 
 class Chart extends React.Component<{}, Chart.State> {
 	
-	private static margin = { top: 20, right: 60, bottom: 30, left: 20 };
+	private static margin = { top: 20, right: 50, bottom: 30, left: 20 };
 	
 	private svg: SVGElement;
 	private xScale = d3.time.scale<Date, number>();
@@ -88,10 +88,13 @@ class Chart extends React.Component<{}, Chart.State> {
 							zoom={this.zoom} />
 					</g>
 					<g className='divider'>
-						<line x2={width} y1={quotesHeight} y2={quotesHeight} />
+						<line
+							x2={width + margin.right}
+							y1={quotesHeight}
+							y2={quotesHeight} />
 						<rect
 							transform={'translate(0, ' + (quotesHeight - 4) + ')'}
-							width={width}
+							width={width + margin.right}
 							height={7} />
 					</g>
 				</g>
@@ -113,7 +116,7 @@ class Chart extends React.Component<{}, Chart.State> {
 	
 	render() {
 		return (
-			<div style={{ height: '100%' }}>
+			<div className='chart'>
 				<svg ref={ref => this.svg = ref}>{this.chart}</svg>
 				{this.controls}
 				{this.loading}

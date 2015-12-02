@@ -67,7 +67,7 @@ var Chart = (function (_super) {
                     this.xScale.domain(this.state.resetXDomain);
                     this.zoom.x(this.xScale);
                 }
-                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom})), React.createElement("g", {"className": 'divider'}, React.createElement("line", {"x2": width, "y1": quotesHeight, "y2": quotesHeight}), React.createElement("rect", {"transform": 'translate(0, ' + (quotesHeight - 4) + ')', "width": width, "height": 7}))));
+                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom})), React.createElement("g", {"className": 'divider'}, React.createElement("line", {"x2": width + margin.right, "y1": quotesHeight, "y2": quotesHeight}), React.createElement("rect", {"transform": 'translate(0, ' + (quotesHeight - 4) + ')', "width": width + margin.right, "height": 7}))));
             }
         },
         enumerable: true,
@@ -93,9 +93,9 @@ var Chart = (function (_super) {
     });
     Chart.prototype.render = function () {
         var _this = this;
-        return (React.createElement("div", {"style": { height: '100%' }}, React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, this.chart), this.controls, this.loading));
+        return (React.createElement("div", {"className": 'chart'}, React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, this.chart), this.controls, this.loading));
     };
-    Chart.margin = { top: 20, right: 60, bottom: 30, left: 20 };
+    Chart.margin = { top: 20, right: 50, bottom: 30, left: 20 };
     return Chart;
 })(React.Component);
 module.exports = Chart;
