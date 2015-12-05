@@ -17,7 +17,7 @@ var LineSeries = (function (_super) {
         this.line
             .x(function (d) { return _this.props.xScale(_this.props.xAccessor(d)); })
             .y(function (d) { return _this.props.yScale(_this.props.yAccessor(d)); });
-        return (React.createElement("path", {"className": 'line', d: this.line(this.props.data), "clipPath": 'url(#' + this.props.clipPath + ')'}));
+        return (React.createElement("path", {"className": 'line ' + this.props.className, d: this.line(this.props.data), "clipPath": 'url(#' + this.props.clipPath + ')'}));
     };
     return LineSeries;
 })(React.Component);

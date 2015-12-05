@@ -73,15 +73,7 @@ text.mdl-typography--title {
 
 path.line {
 	fill: none;
-}
-
-.quotes path.line {
-	stroke: #2196f3;
-}
-
-.portfolio path.line {
-	stroke: #ff9800;
-	shape-rendering: crispEdges;
+	stroke: currentColor;
 }
 
 .gains {

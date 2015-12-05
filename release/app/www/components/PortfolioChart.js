@@ -18,7 +18,7 @@ var PortfolioChart = (function (_super) {
     }
     PortfolioChart.prototype.render = function () {
         this.updateYScale();
-        return (React.createElement(ChartRow, {"title": 'Portfolio', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": PortfolioChart.clipPath, "yTickFormat": PortfolioChart.yTickFormat}, React.createElement(LineSeries, {"data": this.props.portfolio, "xAccessor": this.xAccessor, "yAccessor": this.yAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": PortfolioChart.clipPath})));
+        return (React.createElement(ChartRow, {"title": 'Portfolio', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": PortfolioChart.clipPath, "yTickFormat": PortfolioChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--orange', "data": this.props.portfolio, "xAccessor": this.xAccessor, "yAccessor": this.yAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": PortfolioChart.clipPath})));
     };
     PortfolioChart.prototype.updateYScale = function () {
         var bisect = d3.bisector(this.xAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.portfolio, domain[0], 1), j = bisect(this.props.portfolio, domain[1], i + 1), domainData = this.props.portfolio.slice(i - 1, j + 1), extent = d3.extent(domainData, this.yAccessor);

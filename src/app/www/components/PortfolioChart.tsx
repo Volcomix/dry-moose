@@ -31,6 +31,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 				clipPath={PortfolioChart.clipPath}
 				yTickFormat={PortfolioChart.yTickFormat}>
 				<LineSeries
+					className='mdl-color-text--orange'
 					data={this.props.portfolio}
 					xAccessor={this.xAccessor}
 					yAccessor={this.yAccessor}

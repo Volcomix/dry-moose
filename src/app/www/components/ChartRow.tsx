@@ -8,7 +8,7 @@ import YAxis = require('./YAxis');
 class ChartRow extends React.Component<ChartRow.Props, {}> {
 	render() {
 		return (
-			<g className='quotes' transform={'translate(0, ' + this.props.y + ')'}>
+			<g transform={'translate(0, ' + this.props.y + ')'}>
 				<text className='mdl-typography--title mdl-color-text--grey-700'>
 					{this.props.title}
 				</text>

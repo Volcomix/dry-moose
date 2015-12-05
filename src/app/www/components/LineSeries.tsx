@@ -13,7 +13,7 @@ class LineSeries extends React.Component<LineSeries.Props, {}> {
 			.y(d => this.props.yScale(this.props.yAccessor(d)));
 		return (
 			<path
-				className='line'
+				className={'line ' + this.props.className}
 				d={this.line(this.props.data)}
 				clipPath={'url(#' + this.props.clipPath + ')'} />
 		);
@@ -21,7 +21,8 @@ class LineSeries extends React.Component<LineSeries.Props, {}> {
 }
 
 module LineSeries {
-	export interface Props {	
+	export interface Props {
+		className: string;
 		data: {}[];
 		xAccessor: (d: {}) => Date;
 		yAccessor: (d: {}) => number;

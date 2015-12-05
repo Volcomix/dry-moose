@@ -12,7 +12,7 @@ var ChartRow = (function (_super) {
         _super.apply(this, arguments);
     }
     ChartRow.prototype.render = function () {
-        return (React.createElement("g", {"className": 'quotes', "transform": 'translate(0, ' + this.props.y + ')'}, React.createElement("text", {"className": 'mdl-typography--title mdl-color-text--grey-700'}, this.props.title), React.createElement('clipPath', { id: this.props.clipPath }, React.createElement("rect", {"width": this.props.width, "height": this.props.height})) /* TSX doesn't know clipPath element */, this.props.children, React.createElement(YAxis, {"width": this.props.width, "height": this.props.height, "scale": this.props.yScale, "zoom": this.props.zoom, "clipPath": this.props.clipPath + 'Axis', "tickFormat": this.props.yTickFormat})));
+        return (React.createElement("g", {"transform": 'translate(0, ' + this.props.y + ')'}, React.createElement("text", {"className": 'mdl-typography--title mdl-color-text--grey-700'}, this.props.title), React.createElement('clipPath', { id: this.props.clipPath }, React.createElement("rect", {"width": this.props.width, "height": this.props.height})) /* TSX doesn't know clipPath element */, this.props.children, React.createElement(YAxis, {"width": this.props.width, "height": this.props.height, "scale": this.props.yScale, "zoom": this.props.zoom, "clipPath": this.props.clipPath + 'Axis', "tickFormat": this.props.yTickFormat})));
     };
     return ChartRow;
 })(React.Component);

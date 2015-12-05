@@ -33,6 +33,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				clipPath={QuotesChart.clipPath}
 				yTickFormat={QuotesChart.yTickFormat}>
 				<LineSeries
+					className='mdl-color-text--blue'
 					data={this.props.quotes}
 					xAccessor={this.xQuoteAccessor}
 					yAccessor={this.yQuoteAccessor}
