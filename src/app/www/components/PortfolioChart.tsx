@@ -6,6 +6,7 @@ import d3 = require('d3');
 import Portfolio = require('../../../documents/Portfolio');
 
 import ChartProps = require('./common/ChartProps');
+import ScaleUtils = require('../utils/ScaleUtils');
 
 import LineSeries = require('./LineSeries');
 import ChartRow = require('./ChartRow');
@@ -19,7 +20,15 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		this.updateYScale();
+		ScaleUtils.updateYScale<Portfolio>(
+			this.props.portfolio,
+			this.xPortfolioAccessor,
+			this.yPortfolioAccessor,
+			this.props.xScale,
+			this.yScale,
+			this.props.height,
+			PortfolioChart.yDomainPadding
+		);
 		return (
 			<ChartRow
 				title='Portfolio'
@@ -33,8 +42,8 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 				<LineSeries
 					className='mdl-color-text--orange'
 					data={this.props.portfolio}
-					xAccessor={this.xAccessor}
-					yAccessor={this.yAccessor}
+					xAccessor={this.xPortfolioAccessor}
+					yAccessor={this.yPortfolioAccessor}
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={PortfolioChart.clipPath} />
@@ -42,23 +51,8 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 		);
 	}
 	
-	private updateYScale() {
-		var bisect = d3.bisector(this.xAccessor).left,
-			domain = this.props.xScale.domain(),
-			i = bisect(this.props.portfolio, domain[0], 1),
-			j = bisect(this.props.portfolio, domain[1], i + 1),
-			domainData = this.props.portfolio.slice(i - 1, j + 1),
-			extent = d3.extent(domainData, this.yAccessor);
-		
-		this.yScale.range([this.props.height, 0]);
-		if (extent[0] != extent[1]) {
-			var padding = PortfolioChart.yDomainPadding * (extent[1] - extent[0]);
-			this.yScale.domain([extent[0] - padding, extent[1] + padding]);
-		}
-	}
-	
-	private xAccessor = (d: Portfolio) => d.dateTime;
-	private yAccessor = (d: Portfolio) => d.value;
+	private xPortfolioAccessor = (d: Portfolio) => d.dateTime;
+	private yPortfolioAccessor = (d: Portfolio) => d.value;
 }
 
 module PortfolioChart {

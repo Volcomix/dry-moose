@@ -7,6 +7,7 @@ import Quote = require('../../../documents/Quote');
 import Gain = require('../../../documents/Gain');
 
 import ChartProps = require('./common/ChartProps');
+import ScaleUtils = require('../utils/ScaleUtils');
 
 import LineSeries = require('./LineSeries');
 import GainSeries = require('./GainSeries');
@@ -21,7 +22,15 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		this.updateYScale();
+		ScaleUtils.updateYScale<Quote>(
+			this.props.quotes,
+			this.xQuoteAccessor,
+			this.yQuoteAccessor,
+			this.props.xScale,
+			this.yScale,
+			this.props.height,
+			QuotesChart.yDomainPadding
+		);
 		return (
 			<ChartRow
 				title='Euro/U.S. Dollar'
@@ -47,21 +56,6 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 					clipPath={QuotesChart.clipPath} />
 			</ChartRow>
 		);
-	}
-	
-	private updateYScale() {
-		var bisect = d3.bisector(this.xQuoteAccessor).left,
-			domain = this.props.xScale.domain(),
-			i = bisect(this.props.quotes, domain[0], 1),
-			j = bisect(this.props.quotes, domain[1], i + 1),
-			domainData = this.props.quotes.slice(i - 1, j + 1),
-			extent = d3.extent(domainData, this.yQuoteAccessor);
-		
-		this.yScale.range([this.props.height, 0]);
-		if (extent[0] != extent[1]) {
-			var padding = QuotesChart.yDomainPadding * (extent[1] - extent[0]);
-			this.yScale.domain([extent[0] - padding, extent[1] + padding]);
-		}
 	}
 	
 	private xQuoteAccessor = (d: Quote) => d.dateTime;
