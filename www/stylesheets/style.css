@@ -76,35 +76,21 @@ path.line {
 	stroke: currentColor;
 }
 
-.gains {
+.gains g {
 	fill: none;
+	stroke: currentColor;
 }
 
 .gains text {
 	text-anchor: middle;
-}
-
-.gains .win {
-	stroke: #009688;
-}
-
-.gains .win text {
-	fill: #009688;
-}
-
-.gains .lose {
-	stroke: #e91e63;
-}
-
-.gains .lose text {
-	fill: #e91e63;
+	fill: currentColor;
 }
 
 .gains line {
 	shape-rendering: crispEdges;
 }
 
-.gains .expiration {
+.gains line.expiration {
 	stroke-dasharray: 4, 3;
 }
 

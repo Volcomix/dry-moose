@@ -18,7 +18,7 @@ class GainSeries extends React.Component<GainSeries.Props, {}> {
 		return (
 			<g
 				key={+gain.dateTime}
-				className={gain.value ? 'win' : 'lose'}
+				className={gain.value ? 'mdl-color-text--teal' : 'mdl-color-text--pink'}
 				transform={'translate(' + x1 + ', ' + y1 + ')'}>
 				<text className='material-icons'>{this.getDirectionIcon(option)}</text>
 				<circle r={4.5} />
