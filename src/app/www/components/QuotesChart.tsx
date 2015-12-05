@@ -23,7 +23,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	render() {
 		this.updateYScale();
 		return (
-			<g className='quotes'>
+			<g className='quotes' transform={'translate(0, ' + this.props.y + ')'}>
 				<text className='mdl-typography--title mdl-color-text--grey-700'>
 					Euro/U.S. Dollar
 				</text>

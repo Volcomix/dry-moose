@@ -91,18 +91,18 @@ class Chart extends React.Component<{}, Chart.State> {
 					<QuotesChart
 						quotes={this.state.monitoringData.quotes}
 						gains={this.state.monitoringData.gains}
+						y={0}
 						width={width}
 						height={quotesHeight}
 						xScale={this.xScale}
 						zoom={this.zoom} />
-					<g transform={'translate(0, ' + quotesHeight + ')'}>
-						<PortfolioChart
-							portfolio={this.state.monitoringData.portfolio}
-							width={width}
-							height={portfolioHeight}
-							xScale={this.xScale}
-							zoom={this.zoom} />
-					</g>
+					<PortfolioChart
+						portfolio={this.state.monitoringData.portfolio}
+						y={quotesHeight}
+						width={width}
+						height={portfolioHeight}
+						xScale={this.xScale}
+						zoom={this.zoom} />
 					<g
 						className='divider'
 						ref={ref => d3.select(ref).datum({ x: 0, y: 0 }).call(this.drag)}

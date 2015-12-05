@@ -21,7 +21,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	render() {
 		this.updateYScale();
 		return (
-			<g className='portfolio'>
+			<g className='portfolio' transform={'translate(0, ' + this.props.y + ')'}>
 				<text className='mdl-typography--title mdl-color-text--grey-700'>
 					Portfolio
 				</text>
