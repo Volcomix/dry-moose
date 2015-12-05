@@ -20,6 +20,7 @@ var Chart = (function (_super) {
         _super.call(this, props);
         this.xScale = d3.time.scale();
         this.zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
+        this.drag = d3.behavior.drag().origin(function () { return ({ x: 0, y: _this.dividerY }); });
         this.onChange = function () { return _this.setState(_this.chartState); };
         this.onZoom = function () {
             var domain = _this.xScale.domain();
@@ -31,8 +32,34 @@ var Chart = (function (_super) {
             }
             setTimeout(_this.onChange, 0); // Force wait UI refresh
         };
+        this.onDrag = function () {
+            var event = d3.event, height = _this.contentHeight;
+            _this.setState({ dividerRatio: Math.min(Math.max(event.y / height, 0.1), 0.9) });
+        };
         this.state = this.chartState;
+        this.state.dividerRatio = 0.7;
     }
+    Object.defineProperty(Chart.prototype, "contentWidth", {
+        get: function () {
+            return this.state.width - Chart.margin.left - Chart.margin.right;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Chart.prototype, "contentHeight", {
+        get: function () {
+            return this.state.height - Chart.margin.top - Chart.margin.bottom;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Chart.prototype, "dividerY", {
+        get: function () {
+            return Math.round(this.contentHeight * this.state.dividerRatio);
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Chart.prototype, "chartState", {
         get: function () {
             var rect = this.svg && this.svg.getBoundingClientRect();
@@ -50,24 +77,27 @@ var Chart = (function (_super) {
         MonitoringStore.addChangeListener(this.onChange);
         window.addEventListener('resize', this.onChange);
         this.zoom.on('zoom', this.onZoom);
+        this.drag.on('drag', this.onDrag);
         this.onChange();
     };
     Chart.prototype.componentWillUnmount = function () {
         MonitoringStore.removeChangeListener(this.onChange);
         window.removeEventListener('resize', this.onChange);
         this.zoom.on('zoom', null);
+        this.drag.on('drag', null);
     };
     Object.defineProperty(Chart.prototype, "chart", {
         get: function () {
+            var _this = this;
             if (this.state.monitoringData) {
-                var margin = Chart.margin, width = this.state.width - margin.left - margin.right, height = this.state.height - margin.top - margin.bottom, quotesHeight = Math.round(height * 2 / 3), portfolioHeight = height - quotesHeight;
+                var margin = Chart.margin, width = this.contentWidth, height = this.contentHeight, quotesHeight = Math.round(height * this.state.dividerRatio), portfolioHeight = height - quotesHeight;
                 // range() wants Dates which is wrong
                 this.xScale.range([0, width]);
                 if (this.state.resetXDomain) {
                     this.xScale.domain(this.state.resetXDomain);
                     this.zoom.x(this.xScale);
                 }
-                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom})), React.createElement("g", {"className": 'divider'}, React.createElement("line", {"x2": width + margin.right, "y1": quotesHeight, "y2": quotesHeight}), React.createElement("rect", {"transform": 'translate(0, ' + (quotesHeight - 4) + ')', "width": width + margin.right, "height": 7}))));
+                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom})), React.createElement("g", {"className": 'divider', "ref": function (ref) { return d3.select(ref).datum({ x: 0, y: 0 }).call(_this.drag); }, "transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement("line", {"x2": width + margin.right}), React.createElement("rect", {"transform": 'translate(0, ' + -4 + ')', "width": width + margin.right, "height": 7}))));
             }
         },
         enumerable: true,

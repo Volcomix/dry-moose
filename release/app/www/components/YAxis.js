@@ -18,9 +18,11 @@ var YAxis = (function (_super) {
         this.axis
             .tickFormat(this.props.tickFormat)
             .scale(this.props.scale)
-            .tickSize(-this.props.width, 0);
+            .tickSize(-this.props.width, 0)
+            .ticks(Math.floor(this.props.height / YAxis.ticksSpacing));
         return (React.createElement("g", null, React.createElement('clipPath', { id: this.props.clipPath }, React.createElement("rect", {"transform": 'translate(' + -this.props.width + ', 0)', "width": this.props.width + 100, "height": this.props.height})) /* TSX doesn't know clipPath element */, React.createElement("g", {"className": 'y axis', "transform": 'translate(' + this.props.width + ', 0)', "clipPath": 'url(#' + this.props.clipPath + ')', "ref": function (ref) { return d3.select(ref).call(_this.axis); }}), React.createElement(YCursor, {"width": this.props.width, "height": this.props.height, "scale": this.props.scale, "zoom": this.props.zoom, "labelFormat": this.props.tickFormat})));
     };
+    YAxis.ticksSpacing = 50;
     return YAxis;
 })(React.Component);
 module.exports = YAxis;

@@ -7,13 +7,16 @@ import YCursor = require('./YCursor');
 
 class YAxis extends React.Component<YAxis.Props, {}> {
 	
+	private static ticksSpacing = 50;
+	
 	private axis = d3.svg.axis().orient('right');
 	
 	render() {
 		this.axis
 			.tickFormat(this.props.tickFormat)
 			.scale(this.props.scale)
-			.tickSize(-this.props.width, 0);
+			.tickSize(-this.props.width, 0)
+			.ticks(Math.floor(this.props.height / YAxis.ticksSpacing));
 		return (
 			<g>
 				{React.createElement('clipPath', { id: this.props.clipPath },

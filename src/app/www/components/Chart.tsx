@@ -21,8 +21,21 @@ class Chart extends React.Component<{}, Chart.State> {
 	private svg: SVGElement;
 	private xScale = d3.time.scale<Date, number>();
 	private zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
+	private drag = d3.behavior.drag().origin(() => ({ x: 0, y: this.dividerY }));
 	
-	private get chartState(): Chart.State {
+	private get contentWidth() {
+		return this.state.width - Chart.margin.left - Chart.margin.right;
+	}
+	
+	private get contentHeight() {
+		return this.state.height - Chart.margin.top - Chart.margin.bottom;
+	}
+	
+	private get dividerY() {
+		return Math.round(this.contentHeight * this.state.dividerRatio);
+	}
+	
+	private get chartState() {
 		var rect = this.svg && this.svg.getBoundingClientRect();
 		return {
 			monitoringData: MonitoringStore.data,
@@ -35,12 +48,14 @@ class Chart extends React.Component<{}, Chart.State> {
 	constructor(props) {
 		super(props);
 		this.state = this.chartState;
+		this.state.dividerRatio = 0.7;
 	}
 	
 	componentDidMount() {
 		MonitoringStore.addChangeListener(this.onChange);
 		window.addEventListener('resize', this.onChange);
 		this.zoom.on('zoom', this.onZoom);
+		this.drag.on('drag', this.onDrag);
 		this.onChange();
 	}
 	
@@ -48,15 +63,16 @@ class Chart extends React.Component<{}, Chart.State> {
 		MonitoringStore.removeChangeListener(this.onChange);
 		window.removeEventListener('resize', this.onChange);
 		this.zoom.on('zoom', null);
+		this.drag.on('drag', null);
 	}
 	
 	private get chart() {
 		if (this.state.monitoringData) {
 			
 			var margin = Chart.margin,
-				width = this.state.width - margin.left - margin.right,
-				height = this.state.height - margin.top - margin.bottom,
-				quotesHeight = Math.round(height * 2 / 3),
+				width = this.contentWidth,
+				height = this.contentHeight,
+				quotesHeight = Math.round(height * this.state.dividerRatio),
 				portfolioHeight = height - quotesHeight;
 				
 			// range() wants Dates which is wrong
@@ -87,13 +103,13 @@ class Chart extends React.Component<{}, Chart.State> {
 							xScale={this.xScale}
 							zoom={this.zoom} />
 					</g>
-					<g className='divider'>
-						<line
-							x2={width + margin.right}
-							y1={quotesHeight}
-							y2={quotesHeight} />
+					<g
+						className='divider'
+						ref={ref => d3.select(ref).datum({ x: 0, y: 0 }).call(this.drag)}
+						transform={'translate(0, ' + quotesHeight + ')'}>
+						<line x2={width + margin.right} />
 						<rect
-							transform={'translate(0, ' + (quotesHeight - 4) + ')'}
+							transform={'translate(0, ' + -4 + ')'}
 							width={width + margin.right}
 							height={7} />
 					</g>
@@ -135,14 +151,21 @@ class Chart extends React.Component<{}, Chart.State> {
 		}
 		setTimeout(this.onChange, 0); // Force wait UI refresh
 	};
+	
+	private onDrag = () => {
+		var event = d3.event as d3.DragEvent,
+			height = this.contentHeight;
+		this.setState({ dividerRatio: Math.min(Math.max(event.y / height, 0.1), 0.9) });
+	}
 }
 
 module Chart {
 	export interface State {
-		monitoringData: MonitoringData;
-		resetXDomain: Date[];
-		width: number;
-		height: number;
+		monitoringData?: MonitoringData;
+		resetXDomain?: Date[];
+		width?: number;
+		height?: number;
+		dividerRatio?: number;
 	}
 }
 
