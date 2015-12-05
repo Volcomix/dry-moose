@@ -8,7 +8,7 @@ var React = require('react');
 var d3 = require('d3');
 var LineSeries = require('./LineSeries');
 var GainSeries = require('./GainSeries');
-var YAxis = require('./YAxis');
+var ChartRow = require('./ChartRow');
 var QuotesChart = (function (_super) {
     __extends(QuotesChart, _super);
     function QuotesChart() {
@@ -19,7 +19,7 @@ var QuotesChart = (function (_super) {
     }
     QuotesChart.prototype.render = function () {
         this.updateYScale();
-        return (React.createElement("g", {"className": 'quotes', "transform": 'translate(0, ' + this.props.y + ')'}, React.createElement("text", {"className": 'mdl-typography--title mdl-color-text--grey-700'}, "Euro/U.S. Dollar"), React.createElement('clipPath', { id: QuotesChart.clipPath }, React.createElement("rect", {"width": this.props.width, "height": this.props.height})) /* TSX doesn't know clipPath element */, React.createElement(LineSeries, {"data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(YAxis, {"width": this.props.width, "height": this.props.height, "scale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath + 'Axis', "tickFormat": QuotesChart.yTickFormat})));
+        return (React.createElement(ChartRow, {"title": 'Euro/U.S. Dollar', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath, "yTickFormat": QuotesChart.yTickFormat}, React.createElement(LineSeries, {"data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
     };
     QuotesChart.prototype.updateYScale = function () {
         var bisect = d3.bisector(this.xQuoteAccessor).left, domain = this.props.xScale.domain(), i = bisect(this.props.quotes, domain[0], 1), j = bisect(this.props.quotes, domain[1], i + 1), domainData = this.props.quotes.slice(i - 1, j + 1), extent = d3.extent(domainData, this.yQuoteAccessor);

@@ -10,7 +10,7 @@ import ChartProps = require('./common/ChartProps');
 
 import LineSeries = require('./LineSeries');
 import GainSeries = require('./GainSeries');
-import YAxis = require('./YAxis');
+import ChartRow = require('./ChartRow');
 
 class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
@@ -23,13 +23,15 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	render() {
 		this.updateYScale();
 		return (
-			<g className='quotes' transform={'translate(0, ' + this.props.y + ')'}>
-				<text className='mdl-typography--title mdl-color-text--grey-700'>
-					Euro/U.S. Dollar
-				</text>
-				{React.createElement('clipPath', { id: QuotesChart.clipPath },
-					<rect width={this.props.width} height={this.props.height} />
-				) /* TSX doesn't know clipPath element */}
+			<ChartRow
+				title='Euro/U.S. Dollar'
+				y={this.props.y}
+				width={this.props.width}
+				height={this.props.height}
+				yScale={this.yScale}
+				zoom={this.props.zoom}
+				clipPath={QuotesChart.clipPath}
+				yTickFormat={QuotesChart.yTickFormat}>
 				<LineSeries
 					data={this.props.quotes}
 					xAccessor={this.xQuoteAccessor}
@@ -42,14 +44,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={QuotesChart.clipPath} />
-				<YAxis
-					width={this.props.width}
-					height={this.props.height}
-					scale={this.yScale}
-					zoom={this.props.zoom}
-					clipPath={QuotesChart.clipPath + 'Axis'}
-					tickFormat={QuotesChart.yTickFormat} />
-			</g>
+			</ChartRow>
 		);
 	}
 	

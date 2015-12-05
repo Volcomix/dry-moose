@@ -8,7 +8,7 @@ import Portfolio = require('../../../documents/Portfolio');
 import ChartProps = require('./common/ChartProps');
 
 import LineSeries = require('./LineSeries');
-import YAxis = require('./YAxis');
+import ChartRow = require('./ChartRow');
 
 class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
@@ -21,13 +21,15 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	render() {
 		this.updateYScale();
 		return (
-			<g className='portfolio' transform={'translate(0, ' + this.props.y + ')'}>
-				<text className='mdl-typography--title mdl-color-text--grey-700'>
-					Portfolio
-				</text>
-				{React.createElement('clipPath', { id: PortfolioChart.clipPath },
-					<rect width={this.props.width} height={this.props.height} />
-				) /* TSX doesn't know clipPath element */}
+			<ChartRow
+				title='Portfolio'
+				y={this.props.y}
+				width={this.props.width}
+				height={this.props.height}
+				yScale={this.yScale}
+				zoom={this.props.zoom}
+				clipPath={PortfolioChart.clipPath}
+				yTickFormat={PortfolioChart.yTickFormat}>
 				<LineSeries
 					data={this.props.portfolio}
 					xAccessor={this.xAccessor}
@@ -35,14 +37,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={PortfolioChart.clipPath} />
-				<YAxis
-					width={this.props.width}
-					height={this.props.height}
-					scale={this.yScale}
-					zoom={this.props.zoom}
-					clipPath={PortfolioChart.clipPath + 'Axis'}
-					tickFormat={PortfolioChart.yTickFormat} />
-			</g>
+			</ChartRow>
 		);
 	}
 	
