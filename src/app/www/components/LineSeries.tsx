@@ -3,6 +3,8 @@
 import React = require('react');
 import d3 = require('d3');
 
+import SeriesProps = require('./common/SeriesProps');
+
 class LineSeries extends React.Component<LineSeries.Props, {}> {
 	
 	private line = d3.svg.line<{}>();
@@ -21,14 +23,11 @@ class LineSeries extends React.Component<LineSeries.Props, {}> {
 }
 
 module LineSeries {
-	export interface Props {
+	export interface Props extends SeriesProps {
 		className: string;
 		data: {}[];
 		xAccessor: (d: {}) => Date;
 		yAccessor: (d: {}) => number;
-		xScale: d3.time.Scale<Date, number>;
-		yScale: d3.scale.Linear<number, number>;
-		clipPath: string;
 	}
 }
 

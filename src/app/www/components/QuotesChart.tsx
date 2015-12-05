@@ -7,7 +7,6 @@ import Quote = require('../../../documents/Quote');
 import Gain = require('../../../documents/Gain');
 
 import ChartProps = require('./common/ChartProps');
-import ScaleUtils = require('../utils/ScaleUtils');
 
 import LineSeries = require('./LineSeries');
 import GainSeries = require('./GainSeries');
@@ -16,44 +15,25 @@ import ChartRow = require('./ChartRow');
 class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	private static yTickFormat = d3.format(',.5f');
-	private static yDomainPadding = 0.1;
-	private static clipPath = 'clipQuotes';
-	
-	private yScale = d3.scale.linear();
 	
 	render() {
-		ScaleUtils.updateYScale<Quote>(
-			this.props.quotes,
-			this.xQuoteAccessor,
-			this.yQuoteAccessor,
-			this.props.xScale,
-			this.yScale,
-			this.props.height,
-			QuotesChart.yDomainPadding
-		);
 		return (
 			<ChartRow
 				title='Euro/U.S. Dollar'
-				y={this.props.y}
-				width={this.props.width}
-				height={this.props.height}
-				yScale={this.yScale}
-				zoom={this.props.zoom}
-				clipPath={QuotesChart.clipPath}
-				yTickFormat={QuotesChart.yTickFormat}>
+				clipPath='clipQuotes'
+				yDomainPadding={0.1}
+				data={this.props.quotes}
+				xAccessor={this.xQuoteAccessor}
+				yAccessor={this.yQuoteAccessor}
+				yTickFormat={QuotesChart.yTickFormat}
+				{...this.props}>
 				<LineSeries
 					className='mdl-color-text--blue'
 					data={this.props.quotes}
 					xAccessor={this.xQuoteAccessor}
-					yAccessor={this.yQuoteAccessor}
-					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath={QuotesChart.clipPath} />
+					yAccessor={this.yQuoteAccessor} />
 				<GainSeries
-					gains={this.props.gains}
-					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath={QuotesChart.clipPath} />
+					gains={this.props.gains} />
 			</ChartRow>
 		);
 	}

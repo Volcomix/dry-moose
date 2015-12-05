@@ -29,12 +29,4 @@ var GainSeries = (function (_super) {
     };
     return GainSeries;
 })(React.Component);
-var GainSeries;
-(function (GainSeries) {
-    (function (Direction) {
-        Direction[Direction["Up"] = 0] = "Up";
-        Direction[Direction["Down"] = 1] = "Down";
-    })(GainSeries.Direction || (GainSeries.Direction = {}));
-    var Direction = GainSeries.Direction;
-})(GainSeries || (GainSeries = {}));
 module.exports = GainSeries;
