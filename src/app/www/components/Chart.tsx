@@ -11,6 +11,7 @@ import MonitoringActions = require('../actions/MonitoringActions');
 import XAxis = require('./XAxis');
 import QuotesChart = require('./QuotesChart');
 import PortfolioChart = require('./PortfolioChart');
+import Divider = require('./Divider');
 import ChartControls = require('./ChartControls');
 import Loading = require('./Loading');
 
@@ -103,16 +104,10 @@ class Chart extends React.Component<{}, Chart.State> {
 						height={portfolioHeight}
 						xScale={this.xScale}
 						zoom={this.zoom} />
-					<g
-						className='divider'
-						ref={ref => d3.select(ref).datum({ x: 0, y: 0 }).call(this.drag)}
-						transform={'translate(0, ' + quotesHeight + ')'}>
-						<line x2={width + margin.right} />
-						<rect
-							transform={'translate(0, ' + -4 + ')'}
-							width={width + margin.right}
-							height={7} />
-					</g>
+					<Divider
+						y={quotesHeight}
+						width={width + margin.right}
+						drag={this.drag} />
 				</g>
 			);
 		}

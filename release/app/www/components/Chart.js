@@ -11,6 +11,7 @@ var MonitoringActions = require('../actions/MonitoringActions');
 var XAxis = require('./XAxis');
 var QuotesChart = require('./QuotesChart');
 var PortfolioChart = require('./PortfolioChart');
+var Divider = require('./Divider');
 var ChartControls = require('./ChartControls');
 var Loading = require('./Loading');
 var Chart = (function (_super) {
@@ -88,7 +89,6 @@ var Chart = (function (_super) {
     };
     Object.defineProperty(Chart.prototype, "chart", {
         get: function () {
-            var _this = this;
             if (this.state.monitoringData) {
                 var margin = Chart.margin, width = this.contentWidth, height = this.contentHeight, quotesHeight = Math.round(height * this.state.dividerRatio), portfolioHeight = height - quotesHeight;
                 // range() wants Dates which is wrong
@@ -97,7 +97,7 @@ var Chart = (function (_super) {
                     this.xScale.domain(this.state.resetXDomain);
                     this.zoom.x(this.xScale);
                 }
-                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, y: 0, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, y: quotesHeight, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement("g", {"className": 'divider', "ref": function (ref) { return d3.select(ref).datum({ x: 0, y: 0 }).call(_this.drag); }, "transform": 'translate(0, ' + quotesHeight + ')'}, React.createElement("line", {"x2": width + margin.right}), React.createElement("rect", {"transform": 'translate(0, ' + -4 + ')', "width": width + margin.right, "height": 7}))));
+                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, y: 0, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, y: quotesHeight, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(Divider, {y: quotesHeight, "width": width + margin.right, "drag": this.drag})));
             }
         },
         enumerable: true,
