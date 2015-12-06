@@ -11,6 +11,7 @@ function restoreDateTimes(data) {
     data.startDate = new Date(data.startDate);
     data.endDate = new Date(data.endDate);
     data.quotes.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
+    data.macd.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.portfolio.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.gains.forEach(function (d) {
         d.option.quote.dateTime = new Date(d.option.quote.dateTime);

@@ -4,6 +4,7 @@ import Q = require('q');
 import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
+import MACD = require('../../../documents/MACD');
 import Portfolio = require('../../../documents/Portfolio');
 import Gain = require('../../../documents/Gain');
 import MonitoringData = require('../../../documents/MonitoringData');
@@ -19,6 +20,7 @@ function restoreDateTimes(data: MonitoringData) {
     data.startDate = new Date(data.startDate as any);
     data.endDate = new Date(data.endDate as any);
 	data.quotes.forEach((d: Quote) => d.dateTime = new Date(d.dateTime as any));
+    data.macd.forEach((d: MACD) => d.dateTime = new Date(d.dateTime as any));
     data.portfolio.forEach((d: Portfolio) => d.dateTime = new Date(d.dateTime as any));
     data.gains.forEach((d: Gain) => {
         d.option.quote.dateTime = new Date(d.option.quote.dateTime as any);

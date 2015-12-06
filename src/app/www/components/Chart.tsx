@@ -10,6 +10,7 @@ import MonitoringActions = require('../actions/MonitoringActions');
 
 import XAxis = require('./XAxis');
 import QuotesChart = require('./QuotesChart');
+import MACDChart = require('./MACDChart');
 import PortfolioChart = require('./PortfolioChart');
 import Divider = require('./Divider');
 import ChartControls = require('./ChartControls');
@@ -74,7 +75,8 @@ class Chart extends React.Component<{}, Chart.State> {
 				width = this.contentWidth,
 				height = this.contentHeight,
 				quotesHeight = Math.round(height * this.state.dividerRatio),
-				portfolioHeight = height - quotesHeight;
+				macdHeight = Math.min(height - quotesHeight - 100, 300),
+				portfolioHeight = height - quotesHeight - macdHeight;
 				
 			// range() wants Dates which is wrong
 			this.xScale.range([0, width] as any);
@@ -97,15 +99,26 @@ class Chart extends React.Component<{}, Chart.State> {
 						height={quotesHeight}
 						xScale={this.xScale}
 						zoom={this.zoom} />
+					<MACDChart
+						macd={this.state.monitoringData.macd}
+						y={quotesHeight}
+						width={width}
+						height={macdHeight}
+						xScale={this.xScale}
+						zoom={this.zoom} />
 					<PortfolioChart
 						portfolio={this.state.monitoringData.portfolio}
-						y={quotesHeight}
+						y={quotesHeight + macdHeight}
 						width={width}
 						height={portfolioHeight}
 						xScale={this.xScale}
 						zoom={this.zoom} />
 					<Divider
 						y={quotesHeight}
+						width={width + margin.right}
+						drag={this.drag} />
+					<Divider
+						y={quotesHeight + macdHeight}
 						width={width + margin.right}
 						drag={this.drag} />
 				</g>

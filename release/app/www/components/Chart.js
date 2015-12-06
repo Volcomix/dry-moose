@@ -10,6 +10,7 @@ var MonitoringStore = require('../stores/MonitoringStore');
 var MonitoringActions = require('../actions/MonitoringActions');
 var XAxis = require('./XAxis');
 var QuotesChart = require('./QuotesChart');
+var MACDChart = require('./MACDChart');
 var PortfolioChart = require('./PortfolioChart');
 var Divider = require('./Divider');
 var ChartControls = require('./ChartControls');
@@ -90,14 +91,14 @@ var Chart = (function (_super) {
     Object.defineProperty(Chart.prototype, "chart", {
         get: function () {
             if (this.state.monitoringData) {
-                var margin = Chart.margin, width = this.contentWidth, height = this.contentHeight, quotesHeight = Math.round(height * this.state.dividerRatio), portfolioHeight = height - quotesHeight;
+                var margin = Chart.margin, width = this.contentWidth, height = this.contentHeight, quotesHeight = Math.round(height * this.state.dividerRatio), macdHeight = Math.min(height - quotesHeight - 100, 300), portfolioHeight = height - quotesHeight - macdHeight;
                 // range() wants Dates which is wrong
                 this.xScale.range([0, width]);
                 if (this.state.resetXDomain) {
                     this.xScale.domain(this.state.resetXDomain);
                     this.zoom.x(this.xScale);
                 }
-                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, y: 0, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, y: quotesHeight, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(Divider, {y: quotesHeight, "width": width + margin.right, "drag": this.drag})));
+                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, y: 0, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(MACDChart, {"macd": this.state.monitoringData.macd, y: quotesHeight, "width": width, "height": macdHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, y: quotesHeight + macdHeight, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(Divider, {y: quotesHeight, "width": width + margin.right, "drag": this.drag}), React.createElement(Divider, {y: quotesHeight + macdHeight, "width": width + margin.right, "drag": this.drag})));
             }
         },
         enumerable: true,
