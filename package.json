@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "gulp test",
-    "install": "node-gyp rebuild"
+    "test": "gulp test"
   },
   "author": "Volcomix & Bouh",
   "license": "ISC",
@@ -17,7 +16,8 @@
     "mongodb": "^2.0.43",
     "q": "^1.4.1",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0"
+    "react-dom": "^0.14.0",
+    "talib": "^1.0.2"
   },
   "devDependencies": {
     "browser-sync": "^2.9.8",
@@ -31,11 +31,9 @@
     "gulp-typescript": "^2.8.3",
     "gulp-util": "^3.0.6",
     "lodash.assign": "^3.2.0",
-    "through2": "^2.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.4.0"
   },
-  "gypfile": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Volcomix/dry-moose.git"
