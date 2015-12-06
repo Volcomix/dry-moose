@@ -31,7 +31,7 @@ var Chart = (function (_super) {
             else if (domain[1] > _this.state.monitoringData.endDate) {
                 MonitoringActions.get(domain[1]);
             }
-            setTimeout(_this.onChange, 0); // Force wait UI refresh
+            _this.onChange();
         };
         this.onDrag = function () {
             var event = d3.event, height = _this.contentHeight;

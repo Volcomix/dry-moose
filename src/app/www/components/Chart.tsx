@@ -144,7 +144,7 @@ class Chart extends React.Component<{}, Chart.State> {
 		} else if (domain[1] > this.state.monitoringData.endDate) {
 			MonitoringActions.get(domain[1]);
 		}
-		setTimeout(this.onChange, 0); // Force wait UI refresh
+		this.onChange();
 	};
 	
 	private onDrag = () => {
