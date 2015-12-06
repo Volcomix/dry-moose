@@ -3,6 +3,7 @@ var express = require('express');
 var Q = require('q');
 var moment = require('moment');
 var QuotesService = require('./services/QuotesService');
+var MACDService = require('./services/MACDService');
 var PortfolioService = require('./services/PortfolioService');
 var GainsService = require('./services/GainsService');
 var router = express.Router();
@@ -52,12 +53,15 @@ function getByMinute(dateTime) {
     }
     var startDate = moment(roundedDateTime).subtract({ hours: 12 }).toDate(), endDate = moment(roundedDateTime).add({ hours: 11, minutes: 59 }).toDate();
     return Q.all([
-        QuotesService.get(startDate, endDate),
+        QuotesService.get(startDate, endDate)
+            .then(function (quotes) { return [quotes, MACDService.get(quotes)]; })
+            .spread(function (quotes, macd) { return ({ quotes: quotes, macd: macd }); }),
         PortfolioService.get(startDate, endDate),
         GainsService.get(startDate, endDate)
     ])
-        .spread(function (quotes, portfolio, gains) {
-        return ({ startDate: startDate, endDate: endDate, quotes: quotes, portfolio: portfolio, gains: gains });
+        .spread(function (_a, portfolio, gains) {
+        var quotes = _a.quotes, macd = _a.macd;
+        return ({ startDate: startDate, endDate: endDate, quotes: quotes, macd: macd, portfolio: portfolio, gains: gains });
     });
 }
 module.exports = router;

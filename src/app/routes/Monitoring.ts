@@ -6,10 +6,12 @@ import moment = require('moment');
 
 import DbManager = require('../../database/DbManager');
 import Quote = require('../../documents/Quote');
+import MACD = require('../../documents/MACD');
 import Portfolio = require('../../documents/Portfolio');
 import Gain = require('../../documents/Gain');
 import MonitoringData = require('../../documents/MonitoringData');
 import QuotesService = require('./services/QuotesService');
+import MACDService = require('./services/MACDService');
 import PortfolioService = require('./services/PortfolioService');
 import GainsService = require('./services/GainsService');
 
@@ -65,15 +67,17 @@ function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
 		endDate = moment(roundedDateTime).add({ hours: 11, minutes: 59 }).toDate();
 	
 	return Q.all<{}>([
-		QuotesService.get(startDate, endDate),
+		QuotesService.get(startDate, endDate)
+		.then(quotes => [ quotes, MACDService.get(quotes) ])
+		.spread((quotes: Quote[], macd: MACD[]) => ({ quotes, macd })),
 		PortfolioService.get(startDate, endDate),
 		GainsService.get(startDate, endDate)
 	])
 	.spread<MonitoringData>((
-		quotes: Quote[],
+		{ quotes, macd },
 		portfolio: Portfolio[],
 		gains: Gain[]
-	) => ({ startDate, endDate, quotes, portfolio, gains }));
+	) => ({ startDate, endDate, quotes, macd, portfolio, gains }));
 }
 
 export = router;
