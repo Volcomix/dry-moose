@@ -45,7 +45,7 @@ function getByMinute(dateTime) {
         roundedDateTime.startOf('day');
     }
     else if (roundedDateTime.hour() >= 18) {
-        roundedDateTime.endOf('day');
+        roundedDateTime.add({ days: 1 }).startOf('day');
     }
     else {
         roundedDateTime.hour(12).startOf('hour');
