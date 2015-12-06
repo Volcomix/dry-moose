@@ -1,8 +1,8 @@
 1. **MACD (12, 26 with signal 9)** -
-We wait it crosses it's signal line.
+We wait it crosses its signal line.
 
 2. **Moving Average 9 and 21** -
-After MACD crosses its signal, we wait and see if MA9 crosses MA21 ton confirm.
+After MACD crosses its signal, we wait and see if MA9 crosses MA21 to confirm.
 Then we check MACD still going away from 0 and its signal.
 
 3. **Bollinger Bands** -
