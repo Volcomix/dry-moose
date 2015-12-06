@@ -23,7 +23,7 @@ var delay = Q(null);
 var retrieveDateTime;
 function retrieveData() {
     if (retrieveDateTime) {
-        delay = Q.delay(1000).then(retrieveData);
+        delay = Q.delay(100).then(retrieveData);
         Q.nfcall(d3.json, '/monitoring/minutes/' + retrieveDateTime.toISOString())
             .then(function (data) {
             restoreDateTimes(data);
