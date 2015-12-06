@@ -6,8 +6,6 @@ import d3 = require('d3');
 import Gain = require('../../../documents/Gain');
 import BinaryOption = require('../../../documents/options/BinaryOption');
 
-import SeriesProps = require('./common/SeriesProps');
-
 class GainSeries extends React.Component<GainSeries.Props, {}> {
 	
 	private getGain = (gain: Gain) => {
@@ -49,9 +47,14 @@ class GainSeries extends React.Component<GainSeries.Props, {}> {
 }
 
 module GainSeries {
-	export interface Props extends SeriesProps {
+	export interface Props {
 		gains: Gain[];
+		xScale: d3.time.Scale<Date, number>;
+		yScale: d3.scale.Linear<number, number>;
+		clipPath: string;
 	}
+	
+	export enum Direction { Up, Down }
 }
 
 export = GainSeries;
