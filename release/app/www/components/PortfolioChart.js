@@ -7,8 +7,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var ScaleUtils = require('../utils/ScaleUtils');
-var LineSeries = require('./LineSeries');
 var ChartRow = require('./ChartRow');
+var LineSeries = require('./LineSeries');
 var PortfolioChart = (function (_super) {
     __extends(PortfolioChart, _super);
     function PortfolioChart() {

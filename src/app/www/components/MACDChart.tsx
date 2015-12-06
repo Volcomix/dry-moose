@@ -8,8 +8,9 @@ import MACD = require('../../../documents/MACD');
 import ChartProps = require('./common/ChartProps');
 import ScaleUtils = require('../utils/ScaleUtils');
 
-import LineSeries = require('./LineSeries');
 import ChartRow = require('./ChartRow');
+import LineSeries = require('./LineSeries');
+import HistoSeries = require('./HistoSeries');
 
 class MACDChart extends React.Component<MACDChart.Props, {}> {
 	
@@ -39,19 +40,27 @@ class MACDChart extends React.Component<MACDChart.Props, {}> {
 				zoom={this.props.zoom}
 				clipPath={MACDChart.clipPath}
 				yTickFormat={MACDChart.yTickFormat}>
+				<HistoSeries
+					className='mdl-color-text--pink'
+					data={this.props.macd}
+					xAccessor={this.xMACDAccessor}
+					yAccessor={this.yMACDHistAccessor}
+					xScale={this.props.xScale}
+					yScale={this.yScale}
+					clipPath={MACDChart.clipPath} />
+				<LineSeries
+					className='mdl-color-text--deep-orange'
+					data={this.props.macd}
+					xAccessor={this.xMACDAccessor}
+					yAccessor={this.yMACDSignalAccessor}
+					xScale={this.props.xScale}
+					yScale={this.yScale}
+					clipPath={MACDChart.clipPath} />
 				<LineSeries
 					className='mdl-color-text--blue'
 					data={this.props.macd}
 					xAccessor={this.xMACDAccessor}
 					yAccessor={this.yMACDAccessor}
-					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath={MACDChart.clipPath} />
-				<LineSeries
-					className='mdl-color-text--red'
-					data={this.props.macd}
-					xAccessor={this.xMACDAccessor}
-					yAccessor={this.yMACDSignalAccessor}
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={MACDChart.clipPath} />
@@ -62,6 +71,7 @@ class MACDChart extends React.Component<MACDChart.Props, {}> {
 	private xMACDAccessor = (d: MACD) => d.dateTime;
 	private yMACDAccessor = (d: MACD) => d.value;
 	private yMACDSignalAccessor = (d: MACD) => d.signal;
+	private yMACDHistAccessor = (d: MACD) => d.hist;
 }
 
 module MACDChart {

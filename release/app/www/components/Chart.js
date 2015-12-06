@@ -39,7 +39,7 @@ var Chart = (function (_super) {
             _this.setState({ dividerRatio: Math.min(Math.max(event.y / height, 0.1), 0.9) });
         };
         this.state = this.chartState;
-        this.state.dividerRatio = 0.7;
+        this.state.dividerRatio = 0.5;
     }
     Object.defineProperty(Chart.prototype, "contentWidth", {
         get: function () {

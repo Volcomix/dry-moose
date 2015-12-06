@@ -9,9 +9,9 @@ import Gain = require('../../../documents/Gain');
 import ChartProps = require('./common/ChartProps');
 import ScaleUtils = require('../utils/ScaleUtils');
 
+import ChartRow = require('./ChartRow');
 import LineSeries = require('./LineSeries');
 import GainSeries = require('./GainSeries');
-import ChartRow = require('./ChartRow');
 
 class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
@@ -42,7 +42,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				clipPath={QuotesChart.clipPath}
 				yTickFormat={QuotesChart.yTickFormat}>
 				<LineSeries
-					className='mdl-color-text--blue'
+					className='mdl-color-text--indigo'
 					data={this.props.quotes}
 					xAccessor={this.xQuoteAccessor}
 					yAccessor={this.yQuoteAccessor}

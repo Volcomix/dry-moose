@@ -8,8 +8,8 @@ import Portfolio = require('../../../documents/Portfolio');
 import ChartProps = require('./common/ChartProps');
 import ScaleUtils = require('../utils/ScaleUtils');
 
-import LineSeries = require('./LineSeries');
 import ChartRow = require('./ChartRow');
+import LineSeries = require('./LineSeries');
 
 class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	

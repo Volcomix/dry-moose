@@ -76,6 +76,12 @@ path.line {
 	stroke: currentColor;
 }
 
+.histo line {
+	fill: none;
+	stroke: currentColor;
+	shape-rendering: crispEdges;
+}
+
 .gains g {
 	fill: none;
 	stroke: currentColor;

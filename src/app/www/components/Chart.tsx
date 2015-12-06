@@ -50,7 +50,7 @@ class Chart extends React.Component<{}, Chart.State> {
 	constructor(props) {
 		super(props);
 		this.state = this.chartState;
-		this.state.dividerRatio = 0.7;
+		this.state.dividerRatio = 0.5;
 	}
 	
 	componentDidMount() {

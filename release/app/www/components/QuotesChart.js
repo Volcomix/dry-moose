@@ -7,9 +7,9 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var ScaleUtils = require('../utils/ScaleUtils');
+var ChartRow = require('./ChartRow');
 var LineSeries = require('./LineSeries');
 var GainSeries = require('./GainSeries');
-var ChartRow = require('./ChartRow');
 var QuotesChart = (function (_super) {
     __extends(QuotesChart, _super);
     function QuotesChart() {
@@ -20,7 +20,7 @@ var QuotesChart = (function (_super) {
     }
     QuotesChart.prototype.render = function () {
         ScaleUtils.updateYScale(this.props.quotes, this.xQuoteAccessor, this.yQuoteAccessor, this.props.xScale, this.yScale, this.props.height, QuotesChart.yDomainPadding);
-        return (React.createElement(ChartRow, {"title": 'Euro/U.S. Dollar', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath, "yTickFormat": QuotesChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--blue', "data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
+        return (React.createElement(ChartRow, {"title": 'Euro/U.S. Dollar', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath, "yTickFormat": QuotesChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--indigo', "data": this.props.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
     };
     QuotesChart.yTickFormat = d3.format(',.5f');
     QuotesChart.yDomainPadding = 0.1;
