@@ -23,7 +23,7 @@ class Chart extends React.Component<{}, Chart.State> {
 	private svg: SVGElement;
 	private xScale = d3.time.scale<Date, number>();
 	private zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
-	private drag = d3.behavior.drag().origin(() => ({ x: 0, y: this.dividerY }));
+	private drag = d3.behavior.drag<Divider.Datum>().origin(d => d);
 	
 	private get contentWidth() {
 		return this.state.width - Chart.margin.left - Chart.margin.right;
@@ -31,10 +31,6 @@ class Chart extends React.Component<{}, Chart.State> {
 	
 	private get contentHeight() {
 		return this.state.height - Chart.margin.top - Chart.margin.bottom;
-	}
-	
-	private get dividerY() {
-		return Math.round(this.contentHeight * this.state.dividerRatio);
 	}
 	
 	private get chartState() {
@@ -50,7 +46,7 @@ class Chart extends React.Component<{}, Chart.State> {
 	constructor(props) {
 		super(props);
 		this.state = this.chartState;
-		this.state.dividerRatio = 0.5;
+		this.state.dividersRatio = [0.4, 0.75];
 	}
 	
 	componentDidMount() {
@@ -74,8 +70,9 @@ class Chart extends React.Component<{}, Chart.State> {
 			var margin = Chart.margin,
 				width = this.contentWidth,
 				height = this.contentHeight,
-				quotesHeight = Math.round(height * this.state.dividerRatio),
-				macdHeight = Math.min(height - quotesHeight - 100, 300),
+				dividersRatio = this.state.dividersRatio,
+				quotesHeight = Math.round(height * dividersRatio[0]),
+				macdHeight = Math.round(height * dividersRatio[1] - quotesHeight),
 				portfolioHeight = height - quotesHeight - macdHeight;
 				
 			// range() wants Dates which is wrong
@@ -114,10 +111,12 @@ class Chart extends React.Component<{}, Chart.State> {
 						xScale={this.xScale}
 						zoom={this.zoom} />
 					<Divider
+						id={0}
 						y={quotesHeight}
 						width={width + margin.right}
 						drag={this.drag} />
 					<Divider
+						id={1}
 						y={quotesHeight + macdHeight}
 						width={width + margin.right}
 						drag={this.drag} />
@@ -160,10 +159,14 @@ class Chart extends React.Component<{}, Chart.State> {
 		this.onChange();
 	};
 	
-	private onDrag = () => {
+	private onDrag = (d: Divider.Datum) => {
 		var event = d3.event as d3.DragEvent,
-			height = this.contentHeight;
-		this.setState({ dividerRatio: Math.min(Math.max(event.y / height, 0.1), 0.9) });
+			height = this.contentHeight,
+			dividersRatio = this.state.dividersRatio,
+			min = d.id ? dividersRatio[d.id - 1] : 0,
+			max = (d.id == dividersRatio.length - 1) ? 1 : dividersRatio[d.id + 1];
+		dividersRatio[d.id] = Math.min(Math.max(event.y / height, min + 0.1), max - 0.1);
+		this.setState({ dividersRatio });
 	}
 }
 
@@ -173,7 +176,7 @@ module Chart {
 		resetXDomain?: Date[];
 		width?: number;
 		height?: number;
-		dividerRatio?: number;
+		dividersRatio?: number[];
 	}
 }
 
