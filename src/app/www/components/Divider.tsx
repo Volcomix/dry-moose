@@ -25,6 +25,7 @@ class Divider extends React.Component<Divider.Props, {}> {
 
 module Divider {
 	export interface Props {
+		key: number; // React key attribute
 		id: number;
 		y: number;
 		width: number;
