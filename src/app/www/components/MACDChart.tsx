@@ -5,14 +5,14 @@ import d3 = require('d3');
 
 import MACD = require('../../../documents/MACD');
 
-import ChartProps = require('./common/ChartProps');
 import ScaleUtils = require('../utils/ScaleUtils');
 
+import ChartBase = require('./ChartBase');
 import ChartRow = require('./ChartRow');
 import LineSeries = require('./LineSeries');
 import HistoSeries = require('./HistoSeries');
 
-class MACDChart extends React.Component<MACDChart.Props, {}> {
+class MACDChart extends ChartBase {
 	
 	private static yTickFormat = d3.format(',.5f');
 	private static yDomainPadding = 0.2;
@@ -22,7 +22,7 @@ class MACDChart extends React.Component<MACDChart.Props, {}> {
 	
 	render() {
 		ScaleUtils.updateYScale<MACD>(
-			this.props.macd,
+			this.props.monitoringData.macd,
 			this.xMACDAccessor,
 			this.yMACDAccessor,
 			this.props.xScale,
@@ -42,7 +42,7 @@ class MACDChart extends React.Component<MACDChart.Props, {}> {
 				yTickFormat={MACDChart.yTickFormat}>
 				<HistoSeries
 					className='mdl-color-text--pink'
-					data={this.props.macd}
+					data={this.props.monitoringData.macd}
 					xAccessor={this.xMACDAccessor}
 					yAccessor={this.yMACDHistAccessor}
 					xScale={this.props.xScale}
@@ -50,7 +50,7 @@ class MACDChart extends React.Component<MACDChart.Props, {}> {
 					clipPath={MACDChart.clipPath} />
 				<LineSeries
 					className='mdl-color-text--deep-orange'
-					data={this.props.macd}
+					data={this.props.monitoringData.macd}
 					xAccessor={this.xMACDAccessor}
 					yAccessor={this.yMACDSignalAccessor}
 					xScale={this.props.xScale}
@@ -58,7 +58,7 @@ class MACDChart extends React.Component<MACDChart.Props, {}> {
 					clipPath={MACDChart.clipPath} />
 				<LineSeries
 					className='mdl-color-text--blue'
-					data={this.props.macd}
+					data={this.props.monitoringData.macd}
 					xAccessor={this.xMACDAccessor}
 					yAccessor={this.yMACDAccessor}
 					xScale={this.props.xScale}
@@ -72,12 +72,6 @@ class MACDChart extends React.Component<MACDChart.Props, {}> {
 	private yMACDAccessor = (d: MACD) => d.value;
 	private yMACDSignalAccessor = (d: MACD) => d.signal;
 	private yMACDHistAccessor = (d: MACD) => d.hist;
-}
-
-module MACDChart {
-	export interface Props extends ChartProps {
-		macd: MACD[];
-	}
 }
 
 export = MACDChart;

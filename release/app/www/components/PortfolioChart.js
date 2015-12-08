@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var React = require('react');
 var d3 = require('d3');
 var ScaleUtils = require('../utils/ScaleUtils');
+var ChartBase = require('./ChartBase');
 var ChartRow = require('./ChartRow');
 var LineSeries = require('./LineSeries');
 var PortfolioChart = (function (_super) {
@@ -18,12 +19,12 @@ var PortfolioChart = (function (_super) {
         this.yPortfolioAccessor = function (d) { return d.value; };
     }
     PortfolioChart.prototype.render = function () {
-        ScaleUtils.updateYScale(this.props.portfolio, this.xPortfolioAccessor, this.yPortfolioAccessor, this.props.xScale, this.yScale, this.props.height, PortfolioChart.yDomainPadding);
-        return (React.createElement(ChartRow, {"title": 'Portfolio', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": PortfolioChart.clipPath, "yTickFormat": PortfolioChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--orange', "data": this.props.portfolio, "xAccessor": this.xPortfolioAccessor, "yAccessor": this.yPortfolioAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": PortfolioChart.clipPath})));
+        ScaleUtils.updateYScale(this.props.monitoringData.portfolio, this.xPortfolioAccessor, this.yPortfolioAccessor, this.props.xScale, this.yScale, this.props.height, PortfolioChart.yDomainPadding);
+        return (React.createElement(ChartRow, {"title": 'Portfolio', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": PortfolioChart.clipPath, "yTickFormat": PortfolioChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--orange', "data": this.props.monitoringData.portfolio, "xAccessor": this.xPortfolioAccessor, "yAccessor": this.yPortfolioAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": PortfolioChart.clipPath})));
     };
     PortfolioChart.yTickFormat = d3.format(',.2f');
     PortfolioChart.yDomainPadding = 0.2;
     PortfolioChart.clipPath = 'clipPortfolio';
     return PortfolioChart;
-})(React.Component);
+})(ChartBase);
 module.exports = PortfolioChart;

@@ -7,23 +7,20 @@ import MonitoringData = require('../../../documents/MonitoringData');
 
 import MonitoringStore = require('../stores/MonitoringStore');
 import MonitoringActions = require('../actions/MonitoringActions');
-import Margin = require('./common/Margin');
 
-import ChartRows = require('./ChartRows');
+import ChartBase = require('./ChartBase');
 import XAxis = require('./XAxis');
-import QuotesChart = require('./QuotesChart');
-import MACDChart = require('./MACDChart');
-import PortfolioChart = require('./PortfolioChart');
 import Divider = require('./Divider');
 import ChartControls = require('./ChartControls');
 import Loading = require('./Loading');
 
-class Chart extends React.Component<{}, Chart.State> {
+class Chart extends React.Component<Chart.Props, Chart.State> {
 	
-	private static margin: Margin = { top: 20, right: 50, bottom: 30, left: 20 };
+	private static margin = { top: 20, right: 50, bottom: 30, left: 20 };
 	
 	private svg: SVGElement;
 	private xScale = d3.time.scale<Date, number>();
+	private drag = d3.behavior.drag<Divider.Datum>().origin(d => d);
 	private zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
 	
 	private get contentWidth() {
@@ -53,6 +50,7 @@ class Chart extends React.Component<{}, Chart.State> {
 	componentDidMount() {
 		MonitoringStore.addChangeListener(this.onChange);
 		window.addEventListener('resize', this.onChange);
+		this.drag.on('drag', this.onDrag);
 		this.zoom.on('zoom', this.onZoom);
 		this.onChange();
 	}
@@ -60,18 +58,17 @@ class Chart extends React.Component<{}, Chart.State> {
 	componentWillUnmount() {
 		MonitoringStore.removeChangeListener(this.onChange);
 		window.removeEventListener('resize', this.onChange);
+		this.drag.on('drag', null);
 		this.zoom.on('zoom', null);
 	}
 	
 	private get chart() {
 		if (this.state.monitoringData) {
 			
-			var width = this.contentWidth,
+			var margin = Chart.margin,
+				width = this.contentWidth,
 				height = this.contentHeight,
-				dividersRatio = this.state.dividers,
-				quotesHeight = Math.round(height * dividersRatio[0]),
-				macdHeight = Math.round(height * dividersRatio[1] - quotesHeight),
-				portfolioHeight = height - quotesHeight - macdHeight;
+				dividersPx = this.state.dividers.map(d => Math.round(height * d));
 				
 			// range() wants Dates which is wrong
 			this.xScale.range([0, width] as any);
@@ -82,38 +79,40 @@ class Chart extends React.Component<{}, Chart.State> {
 			}
 			
 			return (
-				<ChartRows
-					width={width}
-					height={height}
-					margin={Chart.margin}
-					dividers={this.state.dividers}
-					onDividerDrag={this.onDividerDrag}>
-					<XAxis
-						height={height}
-						scale={this.xScale} />
-					<QuotesChart
-						quotes={this.state.monitoringData.quotes}
-						gains={this.state.monitoringData.gains}
-						y={0}
-						width={width}
-						height={quotesHeight}
-						xScale={this.xScale}
-						zoom={this.zoom} />
-					<MACDChart
-						macd={this.state.monitoringData.macd}
-						y={quotesHeight}
-						width={width}
-						height={macdHeight}
-						xScale={this.xScale}
-						zoom={this.zoom} />
-					<PortfolioChart
-						portfolio={this.state.monitoringData.portfolio}
-						y={quotesHeight + macdHeight}
-						width={width}
-						height={portfolioHeight}
-						xScale={this.xScale}
-						zoom={this.zoom} />
-				</ChartRows>
+				<g transform={'translate(' + margin.left + ', ' + margin.top + ')'}>
+					<XAxis height={height} scale={this.xScale} />
+					
+					{this.props.charts.map((ChartType, id) => {
+						var y = id ? dividersPx[id - 1] : 0,
+							rowHeight: number;
+							
+						if (id == dividersPx.length) {
+							rowHeight = height - y;
+						} else {
+							rowHeight = dividersPx[id] - y;
+						}
+						
+						return (
+							<ChartType
+								key={id}
+								monitoringData={this.state.monitoringData}
+								y={y}
+								width={width}
+								height={rowHeight}
+								xScale={this.xScale}
+								zoom={this.zoom} />
+						);
+					})}
+					
+					{this.state.dividers.map((ratio: number, id: number) => (
+						<Divider
+							key={id}
+							id={id}
+							y={dividersPx[id]}
+							width={width + margin.right}
+							drag={this.drag} />
+					))}
+				</g>
 			);
 		}
 	}
@@ -141,7 +140,16 @@ class Chart extends React.Component<{}, Chart.State> {
 	}
 	
 	private onChange = () => this.setState(this.chartState);
-	private onDividerDrag = (dividers: number[]) => this.setState({ dividers });
+	
+	private onDrag = (d: Divider.Datum) => {
+		var event = d3.event as d3.DragEvent,
+			height = this.state.height,
+			dividers = this.state.dividers,
+			min = d.id ? dividers[d.id - 1] : 0,
+			max = (d.id == dividers.length - 1) ? 1 : dividers[d.id + 1];
+		dividers[d.id] = Math.min(Math.max(event.y / height, min + 0.1), max - 0.1);
+		this.setState({ dividers });
+	}
 	
 	private onZoom = () => {
 		var domain = this.xScale.domain();
@@ -155,6 +163,10 @@ class Chart extends React.Component<{}, Chart.State> {
 }
 
 module Chart {
+	export interface Props {
+		charts: typeof ChartBase[];
+	}
+	
 	export interface State {
 		monitoringData?: MonitoringData;
 		resetXDomain?: Date[];

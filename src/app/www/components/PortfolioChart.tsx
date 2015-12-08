@@ -5,13 +5,13 @@ import d3 = require('d3');
 
 import Portfolio = require('../../../documents/Portfolio');
 
-import ChartProps = require('./common/ChartProps');
 import ScaleUtils = require('../utils/ScaleUtils');
 
+import ChartBase = require('./ChartBase');
 import ChartRow = require('./ChartRow');
 import LineSeries = require('./LineSeries');
 
-class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
+class PortfolioChart extends ChartBase {
 	
 	private static yTickFormat = d3.format(',.2f');
 	private static yDomainPadding = 0.2;
@@ -21,7 +21,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
 	render() {
 		ScaleUtils.updateYScale<Portfolio>(
-			this.props.portfolio,
+			this.props.monitoringData.portfolio,
 			this.xPortfolioAccessor,
 			this.yPortfolioAccessor,
 			this.props.xScale,
@@ -41,7 +41,7 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 				yTickFormat={PortfolioChart.yTickFormat}>
 				<LineSeries
 					className='mdl-color-text--orange'
-					data={this.props.portfolio}
+					data={this.props.monitoringData.portfolio}
 					xAccessor={this.xPortfolioAccessor}
 					yAccessor={this.yPortfolioAccessor}
 					xScale={this.props.xScale}
@@ -53,12 +53,6 @@ class PortfolioChart extends React.Component<PortfolioChart.Props, {}> {
 	
 	private xPortfolioAccessor = (d: Portfolio) => d.dateTime;
 	private yPortfolioAccessor = (d: Portfolio) => d.value;
-}
-
-module PortfolioChart {
-	export interface Props extends ChartProps {
-		portfolio: Portfolio[];
-	}
 }
 
 export = PortfolioChart;

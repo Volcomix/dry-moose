@@ -8,11 +8,8 @@ var React = require('react');
 var d3 = require('d3');
 var MonitoringStore = require('../stores/MonitoringStore');
 var MonitoringActions = require('../actions/MonitoringActions');
-var ChartRows = require('./ChartRows');
 var XAxis = require('./XAxis');
-var QuotesChart = require('./QuotesChart');
-var MACDChart = require('./MACDChart');
-var PortfolioChart = require('./PortfolioChart');
+var Divider = require('./Divider');
 var ChartControls = require('./ChartControls');
 var Loading = require('./Loading');
 var Chart = (function (_super) {
@@ -21,9 +18,14 @@ var Chart = (function (_super) {
         var _this = this;
         _super.call(this, props);
         this.xScale = d3.time.scale();
+        this.drag = d3.behavior.drag().origin(function (d) { return d; });
         this.zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
         this.onChange = function () { return _this.setState(_this.chartState); };
-        this.onDividerDrag = function (dividers) { return _this.setState({ dividers: dividers }); };
+        this.onDrag = function (d) {
+            var event = d3.event, height = _this.state.height, dividers = _this.state.dividers, min = d.id ? dividers[d.id - 1] : 0, max = (d.id == dividers.length - 1) ? 1 : dividers[d.id + 1];
+            dividers[d.id] = Math.min(Math.max(event.y / height, min + 0.1), max - 0.1);
+            _this.setState({ dividers: dividers });
+        };
         this.onZoom = function () {
             var domain = _this.xScale.domain();
             if (domain[0] < _this.state.monitoringData.startDate) {
@@ -67,25 +69,37 @@ var Chart = (function (_super) {
     Chart.prototype.componentDidMount = function () {
         MonitoringStore.addChangeListener(this.onChange);
         window.addEventListener('resize', this.onChange);
+        this.drag.on('drag', this.onDrag);
         this.zoom.on('zoom', this.onZoom);
         this.onChange();
     };
     Chart.prototype.componentWillUnmount = function () {
         MonitoringStore.removeChangeListener(this.onChange);
         window.removeEventListener('resize', this.onChange);
+        this.drag.on('drag', null);
         this.zoom.on('zoom', null);
     };
     Object.defineProperty(Chart.prototype, "chart", {
         get: function () {
+            var _this = this;
             if (this.state.monitoringData) {
-                var width = this.contentWidth, height = this.contentHeight, dividersRatio = this.state.dividers, quotesHeight = Math.round(height * dividersRatio[0]), macdHeight = Math.round(height * dividersRatio[1] - quotesHeight), portfolioHeight = height - quotesHeight - macdHeight;
+                var margin = Chart.margin, width = this.contentWidth, height = this.contentHeight, dividersPx = this.state.dividers.map(function (d) { return Math.round(height * d); });
                 // range() wants Dates which is wrong
                 this.xScale.range([0, width]);
                 if (this.state.resetXDomain) {
                     this.xScale.domain(this.state.resetXDomain);
                     this.zoom.x(this.xScale);
                 }
-                return (React.createElement(ChartRows, {"width": width, "height": height, "margin": Chart.margin, "dividers": this.state.dividers, "onDividerDrag": this.onDividerDrag}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), React.createElement(QuotesChart, {"quotes": this.state.monitoringData.quotes, "gains": this.state.monitoringData.gains, y: 0, "width": width, "height": quotesHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(MACDChart, {"macd": this.state.monitoringData.macd, y: quotesHeight, "width": width, "height": macdHeight, "xScale": this.xScale, "zoom": this.zoom}), React.createElement(PortfolioChart, {"portfolio": this.state.monitoringData.portfolio, y: quotesHeight + macdHeight, "width": width, "height": portfolioHeight, "xScale": this.xScale, "zoom": this.zoom})));
+                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), this.props.charts.map(function (ChartType, id) {
+                    var y = id ? dividersPx[id - 1] : 0, rowHeight;
+                    if (id == dividersPx.length) {
+                        rowHeight = height - y;
+                    }
+                    else {
+                        rowHeight = dividersPx[id] - y;
+                    }
+                    return (React.createElement(ChartType, {"key": id, "monitoringData": _this.state.monitoringData, y: y, "width": width, "height": rowHeight, "xScale": _this.xScale, "zoom": _this.zoom}));
+                }), this.state.dividers.map(function (ratio, id) { return (React.createElement(Divider, {"key": id, "id": id, y: dividersPx[id], "width": width + margin.right, "drag": _this.drag})); })));
             }
         },
         enumerable: true,

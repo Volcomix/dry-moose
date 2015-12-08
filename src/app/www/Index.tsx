@@ -6,7 +6,12 @@ import ReactDOM = require('react-dom');
 import MonitoringActions = require('./actions/MonitoringActions');
 
 import Chart = require('./components/Chart');
+import QuotesChart = require('./components/QuotesChart');
+import MACDChart = require('./components/MACDChart');
+import PortfolioChart = require('./components/PortfolioChart');
 
 MonitoringActions.getFirst();
 
-ReactDOM.render(<Chart />, document.getElementById('react'));
+var chart = <Chart charts={[QuotesChart, MACDChart, PortfolioChart]}/>;
+
+ReactDOM.render(chart, document.getElementById('react'));

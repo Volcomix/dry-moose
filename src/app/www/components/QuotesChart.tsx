@@ -6,14 +6,14 @@ import d3 = require('d3');
 import Quote = require('../../../documents/Quote');
 import Gain = require('../../../documents/Gain');
 
-import ChartProps = require('./common/ChartProps');
 import ScaleUtils = require('../utils/ScaleUtils');
 
+import ChartBase = require('./ChartBase');
 import ChartRow = require('./ChartRow');
 import LineSeries = require('./LineSeries');
 import GainSeries = require('./GainSeries');
 
-class QuotesChart extends React.Component<QuotesChart.Props, {}> {
+class QuotesChart extends ChartBase {
 	
 	private static yTickFormat = d3.format(',.5f');
 	private static yDomainPadding = 0.1;
@@ -23,7 +23,7 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	render() {
 		ScaleUtils.updateYScale<Quote>(
-			this.props.quotes,
+			this.props.monitoringData.quotes,
 			this.xQuoteAccessor,
 			this.yQuoteAccessor,
 			this.props.xScale,
@@ -43,14 +43,14 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 				yTickFormat={QuotesChart.yTickFormat}>
 				<LineSeries
 					className='mdl-color-text--indigo'
-					data={this.props.quotes}
+					data={this.props.monitoringData.quotes}
 					xAccessor={this.xQuoteAccessor}
 					yAccessor={this.yQuoteAccessor}
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={QuotesChart.clipPath} />
 				<GainSeries
-					gains={this.props.gains}
+					gains={this.props.monitoringData.gains}
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={QuotesChart.clipPath} />
@@ -60,13 +60,6 @@ class QuotesChart extends React.Component<QuotesChart.Props, {}> {
 	
 	private xQuoteAccessor = (d: Quote) => d.dateTime;
 	private yQuoteAccessor = (d: Quote) => d.close;
-}
-
-module QuotesChart {
-	export interface Props extends ChartProps {
-		quotes: Quote[];
-		gains: Gain[];
-	}
 }
 
 export = QuotesChart;
