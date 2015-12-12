@@ -37,7 +37,7 @@ var Chart = (function (_super) {
             _this.onChange();
         };
         this.state = this.chartState;
-        this.state.dividers = [0.4, 0.75];
+        this.state.dividers = this.getDividers(this.props.charts.length);
     }
     Object.defineProperty(Chart.prototype, "contentWidth", {
         get: function () {
@@ -78,6 +78,11 @@ var Chart = (function (_super) {
         window.removeEventListener('resize', this.onChange);
         this.drag.on('drag', null);
         this.zoom.on('zoom', null);
+    };
+    Chart.prototype.componentWillReceiveProps = function (nextProps) {
+        if (nextProps.charts.length != this.props.charts.length) {
+            this.setState({ dividers: this.getDividers(nextProps.charts.length) });
+        }
     };
     Object.defineProperty(Chart.prototype, "chart", {
         get: function () {
@@ -126,6 +131,17 @@ var Chart = (function (_super) {
     Chart.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", {"className": 'chart'}, React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, this.chart), this.controls, this.loading));
+    };
+    /**
+     * Get dividers ratios to separate charts.
+     * @param chartsCount - How many charts should be separated
+     */
+    Chart.prototype.getDividers = function (chartsCount) {
+        var dividers = [];
+        for (var i = 1; i < chartsCount; i++) {
+            dividers.push(i / chartsCount);
+        }
+        return dividers;
     };
     Chart.margin = { top: 20, right: 50, bottom: 30, left: 20 };
     return Chart;

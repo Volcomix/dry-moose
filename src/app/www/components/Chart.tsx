@@ -44,7 +44,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	constructor(props) {
 		super(props);
 		this.state = this.chartState;
-		this.state.dividers = [0.4, 0.75];
+		this.state.dividers = this.getDividers(this.props.charts.length);
 	}
 	
 	componentDidMount() {
@@ -60,6 +60,12 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		window.removeEventListener('resize', this.onChange);
 		this.drag.on('drag', null);
 		this.zoom.on('zoom', null);
+	}
+	
+	componentWillReceiveProps(nextProps: Chart.Props) {
+		if (nextProps.charts.length != this.props.charts.length) {
+			this.setState({ dividers: this.getDividers(nextProps.charts.length) });
+		}
 	}
 	
 	private get chart() {
@@ -160,6 +166,18 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 		}
 		this.onChange();
 	};
+	
+	/**
+	 * Get dividers ratios to separate charts.
+	 * @param chartsCount - How many charts should be separated
+	 */
+	private getDividers(chartsCount: number) {
+		var dividers: number[] = [];
+		for (var i = 1; i < chartsCount; i++) {
+			dividers.push(i / chartsCount);
+		}
+		return dividers;
+	}
 }
 
 module Chart {
