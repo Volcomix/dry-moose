@@ -22,7 +22,7 @@ var Chart = (function (_super) {
         this.zoom = d3.behavior.zoom().scaleExtent([0.5, 10]);
         this.onChange = function () { return _this.setState(_this.chartState); };
         this.onDrag = function (d) {
-            var event = d3.event, height = _this.state.height, dividers = _this.state.dividers, min = d.id ? dividers[d.id - 1] : 0, max = (d.id == dividers.length - 1) ? 1 : dividers[d.id + 1];
+            var event = d3.event, height = _this.contentHeight, dividers = _this.state.dividers, min = d.id ? dividers[d.id - 1] : 0, max = (d.id == dividers.length - 1) ? 1 : dividers[d.id + 1];
             dividers[d.id] = Math.min(Math.max(event.y / height, min + 0.1), max - 0.1);
             _this.setState({ dividers: dividers });
         };

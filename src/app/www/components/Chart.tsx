@@ -149,7 +149,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private onDrag = (d: Divider.Datum) => {
 		var event = d3.event as d3.DragEvent,
-			height = this.state.height,
+			height = this.contentHeight,
 			dividers = this.state.dividers,
 			min = d.id ? dividers[d.id - 1] : 0,
 			max = (d.id == dividers.length - 1) ? 1 : dividers[d.id + 1];
