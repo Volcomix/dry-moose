@@ -76,6 +76,12 @@ path.line {
 	stroke: currentColor;
 }
 
+path.area {
+	fill: currentColor;
+	fill-opacity: 0.05;
+	stroke: none;
+}
+
 .point text {
 	text-anchor: middle;
 	dominant-baseline: central;

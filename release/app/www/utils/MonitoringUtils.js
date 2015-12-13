@@ -15,6 +15,7 @@ function restoreDateTimes(data) {
     data.maCross.fast.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.maCross.slow.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.maCross.cross.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
+    data.bband.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.portfolio.forEach(function (d) { return d.dateTime = new Date(d.dateTime); });
     data.gains.forEach(function (d) {
         d.option.quote.dateTime = new Date(d.option.quote.dateTime);

@@ -5,6 +5,7 @@ var moment = require('moment');
 var QuotesService = require('./services/QuotesService');
 var MACDService = require('./services/MACDService');
 var MACrossService = require('./services/MACrossService');
+var BollingerService = require('./services/BollingerService');
 var PortfolioService = require('./services/PortfolioService');
 var GainsService = require('./services/GainsService');
 var router = express.Router();
@@ -58,17 +59,18 @@ function getByMinute(dateTime) {
             .then(function (quotes) { return [
             quotes,
             MACDService.get(quotes),
-            MACrossService.get(quotes, 9, 21)
+            MACrossService.get(quotes, 9, 21),
+            BollingerService.get(quotes, 20, 2)
         ]; })
-            .spread(function (quotes, macd, maCross) {
-            return ({ quotes: quotes, macd: macd, maCross: maCross });
+            .spread(function (quotes, macd, maCross, bband) {
+            return ({ quotes: quotes, macd: macd, maCross: maCross, bband: bband });
         }),
         PortfolioService.get(startDate, endDate),
         GainsService.get(startDate, endDate)
     ])
         .spread(function (_a, portfolio, gains) {
-        var quotes = _a.quotes, macd = _a.macd, maCross = _a.maCross;
-        return ({ startDate: startDate, endDate: endDate, quotes: quotes, macd: macd, maCross: maCross, portfolio: portfolio, gains: gains });
+        var quotes = _a.quotes, macd = _a.macd, maCross = _a.maCross, bband = _a.bband;
+        return ({ startDate: startDate, endDate: endDate, quotes: quotes, macd: macd, maCross: maCross, bband: bband, portfolio: portfolio, gains: gains });
     });
 }
 module.exports = router;
