@@ -4,6 +4,7 @@ import React = require('react');
 import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
+import MovingAverage = require('../../../documents/MovingAverage');
 import Gain = require('../../../documents/Gain');
 
 import ScaleUtils = require('../utils/ScaleUtils');
@@ -11,6 +12,7 @@ import ScaleUtils = require('../utils/ScaleUtils');
 import ChartBase = require('./ChartBase');
 import ChartRow = require('./ChartRow');
 import LineSeries = require('./LineSeries');
+import PointSeries = require('./PointSeries');
 import GainSeries = require('./GainSeries');
 
 class QuotesChart extends ChartBase {
@@ -49,6 +51,31 @@ class QuotesChart extends ChartBase {
 					xScale={this.props.xScale}
 					yScale={this.yScale}
 					clipPath={QuotesChart.clipPath} />
+				<LineSeries
+					className='mdl-color-text--amber'
+					data={this.props.monitoringData.maCross.fast}
+					xAccessor={this.xMAAccessor}
+					yAccessor={this.yMAAccessor}
+					xScale={this.props.xScale}
+					yScale={this.yScale}
+					clipPath={QuotesChart.clipPath} />
+				<LineSeries
+					className='mdl-color-text--brown'
+					data={this.props.monitoringData.maCross.slow}
+					xAccessor={this.xMAAccessor}
+					yAccessor={this.yMAAccessor}
+					xScale={this.props.xScale}
+					yScale={this.yScale}
+					clipPath={QuotesChart.clipPath} />
+				<PointSeries
+					className='mdl-color-text--deep-purple'
+					icon='shuffle'
+					data={this.props.monitoringData.maCross.cross}
+					xAccessor={this.xMAAccessor}
+					yAccessor={this.yMAAccessor}
+					xScale={this.props.xScale}
+					yScale={this.yScale}
+					clipPath={QuotesChart.clipPath} />
 				<GainSeries
 					gains={this.props.monitoringData.gains}
 					xScale={this.props.xScale}
@@ -60,6 +87,9 @@ class QuotesChart extends ChartBase {
 	
 	private xQuoteAccessor = (d: Quote) => d.dateTime;
 	private yQuoteAccessor = (d: Quote) => d.close;
+	
+	private xMAAccessor = (d: MovingAverage) => d.dateTime;
+	private yMAAccessor = (d: MovingAverage) => d.value;
 }
 
 export = QuotesChart;

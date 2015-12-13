@@ -10,6 +10,7 @@ var ScaleUtils = require('../utils/ScaleUtils');
 var ChartBase = require('./ChartBase');
 var ChartRow = require('./ChartRow');
 var LineSeries = require('./LineSeries');
+var PointSeries = require('./PointSeries');
 var GainSeries = require('./GainSeries');
 var QuotesChart = (function (_super) {
     __extends(QuotesChart, _super);
@@ -18,10 +19,12 @@ var QuotesChart = (function (_super) {
         this.yScale = d3.scale.linear();
         this.xQuoteAccessor = function (d) { return d.dateTime; };
         this.yQuoteAccessor = function (d) { return d.close; };
+        this.xMAAccessor = function (d) { return d.dateTime; };
+        this.yMAAccessor = function (d) { return d.value; };
     }
     QuotesChart.prototype.render = function () {
         ScaleUtils.updateYScale(this.props.monitoringData.quotes, this.xQuoteAccessor, this.yQuoteAccessor, this.props.xScale, this.yScale, this.props.height, QuotesChart.yDomainPadding);
-        return (React.createElement(ChartRow, {"title": 'Euro/U.S. Dollar', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath, "yTickFormat": QuotesChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--indigo', "data": this.props.monitoringData.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.monitoringData.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
+        return (React.createElement(ChartRow, {"title": 'Euro/U.S. Dollar', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath, "yTickFormat": QuotesChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--indigo', "data": this.props.monitoringData.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--amber', "data": this.props.monitoringData.maCross.fast, "xAccessor": this.xMAAccessor, "yAccessor": this.yMAAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--brown', "data": this.props.monitoringData.maCross.slow, "xAccessor": this.xMAAccessor, "yAccessor": this.yMAAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(PointSeries, {"className": 'mdl-color-text--deep-purple', "icon": 'shuffle', "data": this.props.monitoringData.maCross.cross, "xAccessor": this.xMAAccessor, "yAccessor": this.yMAAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.monitoringData.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
     };
     QuotesChart.yTickFormat = d3.format(',.5f');
     QuotesChart.yDomainPadding = 0.1;
