@@ -1,16 +1,16 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 var Q = require('q');
 var talib = require('talib');
-function get(quotes) {
+function get(quotes, fastPeriod, slowPeriod, signalPeriod) {
     return Q.Promise(function (resolve) {
         talib.execute({
             name: 'MACD',
             startIdx: 0,
             endIdx: quotes.length - 1,
             inReal: quotes.map(function (quote) { return quote.close; }),
-            optInFastPeriod: 12,
-            optInSlowPeriod: 26,
-            optInSignalPeriod: 9
+            optInFastPeriod: fastPeriod,
+            optInSlowPeriod: slowPeriod,
+            optInSignalPeriod: signalPeriod
         }, resolve);
     })
         .then(function (result) {

@@ -74,7 +74,7 @@ function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
 		QuotesService.get(startDate, endDate)
 		.then(quotes => [
 			quotes,
-			MACDService.get(quotes),
+			MACDService.get(quotes, 12, 26, 9),
 			MACrossService.get(quotes, 9, 21),
 			BollingerService.get(quotes, 20, 2)
 		])

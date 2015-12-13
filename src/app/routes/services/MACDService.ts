@@ -6,16 +6,21 @@ var talib = require('talib');
 import Quote = require('../../../documents/Quote');
 import MACD = require('../../../documents/MACD');
 
-export function get(quotes: Quote[]): Q.Promise<MACD[]> {
+export function get(
+	quotes: Quote[],
+	fastPeriod: number,
+	slowPeriod: number,
+	signalPeriod: number
+) {	
 	return Q.Promise(function(resolve) {
 		talib.execute({
 			name: 'MACD',
 			startIdx: 0,
 			endIdx: quotes.length - 1,
 			inReal: quotes.map(quote => quote.close),
-			optInFastPeriod: 12,
-			optInSlowPeriod: 26,
-			optInSignalPeriod: 9
+			optInFastPeriod: fastPeriod,
+			optInSlowPeriod: slowPeriod,
+			optInSignalPeriod: signalPeriod
 		}, resolve);
 	})
 	.then(function(result: any) {
