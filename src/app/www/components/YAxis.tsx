@@ -7,7 +7,7 @@ import YCursor = require('./YCursor');
 
 class YAxis extends React.Component<YAxis.Props, {}> {
 	
-	private static ticksSpacing = 50;
+	private static ticksSpacing = 30;
 	
 	private axis = d3.svg.axis().orient('right');
 	

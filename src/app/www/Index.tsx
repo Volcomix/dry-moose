@@ -9,10 +9,11 @@ import Chart = require('./components/Chart');
 import QuotesChart = require('./components/QuotesChart');
 import MACDChart = require('./components/MACDChart');
 import MACrossChart = require('./components/MACrossChart');
+import BBWChart = require('./components/BBWChart');
 import PortfolioChart = require('./components/PortfolioChart');
 
 MonitoringActions.getFirst();
 
-var chart = <Chart charts={[QuotesChart, MACDChart, MACrossChart, PortfolioChart]}/>;
-
-ReactDOM.render(chart, document.getElementById('react'));
+ReactDOM.render((
+	<Chart charts={[ QuotesChart, MACDChart, MACrossChart, BBWChart, PortfolioChart ]}/>
+), document.getElementById('react'));
