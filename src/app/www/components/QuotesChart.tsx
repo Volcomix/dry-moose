@@ -4,14 +4,12 @@ import React = require('react');
 import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
-import BBand = require('../../../documents/BBand');
 
 import ScaleUtils = require('../utils/ScaleUtils');
 
 import ChartBase = require('./ChartBase');
 import ChartRow = require('./ChartRow');
 import LineSeries = require('./LineSeries');
-import AreaSeries = require('./AreaSeries');
 import GainSeries = require('./GainSeries');
 
 class QuotesChart extends ChartBase {
@@ -42,39 +40,6 @@ class QuotesChart extends ChartBase {
 				zoom={this.props.zoom}
 				clipPath={QuotesChart.clipPath}
 				yTickFormat={QuotesChart.yTickFormat}>
-				<AreaSeries
-					className='mdl-color-text--teal'
-					data={this.props.monitoringData.bband}
-					xAccessor={this.xBBandAccessor}
-					y0Accessor={this.yUpperBandAccessor}
-					y1Accessor={this.yLowerBandAccessor}
-					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath={QuotesChart.clipPath} />
-				<LineSeries
-					className='mdl-color-text--teal'
-					data={this.props.monitoringData.bband}
-					xAccessor={this.xBBandAccessor}
-					yAccessor={this.yUpperBandAccessor}
-					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath={QuotesChart.clipPath} />
-				<LineSeries
-					className='mdl-color-text--brown'
-					data={this.props.monitoringData.bband}
-					xAccessor={this.xBBandAccessor}
-					yAccessor={this.yMiddleBandAccessor}
-					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath={QuotesChart.clipPath} />
-				<LineSeries
-					className='mdl-color-text--teal'
-					data={this.props.monitoringData.bband}
-					xAccessor={this.xBBandAccessor}
-					yAccessor={this.yLowerBandAccessor}
-					xScale={this.props.xScale}
-					yScale={this.yScale}
-					clipPath={QuotesChart.clipPath} />
 				<LineSeries
 					className='mdl-color-text--indigo'
 					data={this.props.monitoringData.quotes}
@@ -94,11 +59,6 @@ class QuotesChart extends ChartBase {
 	
 	private xQuoteAccessor = (d: Quote) => d.dateTime;
 	private yQuoteAccessor = (d: Quote) => d.close;
-	
-	private xBBandAccessor = (d: BBand) => d.dateTime;
-	private yUpperBandAccessor = (d: BBand) => d.upper;
-	private yMiddleBandAccessor = (d: BBand) => d.middle;
-	private yLowerBandAccessor = (d: BBand) => d.lower;
 }
 
 export = QuotesChart;
