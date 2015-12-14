@@ -34,7 +34,7 @@ class MACrossChart extends ChartBase {
 		);
 		return (
 			<ChartRow
-				title='MA Cross & Bollinger Bands'
+				title='MA Cross & BBands'
 				y={this.props.y}
 				width={this.props.width}
 				height={this.props.height}
