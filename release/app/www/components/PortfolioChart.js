@@ -19,7 +19,13 @@ var PortfolioChart = (function (_super) {
         this.yPortfolioAccessor = function (d) { return d.value; };
     }
     PortfolioChart.prototype.render = function () {
-        ScaleUtils.updateYScale(this.props.monitoringData.portfolio, this.xPortfolioAccessor, this.yPortfolioAccessor, this.props.xScale, this.yScale, this.props.height, PortfolioChart.yDomainPadding);
+        ScaleUtils.updateYScale([
+            {
+                data: this.props.monitoringData.portfolio,
+                x: this.xPortfolioAccessor,
+                y: [this.yPortfolioAccessor]
+            }
+        ], this.props.xScale, this.yScale, this.props.height, PortfolioChart.yDomainPadding);
         return (React.createElement(ChartRow, {"title": 'Portfolio', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": PortfolioChart.clipPath, "yTickFormat": PortfolioChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--orange', "data": this.props.monitoringData.portfolio, "xAccessor": this.xPortfolioAccessor, "yAccessor": this.yPortfolioAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": PortfolioChart.clipPath})));
     };
     PortfolioChart.yTickFormat = d3.format(',.2f');

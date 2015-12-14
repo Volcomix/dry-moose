@@ -20,7 +20,18 @@ var QuotesChart = (function (_super) {
         this.yQuoteAccessor = function (d) { return d.close; };
     }
     QuotesChart.prototype.render = function () {
-        ScaleUtils.updateYScale(this.props.monitoringData.quotes, this.xQuoteAccessor, this.yQuoteAccessor, this.props.xScale, this.yScale, this.props.height, QuotesChart.yDomainPadding);
+        ScaleUtils.updateYScale([
+            {
+                data: this.props.monitoringData.quotes,
+                x: this.xQuoteAccessor,
+                y: [this.yQuoteAccessor]
+            },
+            {
+                data: this.props.monitoringData.gains,
+                x: function (d) { return d.quote.dateTime; },
+                y: [function (d) { return d.option.quote.close; }]
+            }
+        ], this.props.xScale, this.yScale, this.props.height, QuotesChart.yDomainPadding);
         return (React.createElement(ChartRow, {"title": 'Euro/U.S. Dollar', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath, "yTickFormat": QuotesChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--indigo', "data": this.props.monitoringData.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.monitoringData.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
     };
     QuotesChart.yTickFormat = d3.format(',.5f');

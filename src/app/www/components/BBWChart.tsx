@@ -20,10 +20,14 @@ class BBWChart extends ChartBase {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		ScaleUtils.updateYScale<BBand>(
-			this.props.monitoringData.bband,
-			this.xBBandAccessor,
-			this.yBandWidthAccessor,
+		ScaleUtils.updateYScale(
+			[
+				{
+					data: this.props.monitoringData.bband,
+					x: this.xBBandAccessor,
+					y: [this.yBandWidthAccessor]
+				}
+			],
 			this.props.xScale,
 			this.yScale,
 			this.props.height,

@@ -23,10 +23,24 @@ class MACrossChart extends ChartBase {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		ScaleUtils.updateYScale<MovingAverage>(
-			this.props.monitoringData.maCross.fast,
-			this.xMAAccessor,
-			this.yMAAccessor,
+		ScaleUtils.updateYScale(
+			[
+				{
+					data: this.props.monitoringData.maCross.fast,
+					x: this.xMAAccessor,
+					y: [this.yMAAccessor]
+				},
+				{
+					data: this.props.monitoringData.maCross.slow,
+					x: this.xMAAccessor,
+					y: [this.yMAAccessor]
+				},
+				{
+					data: this.props.monitoringData.bband,
+					x: this.xBBandAccessor,
+					y: [this.yUpperBandAccessor, this.yLowerBandAccessor]
+				}
+			],
 			this.props.xScale,
 			this.yScale,
 			this.props.height,

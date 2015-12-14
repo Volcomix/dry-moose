@@ -24,7 +24,23 @@ var MACrossChart = (function (_super) {
         this.yLowerBandAccessor = function (d) { return d.lower; };
     }
     MACrossChart.prototype.render = function () {
-        ScaleUtils.updateYScale(this.props.monitoringData.maCross.fast, this.xMAAccessor, this.yMAAccessor, this.props.xScale, this.yScale, this.props.height, MACrossChart.yDomainPadding);
+        ScaleUtils.updateYScale([
+            {
+                data: this.props.monitoringData.maCross.fast,
+                x: this.xMAAccessor,
+                y: [this.yMAAccessor]
+            },
+            {
+                data: this.props.monitoringData.maCross.slow,
+                x: this.xMAAccessor,
+                y: [this.yMAAccessor]
+            },
+            {
+                data: this.props.monitoringData.bband,
+                x: this.xBBandAccessor,
+                y: [this.yUpperBandAccessor, this.yLowerBandAccessor]
+            }
+        ], this.props.xScale, this.yScale, this.props.height, MACrossChart.yDomainPadding);
         return (React.createElement(ChartRow, {"title": 'MA Cross & BBands', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": MACrossChart.clipPath, "yTickFormat": MACrossChart.yTickFormat}, React.createElement(AreaSeries, {"className": 'mdl-color-text--teal', "data": this.props.monitoringData.bband, "xAccessor": this.xBBandAccessor, "y0Accessor": this.yUpperBandAccessor, "y1Accessor": this.yLowerBandAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACrossChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--teal', "data": this.props.monitoringData.bband, "xAccessor": this.xBBandAccessor, "yAccessor": this.yUpperBandAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACrossChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--teal', "data": this.props.monitoringData.bband, "xAccessor": this.xBBandAccessor, "yAccessor": this.yLowerBandAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACrossChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--red', "data": this.props.monitoringData.maCross.fast, "xAccessor": this.xMAAccessor, "yAccessor": this.yMAAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACrossChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--green', "data": this.props.monitoringData.maCross.slow, "xAccessor": this.xMAAccessor, "yAccessor": this.yMAAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACrossChart.clipPath}), React.createElement(PointSeries, {"className": 'mdl-color-text--indigo', "icon": 'shuffle', "data": this.props.monitoringData.maCross.cross, "xAccessor": this.xMAAccessor, "yAccessor": this.yMAAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACrossChart.clipPath})));
     };
     MACrossChart.yTickFormat = d3.format(',.5f');

@@ -4,6 +4,7 @@ import React = require('react');
 import d3 = require('d3');
 
 import Quote = require('../../../documents/Quote');
+import Gain = require('../../../documents/Gain');
 
 import ScaleUtils = require('../utils/ScaleUtils');
 
@@ -21,10 +22,19 @@ class QuotesChart extends ChartBase {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		ScaleUtils.updateYScale<Quote>(
-			this.props.monitoringData.quotes,
-			this.xQuoteAccessor,
-			this.yQuoteAccessor,
+		ScaleUtils.updateYScale(
+			[
+				{
+					data: this.props.monitoringData.quotes,
+					x: this.xQuoteAccessor,
+					y: [this.yQuoteAccessor]
+				},
+				{
+					data: this.props.monitoringData.gains,
+					x: (d: Gain) => d.quote.dateTime,
+					y: [(d: Gain) => d.option.quote.close]
+				}
+			],
 			this.props.xScale,
 			this.yScale,
 			this.props.height,

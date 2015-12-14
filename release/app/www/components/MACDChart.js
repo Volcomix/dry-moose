@@ -22,7 +22,18 @@ var MACDChart = (function (_super) {
         this.yMACDHistAccessor = function (d) { return d.hist; };
     }
     MACDChart.prototype.render = function () {
-        ScaleUtils.updateYScale(this.props.monitoringData.macd, this.xMACDAccessor, this.yMACDAccessor, this.props.xScale, this.yScale, this.props.height, MACDChart.yDomainPadding);
+        ScaleUtils.updateYScale([
+            {
+                data: this.props.monitoringData.macd,
+                x: this.xMACDAccessor,
+                y: [
+                    this.yMACDAccessor,
+                    this.yMACDSignalAccessor,
+                    this.yMACDHistAccessor,
+                    function (d) { return 0; }
+                ]
+            }
+        ], this.props.xScale, this.yScale, this.props.height, MACDChart.yDomainPadding);
         return (React.createElement(ChartRow, {"title": 'MACD', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": MACDChart.clipPath, "yTickFormat": MACDChart.yTickFormat}, React.createElement(HistoSeries, {"className": 'mdl-color-text--pink', "data": this.props.monitoringData.macd, "xAccessor": this.xMACDAccessor, "yAccessor": this.yMACDHistAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACDChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--deep-orange', "data": this.props.monitoringData.macd, "xAccessor": this.xMACDAccessor, "yAccessor": this.yMACDSignalAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACDChart.clipPath}), React.createElement(LineSeries, {"className": 'mdl-color-text--blue', "data": this.props.monitoringData.macd, "xAccessor": this.xMACDAccessor, "yAccessor": this.yMACDAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": MACDChart.clipPath})));
     };
     MACDChart.yTickFormat = d3.format(',.5f');

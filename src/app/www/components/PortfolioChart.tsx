@@ -20,10 +20,14 @@ class PortfolioChart extends ChartBase {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		ScaleUtils.updateYScale<Portfolio>(
-			this.props.monitoringData.portfolio,
-			this.xPortfolioAccessor,
-			this.yPortfolioAccessor,
+		ScaleUtils.updateYScale(
+			[
+				{
+					data: this.props.monitoringData.portfolio,
+					x: this.xPortfolioAccessor,
+					y: [this.yPortfolioAccessor]
+				}
+			],
 			this.props.xScale,
 			this.yScale,
 			this.props.height,

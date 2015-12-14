@@ -21,10 +21,19 @@ class MACDChart extends ChartBase {
 	private yScale = d3.scale.linear();
 	
 	render() {
-		ScaleUtils.updateYScale<MACD>(
-			this.props.monitoringData.macd,
-			this.xMACDAccessor,
-			this.yMACDAccessor,
+		ScaleUtils.updateYScale(
+			[
+				{
+					data: this.props.monitoringData.macd,
+					x: this.xMACDAccessor,
+					y: [
+						this.yMACDAccessor,
+						this.yMACDSignalAccessor,
+						this.yMACDHistAccessor,
+						d => 0
+					]
+				}
+			],
 			this.props.xScale,
 			this.yScale,
 			this.props.height,
