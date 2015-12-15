@@ -120,7 +120,7 @@ path.area {
 }
 
 .divider rect {
-	cursor: row-resize;
+	cursor: ns-resize;
 	fill: none;
 	pointer-events: all;
 }
