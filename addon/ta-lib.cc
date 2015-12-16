@@ -39,11 +39,12 @@ void SMA(const FunctionCallbackInfo<Value>& args) {
     // Get input
     int startIdx = args[0]->NumberValue();
     int endIdx = args[1]->NumberValue();
-    Local<Array> inArr = Local<Array>::Cast(args[2]);
-    int optInTimePeriod = args[3]->NumberValue();
     
+    Local<Array> inArr = Local<Array>::Cast(args[2]);
     int length = inArr->Length();
     double* inReal = v8ToDoubleArray(inArr, length);
+    
+    int optInTimePeriod = args[3]->NumberValue();
     
     // Prepare output
     TA_RetCode retCode;
@@ -96,13 +97,14 @@ void MACD(const FunctionCallbackInfo<Value>& args) {
     // Get input
     int startIdx = args[0]->NumberValue();
     int endIdx = args[1]->NumberValue();
+    
     Local<Array> inArr = Local<Array>::Cast(args[2]);
+    int length = inArr->Length();
+    double* inReal = v8ToDoubleArray(inArr, length);
+    
     int optInFastPeriod = args[3]->NumberValue();
     int optInSlowPeriod = args[4]->NumberValue();
     int optInSignalPeriod = args[5]->NumberValue();
-    
-    int length = inArr->Length();
-    double* inReal = v8ToDoubleArray(inArr, length);
     
     // Prepare output
     TA_RetCode retCode;
@@ -141,6 +143,81 @@ void MACD(const FunctionCallbackInfo<Value>& args) {
     args.GetReturnValue().Set(obj);
 }
 
+/*
+ * TA_BBANDS - Bollinger Bands
+ * 
+ * Input  = double
+ * Output = double, double, double
+ * 
+ * Optional Parameters
+ * -------------------
+ * optInTimePeriod:(From 2 to 100000)
+ *    Number of period
+ * 
+ * optInNbDevUp:(From TA_REAL_MIN to TA_REAL_MAX)
+ *    Deviation multiplier for upper band
+ * 
+ * optInNbDevDn:(From TA_REAL_MIN to TA_REAL_MAX)
+ *    Deviation multiplier for lower band
+ * 
+ * optInMAType:
+ *    Type of Moving Average
+ */
+void BBANDS(const FunctionCallbackInfo<Value>& args) {
+    Isolate* isolate = args.GetIsolate();
+    
+    // Get input
+    int startIdx = args[0]->NumberValue();
+    int endIdx = args[1]->NumberValue();
+    
+    Local<Array> inArr = Local<Array>::Cast(args[2]);
+    int length = inArr->Length();
+    double* inReal = v8ToDoubleArray(inArr, length);
+    
+    int optInTimePeriod = args[3]->NumberValue();
+    double optInNbDevUp = args[4]->NumberValue();
+    double optInNbDevDn = args[5]->NumberValue();
+    TA_MAType optInMAType = (TA_MAType)args[6]->NumberValue();
+    
+    // Prepare output
+    TA_RetCode retCode;
+    int outBegIdx;
+    int outNBElement;
+    
+    double * outRealUpperBand = new double[length];
+    double * outRealMiddleBand = new double[length];
+    double * outRealLowerBand = new double[length];
+    
+    // Call TA-Lib function
+    retCode = TA_BBANDS(startIdx, endIdx, inReal,
+                        optInTimePeriod, optInNbDevUp, optInNbDevDn, optInMAType,
+                        &outBegIdx, &outNBElement,
+                        outRealUpperBand, outRealMiddleBand, outRealLowerBand);
+
+    delete[] inReal;
+    
+    // Get output
+    Local<Array> v8RealUpperBand = doubleArrayToV8(isolate, outRealUpperBand, outNBElement);
+    Local<Array> v8RealMiddleBand = doubleArrayToV8(isolate, outRealMiddleBand, outNBElement);
+    Local<Array> v8RealLowerBand = doubleArrayToV8(isolate, outRealLowerBand, outNBElement);
+    
+    delete[] outRealUpperBand;
+    delete[] outRealMiddleBand;
+    delete[] outRealLowerBand;
+    
+    // Set up result
+    Local<Object> obj = Object::New(isolate);
+    obj->Set(String::NewFromUtf8(isolate, "retCode"), Number::New(isolate, retCode));
+    obj->Set(String::NewFromUtf8(isolate, "outBegIdx"), Number::New(isolate, outBegIdx));
+    obj->Set(String::NewFromUtf8(isolate, "outNBElement"), Number::New(isolate, outNBElement));
+    obj->Set(String::NewFromUtf8(isolate, "outRealUpperBand"), v8RealUpperBand);
+    obj->Set(String::NewFromUtf8(isolate, "outRealMiddleBand"), v8RealMiddleBand);
+    obj->Set(String::NewFromUtf8(isolate, "outRealLowerBand"), v8RealLowerBand);
+    
+    args.GetReturnValue().Set(obj);
+}
+
+
 static void Shutdown(void*) {
     TA_Shutdown();
 }
@@ -150,6 +227,7 @@ void init(Local<Object> exports) {
         
         NODE_SET_METHOD(exports, "SMA", SMA);
         NODE_SET_METHOD(exports, "MACD", MACD);
+        NODE_SET_METHOD(exports, "BBANDS", BBANDS);
         
         AtExit(Shutdown);
     }

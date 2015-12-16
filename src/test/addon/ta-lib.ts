@@ -32,4 +32,17 @@ describe('ta-lib', function() {
             result.outMACDHist.should.include(-1.5);
         });
     });
+    describe('#BBANDS()', function() {
+        it('should return Bollinger Bands', function() {
+            var result = TA.BBANDS(0, 4, [1, 8, 18, 7, 11], 2, 2, 2, 0);
+            result.should.deep.equal({
+                retCode: 0,
+                outBegIdx: 1,
+                outNBElement: 4,
+                outRealUpperBand: [ 11.5, 23, 23.5, 13 ],
+                outRealMiddleBand: [ 4.5, 13, 12.5, 9 ],
+                outRealLowerBand: [ -2.5, 3, 1.5, 5 ]
+            })
+        });
+    });
 });
