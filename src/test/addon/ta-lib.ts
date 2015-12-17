@@ -34,7 +34,7 @@ describe('ta-lib', function() {
     });
     describe('#BBANDS()', function() {
         it('should return Bollinger Bands', function() {
-            var result = TA.BBANDS(0, 4, [1, 8, 18, 7, 11], 2, 2, 2, 0);
+            var result = TA.BBANDS(0, 4, [1, 8, 18, 7, 11], 2, 2, 2, TA.MAType.Sma);
             result.should.deep.equal({
                 retCode: 0,
                 outBegIdx: 1,

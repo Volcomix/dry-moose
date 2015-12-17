@@ -93,5 +93,5 @@ declare module 'ta-lib' {
         outRealLowerBand: number[]
     }
     
-    export enum MAType { Sma, Ema, Wma, Dema, Tema, Trima, Kama, Mama, T3 }
+    export const enum MAType { Sma, Ema, Wma, Dema, Tema, Trima, Kama, Mama, T3 }
 }
