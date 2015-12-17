@@ -55,22 +55,19 @@ function getByMinute(dateTime) {
     }
     var startDate = moment(roundedDateTime).subtract({ hours: 12 }).toDate(), endDate = moment(roundedDateTime).add({ hours: 11, minutes: 59 }).toDate();
     return Q.all([
-        QuotesService.get(startDate, endDate)
-            .then(function (quotes) { return [
-            quotes,
-            MACDService.get(quotes, 12, 26, 9),
-            MACrossService.get(quotes, 9, 21),
-            BollingerService.get(quotes, 20, 2)
-        ]; })
-            .spread(function (quotes, macd, maCross, bband) {
-            return ({ quotes: quotes, macd: macd, maCross: maCross, bband: bband });
-        }),
+        QuotesService.get(startDate, endDate),
         PortfolioService.get(startDate, endDate),
         GainsService.get(startDate, endDate)
     ])
-        .spread(function (_a, portfolio, gains) {
-        var quotes = _a.quotes, macd = _a.macd, maCross = _a.maCross, bband = _a.bband;
-        return ({ startDate: startDate, endDate: endDate, quotes: quotes, macd: macd, maCross: maCross, bband: bband, portfolio: portfolio, gains: gains });
-    });
+        .spread(function (quotes, portfolio, gains) { return ({
+        startDate: startDate,
+        endDate: endDate,
+        quotes: quotes,
+        macd: MACDService.get(quotes, 12, 26, 9),
+        maCross: MACrossService.get(quotes, 9, 21),
+        bband: BollingerService.get(quotes, 20, 2),
+        portfolio: portfolio,
+        gains: gains
+    }); });
 }
 module.exports = router;

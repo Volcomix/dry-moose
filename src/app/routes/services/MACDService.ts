@@ -1,7 +1,8 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 
 import Q = require('q');
-var talib = require('talib');
+
+import TA = require('ta-lib');
 
 import Quote = require('../../../documents/Quote');
 import MACD = require('../../../documents/MACD');
@@ -12,27 +13,22 @@ export function get(
 	slowPeriod: number,
 	signalPeriod: number
 ) {	
-	return Q.Promise(function(resolve) {
-		talib.execute({
-			name: 'MACD',
-			startIdx: 0,
-			endIdx: quotes.length - 1,
-			inReal: quotes.map(quote => quote.close),
-			optInFastPeriod: fastPeriod,
-			optInSlowPeriod: slowPeriod,
-			optInSignalPeriod: signalPeriod
-		}, resolve);
-	})
-	.then(function(result: any) {
-		var macd: MACD[] = [];
-		for (var i = 0; i < result.nbElement; i++) {
-			macd.push({
-				dateTime: quotes[result.begIndex + i].dateTime,
-				value: result.result.outMACD[i],
-				signal: result.result.outMACDSignal[i],
-				hist: result.result.outMACDHist[i]
-			});
-		}
-		return macd;
-	});
+	var result = TA.MACD(
+		0,
+		quotes.length - 1,
+		quotes.map(quote => quote.close),
+		fastPeriod,
+		slowPeriod,
+		signalPeriod
+	);
+	var macd: MACD[] = [];
+	for (var i = 0; i < result.outNBElement; i++) {
+		macd.push({
+			dateTime: quotes[result.outBegIdx + i].dateTime,
+			value: result.outMACD[i],
+			signal: result.outMACDSignal[i],
+			hist: result.outMACDHist[i]
+		});
+	}
+	return macd;
 }

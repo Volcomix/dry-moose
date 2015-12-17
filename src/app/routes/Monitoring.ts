@@ -4,14 +4,11 @@ import express = require('express');
 import Q = require('q');
 import moment = require('moment');
 
-import DbManager = require('../../database/DbManager');
 import Quote = require('../../documents/Quote');
-import MACD = require('../../documents/MACD');
-import MACross = require('../../documents/MACross');
-import BBand = require('../../documents/BBand');
 import Portfolio = require('../../documents/Portfolio');
 import Gain = require('../../documents/Gain');
 import MonitoringData = require('../../documents/MonitoringData');
+
 import QuotesService = require('./services/QuotesService');
 import MACDService = require('./services/MACDService');
 import MACrossService = require('./services/MACrossService');
@@ -71,27 +68,20 @@ function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {
 		endDate = moment(roundedDateTime).add({ hours: 11, minutes: 59 }).toDate();
 	
 	return Q.all<{}>([
-		QuotesService.get(startDate, endDate)
-		.then(quotes => [
-			quotes,
-			MACDService.get(quotes, 12, 26, 9),
-			MACrossService.get(quotes, 9, 21),
-			BollingerService.get(quotes, 20, 2)
-		])
-		.spread((
-			quotes: Quote[],
-			macd: MACD[],
-			maCross: MACross,
-			bband: BBand[]
-		) => ({ quotes, macd, maCross, bband })),
+		QuotesService.get(startDate, endDate),
 		PortfolioService.get(startDate, endDate),
 		GainsService.get(startDate, endDate)
 	])
-	.spread<MonitoringData>((
-		{ quotes, macd, maCross, bband },
-		portfolio: Portfolio[],
-		gains: Gain[]
-	) => ({ startDate, endDate, quotes, macd, maCross, bband, portfolio, gains }));
+	.spread<MonitoringData>((quotes: Quote[], portfolio: Portfolio[], gains: Gain[]) => ({
+		startDate,
+		endDate,
+		quotes,
+		macd: MACDService.get(quotes, 12, 26, 9),
+		maCross: MACrossService.get(quotes, 9, 21),
+		bband: BollingerService.get(quotes, 20, 2),
+		portfolio,
+		gains
+	}));
 }
 
 export = router;

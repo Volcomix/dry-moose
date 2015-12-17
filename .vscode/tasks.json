@@ -6,7 +6,7 @@
 // ${fileExtname}: the current opened file's extension
 // ${cwd}: the current working directory of the spawned process
 
-{
+/*{
     "version": "0.1.0",
     "command": "gulp",
     "isShellCommand": true,
@@ -25,9 +25,9 @@
             "problemMatcher": "$tsc"
         }
     ]
-}
+}*/
 
-/*{
+{
 	"version": "0.1.0",
 	"command": "node-gyp",
 	"isShellCommand": true,
@@ -39,7 +39,7 @@
         "owner": "cpp",
         "fileLocation": ["relative", "${workspaceRoot}/dry-moose"],
         "pattern": {
-            "regexp": "^(.*):(\\d+):(\\d+):\\s+(attention|erreur)\\s+:\\s+(.*)$",
+            "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
             "file": 1,
             "line": 2,
             "column": 3,
@@ -47,4 +47,4 @@
             "message": 5
         }
     }
-}*/
+}
