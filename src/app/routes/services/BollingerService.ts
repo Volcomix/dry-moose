@@ -9,13 +9,9 @@ import BBand = require('../../../documents/BBand');
 
 export function get(quotes: Quote[], timePeriod: number, nbDev: number) {
 	var result = TA.BBANDS(
-		0,
-		quotes.length - 1,
+		0, quotes.length - 1,
 		quotes.map(quote => quote.close),
-		timePeriod,
-		nbDev,
-		nbDev,
-		TA.MAType.Sma
+		timePeriod, nbDev, nbDev, TA.MAType.Sma
 	);
 	var bband: BBand[] = [];
 	for (var i = 0; i < result.outNBElement; i++) {

@@ -14,12 +14,9 @@ export function get(
 	signalPeriod: number
 ) {	
 	var result = TA.MACD(
-		0,
-		quotes.length - 1,
+		0, quotes.length - 1,
 		quotes.map(quote => quote.close),
-		fastPeriod,
-		slowPeriod,
-		signalPeriod
+		fastPeriod, slowPeriod, signalPeriod
 	);
 	var macd: MACD[] = [];
 	for (var i = 0; i < result.outNBElement; i++) {

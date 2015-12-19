@@ -10,8 +10,7 @@ import MACross = require('../../../documents/MACross');
 
 export function get(quotes: Quote[], fastPeriod: number, slowPeriod: number) {
 	var fastResult = TA.SMA(
-		0,
-		quotes.length - 1,
+		0, quotes.length - 1,
 		quotes.map(quote => quote.close),
 		fastPeriod
 	);
