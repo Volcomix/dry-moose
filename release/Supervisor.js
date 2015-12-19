@@ -58,7 +58,9 @@ var Supervisor = (function () {
             if (portfolio <= 0) {
                 throw new Error('Portfolio is empty... Game Over!');
             }
-            var option = _this.process(portfolio, quote);
+            return _this.process(portfolio, quote);
+        })
+            .then(function (option) {
             if (option) {
                 return _this.invest(quote, option);
             }

@@ -17,20 +17,25 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:03:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 1, volume: 0, rewards: rewards
             };
-            var option = processor.process(100, quote, false);
-            should.not.exist(option);
+            return processor.process(100, quote, false)
+                .then(function (option) {
+                should.not.exist(option);
+            });
         });
         it('should return a Call when quotes increase', function () {
             var quote = {
                 dateTime: moment('2015-06-01 00:04:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 3, volume: 0, rewards: rewards
             };
-            processor.process(100, quote, false).should.deep.equal({
-                quote: quote,
-                expiration: new Date('2015-06-01 01:00:00-0500'),
-                payout: 0.75,
-                amount: 10,
-                direction: BinaryOption.Direction.Call
+            return processor.process(100, quote, false)
+                .then(function (option) {
+                option.should.deep.equal({
+                    quote: quote,
+                    expiration: new Date('2015-06-01 01:00:00-0500'),
+                    payout: 0.75,
+                    amount: 10,
+                    direction: BinaryOption.Direction.Call
+                });
             });
         });
         it('should return a Put when quotes decrease', function () {
@@ -38,12 +43,15 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:05:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 2, volume: 0, rewards: rewards
             };
-            processor.process(100, quote, false).should.deep.equal({
-                quote: quote,
-                expiration: new Date('2015-06-01 01:00:00-0500'),
-                payout: 0.75,
-                amount: 10,
-                direction: BinaryOption.Direction.Put
+            return processor.process(100, quote, false)
+                .then(function (option) {
+                option.should.deep.equal({
+                    quote: quote,
+                    expiration: new Date('2015-06-01 01:00:00-0500'),
+                    payout: 0.75,
+                    amount: 10,
+                    direction: BinaryOption.Direction.Put
+                });
             });
         });
         it('should return no option when an option is pending', function () {
@@ -51,16 +59,20 @@ describe('DummyProcessor', function () {
                 dateTime: moment('2015-06-01 00:06:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 3, volume: 0, rewards: rewards
             };
-            var option = processor.process(100, quote, true);
-            should.not.exist(option);
+            return processor.process(100, quote, true)
+                .then(function (option) {
+                should.not.exist(option);
+            });
         });
         it('should return no option when quotes are stable', function () {
             var quote = {
                 dateTime: moment('2015-06-01 00:07:00-0500').toDate(),
                 open: 1, high: 1, low: 1, close: 3, volume: 0, rewards: rewards
             };
-            var option = processor.process(100, quote, false);
-            should.not.exist(option);
+            return processor.process(100, quote, false)
+                .then(function (option) {
+                should.not.exist(option);
+            });
         });
     });
 });

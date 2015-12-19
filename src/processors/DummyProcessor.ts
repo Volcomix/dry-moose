@@ -1,5 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 
+import Q = require('q');
+
 import IProcessor = require('./IProcessor');
 import Quote = require('../documents/Quote');
 import BinaryOption = require('../documents/options/BinaryOption');
@@ -13,7 +15,12 @@ class DummyProcessor implements IProcessor {
 	
 	private lastQuote: Quote;
 	
-	process(portfolio: number, quote: Quote, isPendingOption: boolean): BinaryOption {
+	process(
+		portfolio: number,
+		quote: Quote,
+		isPendingOption: boolean
+	): Q.Promise<BinaryOption> {
+		
 		var option: BinaryOption;
 		if (!isPendingOption && this.lastQuote) {
 			if (this.lastQuote.close < quote.close) {
@@ -35,7 +42,7 @@ class DummyProcessor implements IProcessor {
 			}
 		}
 		this.lastQuote = quote;
-		return option;
+		return Q(option);
 	}
 }
 

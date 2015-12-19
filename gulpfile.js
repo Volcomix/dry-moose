@@ -27,7 +27,7 @@ b.on('update', bundle);
 b.on('log', gutil.log);
 
 function addon() {
-	return through2.obj(function (chunk, enc, callback) {
+	return through2.obj(function(chunk, enc, callback) {
 		chunk.contents = new Buffer(
 			chunk.contents.toString().replace(
 				/require\s*\(\s*['"]ta-lib['"]\s*\)/g,
@@ -50,18 +50,18 @@ function bundle() {
 		.pipe(gulp.dest('release/app/www'));
 }
 
-gulp.task('clean', function () {
+gulp.task('clean', function() {
 	return del('release');
 });
 
-gulp.task('build:src', function () {
+gulp.task('build:src', function() {
 	return gulp.src(['src/**/*.ts?(x)', '!src/test/**', 'addon/**/*.d.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(addon())
 		.pipe(gulp.dest('release'));
 });
 
-gulp.task('build:app', function () {
+gulp.task('build:app', function() {
 	return gulp.src([
 			'src/**/*.ts', '!src/test/**', '!src/app/www/**',
 			'addon/**/*.d.ts'
@@ -71,20 +71,20 @@ gulp.task('build:app', function () {
 		.pipe(gulp.dest('release'));
 });
 
-gulp.task('build:www', function () {
+gulp.task('build:www', function() {
 	return gulp.src(['src/app/www/**/*.ts?(x)', 'src/documents/**/*.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(gulp.dest('release'));
 });
 
-gulp.task('build:test', function () {
+gulp.task('build:test', function() {
 	return gulp.src(['src/test/**/*.ts', 'addon/**/*.d.ts'])
 		.pipe(tsc({ target: 'ES5', module: 'commonjs' }))
 		.js.pipe(addon())
 		.pipe(gulp.dest('release/test'));
 });
 
-gulp.task('build', ['clean'], function () {
+gulp.task('build', ['clean'], function() {
 	return gulp.src(['src/**/*.ts?(x)', 'addon/**/*.d.ts'])
 		.pipe(tsc(tsProject))
 		.js.pipe(addon())
@@ -93,12 +93,12 @@ gulp.task('build', ['clean'], function () {
 
 gulp.task('bundle', ['build:src'], bundle);
 
-gulp.task('test', ['build'], function () {
+gulp.task('test', ['build'], function() {
 	return gulp.src('release/test/**/*.js')
 		.pipe(mocha({ timeout: 10000 }));
 });
 
-gulp.task('watch:app', function () {
+gulp.task('watch:app', function() {
 	gulp.watch(
 		['src/**/*.ts', '!src/test/**', '!src/app/www/**', 'addon/**/*.d.ts'],
 		['build:app']
@@ -112,7 +112,7 @@ gulp.task('watch:www', function() {
 	);
 });
 
-gulp.task('nodemon', ['build:src', 'watch:app'], function (cb) {
+gulp.task('nodemon', ['build:src', 'watch:app'], function(cb) {
 	var started = false;
 	return nodemon({
 		script: 'release/app/App.js',
@@ -164,11 +164,11 @@ gulp.task('db:clean', function() {
 gulp.task('run:db', ['db:clean', 'build'], function() {
 	var Supervisor = require('./release/Supervisor'),
 		DbCollector = require('./release/collectors/DbCollector'),
-		DummyProcessor = require('./release/processors/DummyProcessor'),
+		VolcoProcessor = require('./release/processors/VolcoProcessor'),
 		ConsoleInvestor = require('./release/investors/ConsoleInvestor'),
 		DemoCelebrator = require('./release/celebrators/DemoCelebrator'),
 		DemoCapacitor = require('./release/capacitors/DemoCapacitor'),
-		processor = new DummyProcessor(),
+		processor = new VolcoProcessor(),
 		investor = new ConsoleInvestor(),
 		celebrator = new DemoCelebrator(),
 		capacitor = new DemoCapacitor(100);

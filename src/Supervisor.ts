@@ -55,7 +55,7 @@ class Supervisor {
 		.then(() => {
 			return this.capacitor.getPortfolio();
 		})
-		.then((portfolio) => {
+		.then(portfolio => {
 			this.innerPortfolio = portfolio;
 		});
 	}
@@ -74,11 +74,13 @@ class Supervisor {
 		.then(() => {
 			return this.getPortfolio();
 		})
-		.then((portfolio) => {
+		.then(portfolio => {
 			if (portfolio <= 0) {
 				throw new Error('Portfolio is empty... Game Over!');
 			}
-			var option = this.process(portfolio, quote);
+			return this.process(portfolio, quote);
+		})
+		.then(option => {
 			if (option) {
 				return this.invest(quote, option);
 			}
@@ -102,7 +104,7 @@ class Supervisor {
 		this.pendingOption = undefined;
 		
 		return this.celebrator.getGain(option)
-		.then((gain) => {
+		.then(gain => {
 			this.innerPortfolio += gain.value;
 			
 			return Q.all([
@@ -119,7 +121,7 @@ class Supervisor {
 	
 	private getPortfolio(): Q.Promise<number> {
 		return this.capacitor.getPortfolio()
-		.then((portfolio) => {
+		.then(portfolio => {
 			if (this.innerPortfolio != portfolio) {
 				throw new Error(
 					'Estimated portfolio and real portfolio are different ' +
@@ -134,7 +136,7 @@ class Supervisor {
 		});
 	}
 	
-	private process(portfolio: number, quote: Quote): Option {
+	private process(portfolio: number, quote: Quote): Q.Promise<Option> {
 		return this.processor.process(portfolio, quote, !!this.pendingOption);
 	}
 	
