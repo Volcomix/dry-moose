@@ -2,3 +2,6 @@
 node_modules
 typings
 build
+lib/ta-lib/bin
+lib/ta-lib/lib
+lib/ta-lib/temp
