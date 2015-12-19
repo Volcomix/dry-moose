@@ -6,11 +6,11 @@
             "conditions": [
                 ["OS==\"linux\"", {
                     "include_dirs": [
-                        "/usr/include/ta-lib"
+                        "lib/ta-lib/include"
                     ],
                     "link_settings": {
                         "libraries": [
-                            "-lta_lib"
+                            '../lib/ta-lib/lib/libta_libc_csr.a'
                         ]
                     }
                 }],
