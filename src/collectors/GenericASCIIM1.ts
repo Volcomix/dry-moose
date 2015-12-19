@@ -12,10 +12,7 @@ import Reward = require('../documents/Reward');
 
 class GenericASCIIM1 implements ICollector {
     
-    constructor(
-        private filename: string,
-        private rewards: Reward[]
-    ){ }
+    constructor(private filename: string, private rewards: Reward[]) { }
     
     collect(): Q.Promise<void> {
         return Q.Promise<void>((resolve, reject, notify) => {
