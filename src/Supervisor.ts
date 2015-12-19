@@ -44,7 +44,7 @@ class Supervisor {
 			});
 		})
 		.finally(() => {
-			return inProgress.then(() => {
+			return inProgress.finally(() => {
 				return this.done();
 			});
 		})

@@ -14,6 +14,7 @@ var gutil = require('gulp-util');
 var assign = require('lodash.assign');
 var del = require('del');
 var through2 = require('through2');
+var mongodb = require('mongodb');
 
 var tsProject = tsc.createProject('tsconfig.json');
 
@@ -138,4 +139,43 @@ gulp.task('browser-sync', ['nodemon', 'watch:www', 'bundle'], function() {
 gulp.task('browser-sync:css', function() {
 	return gulp.src('www/**/*.css')
 		.pipe(browserSync.stream());
+});
+
+gulp.task('db:clean', function() {
+	var db;
+	
+	function closeDb() {
+		return db.close();
+	}
+	
+	return mongodb.MongoClient.connect('mongodb://localhost:27017/dry-moose')
+	.then(function(connectedDb) {
+		db = connectedDb;
+		return Promise.all([
+			db.collection('quotes').drop(),
+			db.collection('options').drop(),
+			db.collection('gains').drop(),
+			db.collection('portfolio').drop()
+		]);
+	})
+	.then(closeDb, closeDb);
+});
+
+gulp.task('run:db', ['db:clean', 'build'], function() {
+	var Supervisor = require('./release/Supervisor'),
+		DbCollector = require('./release/collectors/DbCollector'),
+		DummyProcessor = require('./release/processors/DummyProcessor'),
+		ConsoleInvestor = require('./release/investors/ConsoleInvestor'),
+		DemoCelebrator = require('./release/celebrators/DemoCelebrator'),
+		DemoCapacitor = require('./release/capacitors/DemoCapacitor'),
+		processor = new DummyProcessor(),
+		investor = new ConsoleInvestor(),
+		celebrator = new DemoCelebrator(),
+		capacitor = new DemoCapacitor(100);
+	
+	return new Supervisor(
+		new DbCollector('eurusd'),
+		processor, investor, celebrator, capacitor
+	)
+	.run();
 });

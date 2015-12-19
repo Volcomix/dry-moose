@@ -26,7 +26,7 @@ var Supervisor = (function () {
             });
         })
             .finally(function () {
-            return inProgress.then(function () {
+            return inProgress.finally(function () {
                 return _this.done();
             });
         });
