@@ -12,11 +12,17 @@ class VolcoProcessor implements IProcessor {
 	
 	private closes: number[] = [];
 	
+	constructor(
+		private minQuotes: number,
+		private maxMinutes: number,
+		private macdOptions: VolcoProcessor.MACDOptions
+	) { }
+	
 	process(portfolio: number, quote: Quote, isPendingOption: boolean): BinaryOption {
 		
 		this.closes.push(quote.close);
 		
-		if (this.closes.length > 60) {
+		if (this.closes.length > this.minQuotes) {
 			this.closes.shift();
 		} else {
 			return;
@@ -24,24 +30,30 @@ class VolcoProcessor implements IProcessor {
 		
 		if (isPendingOption ||
 			moment(quote.rewards[0].expiration)
-			.diff(moment(quote.dateTime), 'minutes') > 60
-		) {
-			return;
-		}
-			
-		var result = TA.MACD(0, this.closes.length - 1, this.closes, 12, 26, 9);
+			.diff(moment(quote.dateTime), 'minutes') > this.maxMinutes) return;
 		
-		if (result.outNBElement < 15) return;
+		var result = TA.MACD(
+			0, this.closes.length - 1, this.closes,
+			this.macdOptions.fastPeriod,
+			this.macdOptions.slowPeriod,
+			this.macdOptions.signalPeriod
+		);
+		
+		if (result.outNBElement < this.macdOptions.maxHists) return;
 		
 		var hist = result.outMACDHist[result.outNBElement - 1],
 			macd = result.outMACD[result.outNBElement - 1];
 		
-		if (Math.abs(hist) < 0.0001) return;
+		if (Math.abs(hist) < this.macdOptions.minHistHeight ||
+			Math.abs(hist) > this.macdOptions.maxHistHeight) return;
 		
-		for (var i = 2; i < 15; i++) {
+		for (var i = 2; i < this.macdOptions.maxHists; i++) {
 			var prevHist = result.outMACDHist[result.outNBElement - i];
 			
-			if (this.mathSign(prevHist) != this.mathSign(hist) && i > 2) {
+			if (
+				this.mathSign(prevHist) != this.mathSign(hist) &&
+				i > this.macdOptions.minRaisingHists
+			) {
 				return {
 					quote,
 					expiration: quote.rewards[0].expiration,
@@ -55,8 +67,9 @@ class VolcoProcessor implements IProcessor {
 			
 			if (Math.abs(prevHist) > Math.abs(hist)) return;
 			
-			var prevMacd = result.outMACD[result.outNBElement - i];
-			if (Math.abs(prevMacd) * 0.8 > Math.abs(macd)) return;
+			var factor = this.macdOptions.minHistRaisingFactor,
+				prevMacd = result.outMACD[result.outNBElement - i];
+			if (Math.abs(prevMacd) * factor > Math.abs(macd)) return;
 			
 			hist = prevHist;
 			macd = prevMacd;
@@ -64,6 +77,22 @@ class VolcoProcessor implements IProcessor {
 	}
 	
 	private mathSign (x) { return ((x === 0 || isNaN(x)) ? x : (x > 0 ? 1 : -1)); }
+}
+
+module VolcoProcessor {
+	export interface MACDOptions {
+		fastPeriod: number;
+		slowPeriod: number;
+		signalPeriod: number;
+		
+		maxHists: number;
+		
+		minHistHeight: number;
+		maxHistHeight: number;
+		
+		minRaisingHists: number;
+		minHistRaisingFactor: number;
+	}
 }
 
 export = VolcoProcessor;

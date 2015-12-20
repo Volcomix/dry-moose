@@ -7,6 +7,7 @@ import ICollector = require('./ICollector');
 import Quote = require('../documents/Quote');
 
 class DbCollector implements ICollector {
+	
 	constructor(private collectionName: string) { }
 	
 	collect(): Q.Promise<void> {

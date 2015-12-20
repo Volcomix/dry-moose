@@ -3,12 +3,15 @@ var moment = require('moment');
 var TA = require("../../build/Release/ta-lib");
 var BinaryOption = require('../documents/options/BinaryOption');
 var VolcoProcessor = (function () {
-    function VolcoProcessor() {
+    function VolcoProcessor(minQuotes, maxMinutes, macdOptions) {
+        this.minQuotes = minQuotes;
+        this.maxMinutes = maxMinutes;
+        this.macdOptions = macdOptions;
         this.closes = [];
     }
     VolcoProcessor.prototype.process = function (portfolio, quote, isPendingOption) {
         this.closes.push(quote.close);
-        if (this.closes.length > 60) {
+        if (this.closes.length > this.minQuotes) {
             this.closes.shift();
         }
         else {
@@ -16,18 +19,19 @@ var VolcoProcessor = (function () {
         }
         if (isPendingOption ||
             moment(quote.rewards[0].expiration)
-                .diff(moment(quote.dateTime), 'minutes') > 60) {
+                .diff(moment(quote.dateTime), 'minutes') > this.maxMinutes)
             return;
-        }
-        var result = TA.MACD(0, this.closes.length - 1, this.closes, 12, 26, 9);
-        if (result.outNBElement < 15)
+        var result = TA.MACD(0, this.closes.length - 1, this.closes, this.macdOptions.fastPeriod, this.macdOptions.slowPeriod, this.macdOptions.signalPeriod);
+        if (result.outNBElement < this.macdOptions.maxHists)
             return;
         var hist = result.outMACDHist[result.outNBElement - 1], macd = result.outMACD[result.outNBElement - 1];
-        if (Math.abs(hist) < 0.0001)
+        if (Math.abs(hist) < this.macdOptions.minHistHeight ||
+            Math.abs(hist) > this.macdOptions.maxHistHeight)
             return;
-        for (var i = 2; i < 15; i++) {
+        for (var i = 2; i < this.macdOptions.maxHists; i++) {
             var prevHist = result.outMACDHist[result.outNBElement - i];
-            if (this.mathSign(prevHist) != this.mathSign(hist) && i > 2) {
+            if (this.mathSign(prevHist) != this.mathSign(hist) &&
+                i > this.macdOptions.minRaisingHists) {
                 return {
                     quote: quote,
                     expiration: quote.rewards[0].expiration,
@@ -40,8 +44,8 @@ var VolcoProcessor = (function () {
             }
             if (Math.abs(prevHist) > Math.abs(hist))
                 return;
-            var prevMacd = result.outMACD[result.outNBElement - i];
-            if (Math.abs(prevMacd) * 0.8 > Math.abs(macd))
+            var factor = this.macdOptions.minHistRaisingFactor, prevMacd = result.outMACD[result.outNBElement - i];
+            if (Math.abs(prevMacd) * factor > Math.abs(macd))
                 return;
             hist = prevHist;
             macd = prevMacd;
