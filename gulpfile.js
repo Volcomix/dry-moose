@@ -168,6 +168,7 @@ gulp.task('run:db', ['db:clean', 'build'], function() {
 		ConsoleInvestor = require('./release/investors/ConsoleInvestor'),
 		DemoCelebrator = require('./release/celebrators/DemoCelebrator'),
 		DemoCapacitor = require('./release/capacitors/DemoCapacitor'),
+		collector = new DbCollector('eurusd', 0),
 		processor = new VolcoProcessor(60, 60, {
 			fastPeriod: 12, slowPeriod: 26, signalPeriod: 9,
 			maxHists: 10, minHistHeight: 0.00007, maxHistHeight: 0.001,
@@ -177,9 +178,5 @@ gulp.task('run:db', ['db:clean', 'build'], function() {
 		celebrator = new DemoCelebrator(),
 		capacitor = new DemoCapacitor(100);
 	
-	return new Supervisor(
-		new DbCollector('eurusd'),
-		processor, investor, celebrator, capacitor
-	)
-	.run();
+	return new Supervisor(collector, processor, investor, celebrator, capacitor).run();
 });
