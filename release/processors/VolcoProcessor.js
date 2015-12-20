@@ -46,10 +46,11 @@ var VolcoProcessor = (function () {
                     return;
                 }
             }
-            if (Math.abs(prevHist) > Math.abs(hist))
+            var histFactor = this.macdOptions.minHistRaisingFactor;
+            if (Math.abs(prevHist) * histFactor > Math.abs(hist))
                 return;
-            var factor = this.macdOptions.minHistRaisingFactor, prevMacd = result.outMACD[result.outNBElement - i];
-            if (Math.abs(prevMacd) * factor > Math.abs(macd))
+            var macdFactor = this.macdOptions.minMACDRaisingFactor, prevMacd = result.outMACD[result.outNBElement - i];
+            if (Math.abs(prevMacd) * macdFactor > Math.abs(macd))
                 return;
             hist = prevHist;
             macd = prevMacd;

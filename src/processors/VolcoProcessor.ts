@@ -66,11 +66,12 @@ class VolcoProcessor implements IProcessor {
 				}
 			}
 			
-			if (Math.abs(prevHist) > Math.abs(hist)) return;
+			var histFactor = this.macdOptions.minHistRaisingFactor;
+			if (Math.abs(prevHist) * histFactor > Math.abs(hist)) return;
 			
-			var factor = this.macdOptions.minHistRaisingFactor,
+			var macdFactor = this.macdOptions.minMACDRaisingFactor,
 				prevMacd = result.outMACD[result.outNBElement - i];
-			if (Math.abs(prevMacd) * factor > Math.abs(macd)) return;
+			if (Math.abs(prevMacd) * macdFactor > Math.abs(macd)) return;
 			
 			hist = prevHist;
 			macd = prevMacd;
@@ -93,6 +94,7 @@ module VolcoProcessor {
 		
 		minRaisingHists: number;
 		minHistRaisingFactor: number;
+		minMACDRaisingFactor: number;
 	}
 }
 
