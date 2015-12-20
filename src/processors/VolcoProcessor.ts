@@ -50,19 +50,20 @@ class VolcoProcessor implements IProcessor {
 		for (var i = 2; i < this.macdOptions.maxHists; i++) {
 			var prevHist = result.outMACDHist[result.outNBElement - i];
 			
-			if (
-				this.mathSign(prevHist) != this.mathSign(hist) &&
-				i > this.macdOptions.minRaisingHists
-			) {
-				return {
-					quote,
-					expiration: quote.rewards[0].expiration,
-					amount: 10,
-					payout: quote.rewards[0].payout,
-					direction: prevHist > 0 ?
-						BinaryOption.Direction.Put :
-						BinaryOption.Direction.Call
-				};
+			if (this.mathSign(prevHist) != this.mathSign(hist)) {
+				if (i > this.macdOptions.minRaisingHists) {
+					return {
+						quote,
+						expiration: quote.rewards[0].expiration,
+						amount: 10,
+						payout: quote.rewards[0].payout,
+						direction: prevHist > 0 ?
+							BinaryOption.Direction.Put :
+							BinaryOption.Direction.Call
+					};
+				} else {
+					return;
+				}
 			}
 			
 			if (Math.abs(prevHist) > Math.abs(hist)) return;
