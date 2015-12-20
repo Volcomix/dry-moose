@@ -1,5 +1,4 @@
 /// <reference path="../../typings/tsd.d.ts" />
-var Q = require('q');
 var BinaryOption = require('../documents/options/BinaryOption');
 /**
  * Dummy quote processor :
@@ -32,7 +31,7 @@ var DummyProcessor = (function () {
             }
         }
         this.lastQuote = quote;
-        return Q(option);
+        return option;
     };
     return DummyProcessor;
 })();

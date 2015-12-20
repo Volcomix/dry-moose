@@ -78,9 +78,7 @@ class Supervisor {
 			if (portfolio <= 0) {
 				throw new Error('Portfolio is empty... Game Over!');
 			}
-			return this.process(portfolio, quote);
-		})
-		.then(option => {
+			var option = this.process(portfolio, quote);
 			if (option) {
 				return this.invest(quote, option);
 			}
@@ -136,7 +134,7 @@ class Supervisor {
 		});
 	}
 	
-	private process(portfolio: number, quote: Quote): Q.Promise<Option> {
+	private process(portfolio: number, quote: Quote): Option {
 		return this.processor.process(portfolio, quote, !!this.pendingOption);
 	}
 	
