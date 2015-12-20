@@ -40,8 +40,8 @@ describe('GenericASCIIM1', function() {
 								low: 1.095050, close: 1.095060,
 								volume: 0,
 								rewards: [{
-									countdown: new Date('2015-06-01 00:50:00-0500'),
-									expiration: new Date('2015-06-01 01:00:00-0500'),
+									countdown: new Date('2015-06-01 00:20:00-0500'),
+									expiration: new Date('2015-06-01 00:30:00-0500'),
 									payout: 0.75,
 								}]
 							});
@@ -53,8 +53,8 @@ describe('GenericASCIIM1', function() {
 								low: 1.095000, close: 1.095020,
 								volume: 0,
 								rewards: [{
-									countdown: new Date('2015-06-01 00:50:00-0500'),
-									expiration: new Date('2015-06-01 01:00:00-0500'),
+									countdown: new Date('2015-06-01 00:20:00-0500'),
+									expiration: new Date('2015-06-01 00:30:00-0500'),
 									payout: 0.75,
 								}]
 							});
@@ -66,8 +66,8 @@ describe('GenericASCIIM1', function() {
 								low: 1.095020, close: 1.095080,
 								volume: 0,
 								rewards: [{
-									countdown: new Date('2015-06-01 00:50:00-0500'),
-									expiration: new Date('2015-06-01 01:00:00-0500'),
+									countdown: new Date('2015-06-01 00:20:00-0500'),
+									expiration: new Date('2015-06-01 00:30:00-0500'),
 									payout: 0.75,
 								}]
 							});

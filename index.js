@@ -14,8 +14,8 @@ var downloadDir = os.type() == 'Linux' ? 'Téléchargements' : 'Downloads',
 	baseDir = path.join(os.homedir(), downloadDir);
 
 var rewards = [{
-	countdown: moment({ minutes: 10 }),
-	expiration: moment({ minutes: 30 }),
+	countdown: moment({ minutes: 10 }).toDate(),
+	expiration: moment({ minutes: 30 }).toDate(),
 	payout: 0.75
 }];
 

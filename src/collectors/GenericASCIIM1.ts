@@ -42,22 +42,24 @@ class GenericASCIIM1 implements ICollector {
                     low: low,
                     close: close,
                     volume: volume,
-                    rewards: this.rewards.map<Reward>(function(reward: Reward) {
-                        var expirationOffset = moment(reward.expiration);
-                        var minutes = expirationOffset.minutes();
+                    rewards: this.rewards.map<Reward>((reward: Reward) => {
+                        
+                        var expirationOffset = this.getOffset(reward.expiration),
+                            countdownOffset = this.getOffset(reward.countdown);
                         
                         var expiration = dateTime.clone()
-                        .set('minutes', minutes * Math.ceil(dateTime.minutes() / minutes))
-                        .set('seconds', 0)
-                        .add({ hours: expirationOffset.hours(), minutes: minutes });
+                        .seconds(0)
+                        .minutes(
+                            expirationOffset *
+                            Math.ceil(
+                                (dateTime.minutes() + countdownOffset) /
+                                expirationOffset
+                            )
+                        );
                         
-                        var countdownOffset = moment(reward.countdown);
-                        
-                        var countdown = expiration.clone()
-                        .subtract({
-                            hours: countdownOffset.hours(),
-                            minutes: countdownOffset.minutes()
-                        });
+                        var countdown = expiration
+                        .clone()
+                        .subtract({ minutes: countdownOffset });
                         
                         return {
                             countdown: countdown.toDate(),
@@ -72,6 +74,14 @@ class GenericASCIIM1 implements ICollector {
             
             rl.on('close', resolve);
         });
+    }
+    
+    private getOffset = (date: Date) => {
+        var offset = moment(date);
+        return moment.duration({
+            hours: offset.hours(),
+            minutes: offset.minutes()
+        }).asMinutes();
     }
 }
 

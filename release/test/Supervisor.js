@@ -61,8 +61,8 @@ describe('Supervisor', function () {
             ])
                 .then(function (result) {
                 result.should.deep.equal([
-                    { _id: BinaryOption.Direction.Call, count: 24 },
-                    { _id: BinaryOption.Direction.Put, count: 22 }
+                    { _id: BinaryOption.Direction.Call, count: 25 },
+                    { _id: BinaryOption.Direction.Put, count: 23 }
                 ]);
                 return Q.ninvoke(DbManager.db.collection('options'), 'aggregate', [
                     { $match: {
@@ -92,8 +92,8 @@ describe('Supervisor', function () {
             ])
                 .then(function (result) {
                 result.should.deep.equal([
-                    { _id: 17.5, count: 24 },
-                    { _id: 0, count: 22 }
+                    { _id: 17.5, count: 25 },
+                    { _id: 0, count: 23 }
                 ]);
                 return Q.ninvoke(DbManager.db.collection('gains'), 'aggregate', [
                     { $match: { dateTime: { $in: [
@@ -114,7 +114,7 @@ describe('Supervisor', function () {
         it('should update portfolio', function () {
             return Q.ninvoke(DbManager.db.collection('portfolio'), 'count')
                 .then(function (count) {
-                count.should.equal(92);
+                count.should.equal(96);
                 return Q.ninvoke(DbManager.db.collection('portfolio'), 'aggregate', [
                     { $sort: { dateTime: -1 } },
                     { $limit: 1 },
@@ -124,7 +124,7 @@ describe('Supervisor', function () {
                 .spread(function (portfolio) {
                 portfolio.should.deep.equal({
                     dateTime: new Date('2015-06-02 00:00:00-0500'),
-                    value: 60
+                    value: 57.5
                 });
             });
         });

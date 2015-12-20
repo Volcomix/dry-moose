@@ -171,7 +171,7 @@ gulp.task('run:db', ['db:clean', 'build'], function() {
 		processor = new VolcoProcessor(60, 60, {
 			fastPeriod: 12, slowPeriod: 26, signalPeriod: 9,
 			maxHists: 10, minHistHeight: 0.00007, maxHistHeight: 0.001,
-			minRaisingHists: 1, minHistRaisingFactor: 0.7
+			minRaisingHists: 3, minHistRaisingFactor: 1.0
 		}),
 		investor = new ConsoleInvestor(),
 		celebrator = new DemoCelebrator(),

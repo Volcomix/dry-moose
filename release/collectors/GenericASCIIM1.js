@@ -7,6 +7,13 @@ var GenericASCIIM1 = (function () {
     function GenericASCIIM1(filename, rewards) {
         this.filename = filename;
         this.rewards = rewards;
+        this.getOffset = function (date) {
+            var offset = moment(date);
+            return moment.duration({
+                hours: offset.hours(),
+                minutes: offset.minutes()
+            }).asMinutes();
+        };
     }
     GenericASCIIM1.prototype.collect = function () {
         var _this = this;
@@ -33,18 +40,15 @@ var GenericASCIIM1 = (function () {
                     close: close,
                     volume: volume,
                     rewards: _this.rewards.map(function (reward) {
-                        var expirationOffset = moment(reward.expiration);
-                        var minutes = expirationOffset.minutes();
+                        var expirationOffset = _this.getOffset(reward.expiration), countdownOffset = _this.getOffset(reward.countdown);
                         var expiration = dateTime.clone()
-                            .set('minutes', minutes * Math.ceil(dateTime.minutes() / minutes))
-                            .set('seconds', 0)
-                            .add({ hours: expirationOffset.hours(), minutes: minutes });
-                        var countdownOffset = moment(reward.countdown);
-                        var countdown = expiration.clone()
-                            .subtract({
-                            hours: countdownOffset.hours(),
-                            minutes: countdownOffset.minutes()
-                        });
+                            .seconds(0)
+                            .minutes(expirationOffset *
+                            Math.ceil((dateTime.minutes() + countdownOffset) /
+                                expirationOffset));
+                        var countdown = expiration
+                            .clone()
+                            .subtract({ minutes: countdownOffset });
                         return {
                             countdown: countdown.toDate(),
                             expiration: expiration.toDate(),
