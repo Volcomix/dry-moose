@@ -47,34 +47,48 @@ class VolcoProcessor implements IProcessor {
 		if (Math.abs(hist) < this.macdOptions.minHistHeight ||
 			Math.abs(hist) > this.macdOptions.maxHistHeight) return;
 		
-		for (var i = 2; i < this.macdOptions.maxAfterCross; i++) {
+        var maxIter = this.macdOptions.maxAfterCross + this.macdOptions.minBeforeCross,
+            crossIdx = -1,
+            crossSign = 0;
+		for (var i = 2; i < maxIter; i++) {
 			var prevHist = result.outMACDHist[result.outNBElement - i];
 			
-			if (this.mathSign(prevHist) != this.mathSign(hist)) {
-				if (i > this.macdOptions.minRaisingHists) {
-					return {
-						quote,
-						expiration: quote.rewards[0].expiration,
-						amount: 10,
-						payout: quote.rewards[0].payout,
-						direction: prevHist > 0 ?
-							BinaryOption.Direction.Put :
-							BinaryOption.Direction.Call
-					};
-				} else {
-					return;
-				}
-			}
-			
-			var histFactor = this.macdOptions.minHistRaisingFactor;
-			if (Math.abs(prevHist) * histFactor > Math.abs(hist)) return;
-			
-			var macdFactor = this.macdOptions.minMACDRaisingFactor,
-				prevMacd = result.outMACD[result.outNBElement - i];
-			if (Math.abs(prevMacd) * macdFactor > Math.abs(macd)) return;
-			
-			hist = prevHist;
-			macd = prevMacd;
+            if (crossIdx > -1) {
+                if (this.mathSign(prevHist) == crossSign) {
+                    if (i - crossIdx > this.macdOptions.minBeforeCross) {
+                        return {
+                            quote,
+                            expiration: quote.rewards[0].expiration,
+                            amount: 10,
+                            payout: quote.rewards[0].payout,
+                            direction: prevHist > 0 ?
+                                BinaryOption.Direction.Put :
+                                BinaryOption.Direction.Call
+                        };
+                    }
+                } else {
+                    return;
+                }
+            } else {
+                if (this.mathSign(prevHist) != this.mathSign(hist)) {
+                    if (i > this.macdOptions.minRaisingHists) {
+                        crossIdx = i;
+                        crossSign = this.mathSign(prevHist);
+                    } else {
+                        return;
+                    }
+                }
+                
+                var histFactor = this.macdOptions.minHistRaisingFactor;
+                if (Math.abs(prevHist) * histFactor > Math.abs(hist)) return;
+                
+                var macdFactor = this.macdOptions.minMACDRaisingFactor,
+                    prevMacd = result.outMACD[result.outNBElement - i];
+                if (Math.abs(prevMacd) * macdFactor > Math.abs(macd)) return;
+                
+                hist = prevHist;
+                macd = prevMacd;
+            }
 		}
 	}
 	
@@ -87,6 +101,7 @@ module VolcoProcessor {
 		slowPeriod: number;
 		signalPeriod: number;
 		
+        minBeforeCross: number;
 		maxAfterCross: number;
 		
 		minHistHeight: number;

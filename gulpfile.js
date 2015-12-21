@@ -169,9 +169,10 @@ gulp.task('run:db', ['db:clean'], function() {
 		DemoCelebrator = require('./release/celebrators/DemoCelebrator'),
 		DemoCapacitor = require('./release/capacitors/DemoCapacitor'),
 		collector = new DbCollector('eurusd', 0),
-		processor = new VolcoProcessor(60, 20, {
+		processor = new VolcoProcessor(90, 20, {
 			fastPeriod: 12, slowPeriod: 26, signalPeriod: 9,
-			maxAfterCross: 20, minHistHeight: 0.00005, maxHistHeight: 0.01,
+			minBeforeCross: 14, maxAfterCross: 10,
+            minHistHeight: 0.00005, maxHistHeight: 0.01,
 			minRaisingHists: 5, minHistRaisingFactor: 0.8, minMACDRaisingFactor: 1.0
 		}),
 		investor = new ConsoleInvestor(),
