@@ -47,15 +47,16 @@ class VolcoProcessor implements IProcessor {
 		if (Math.abs(hist) < this.macdOptions.minHistHeight ||
 			Math.abs(hist) > this.macdOptions.maxHistHeight) return;
 		
-        var maxIter = this.macdOptions.maxAfterCross + this.macdOptions.minBeforeCross,
+        var { maxAfterCross, minBeforeCross } = this.macdOptions,
+            maxIter = maxAfterCross + minBeforeCross + 1,
             crossIdx = -1,
             crossSign = 0;
-		for (var i = 2; i < maxIter; i++) {
+		for (var i = 2; i <= maxIter; i++) {
 			var prevHist = result.outMACDHist[result.outNBElement - i];
 			
             if (crossIdx > -1) {
                 if (this.mathSign(prevHist) == crossSign) {
-                    if (i - crossIdx > this.macdOptions.minBeforeCross) {
+                    if (i - crossIdx >= this.macdOptions.minBeforeCross) {
                         return {
                             quote,
                             expiration: quote.rewards[0].expiration,

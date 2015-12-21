@@ -28,12 +28,12 @@ var VolcoProcessor = (function () {
         if (Math.abs(hist) < this.macdOptions.minHistHeight ||
             Math.abs(hist) > this.macdOptions.maxHistHeight)
             return;
-        var maxIter = this.macdOptions.maxAfterCross + this.macdOptions.minBeforeCross, crossIdx = -1, crossSign = 0;
-        for (var i = 2; i < maxIter; i++) {
+        var _a = this.macdOptions, maxAfterCross = _a.maxAfterCross, minBeforeCross = _a.minBeforeCross, maxIter = maxAfterCross + minBeforeCross + 1, crossIdx = -1, crossSign = 0;
+        for (var i = 2; i <= maxIter; i++) {
             var prevHist = result.outMACDHist[result.outNBElement - i];
             if (crossIdx > -1) {
                 if (this.mathSign(prevHist) == crossSign) {
-                    if (i - crossIdx > this.macdOptions.minBeforeCross) {
+                    if (i - crossIdx >= this.macdOptions.minBeforeCross) {
                         return {
                             quote: quote,
                             expiration: quote.rewards[0].expiration,
