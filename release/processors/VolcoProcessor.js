@@ -51,7 +51,7 @@ var VolcoProcessor = (function () {
             }
             else {
                 if (this.mathSign(prevHist) != this.mathSign(hist)) {
-                    if (i > this.macdOptions.minRaisingHists) {
+                    if (i > this.macdOptions.minAfterCross) {
                         crossIdx = i;
                         crossSign = this.mathSign(prevHist);
                     }

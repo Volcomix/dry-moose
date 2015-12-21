@@ -72,7 +72,7 @@ class VolcoProcessor implements IProcessor {
                 }
             } else {
                 if (this.mathSign(prevHist) != this.mathSign(hist)) {
-                    if (i > this.macdOptions.minRaisingHists) {
+                    if (i > this.macdOptions.minAfterCross) {
                         crossIdx = i;
                         crossSign = this.mathSign(prevHist);
                     } else {
@@ -103,12 +103,12 @@ module VolcoProcessor {
 		signalPeriod: number;
 		
         minBeforeCross: number;
+		minAfterCross: number;
 		maxAfterCross: number;
 		
 		minHistHeight: number;
 		maxHistHeight: number;
 		
-		minRaisingHists: number;
 		minHistRaisingFactor: number;
 		minMACDRaisingFactor: number;
 	}
