@@ -3,10 +3,12 @@ var moment = require('moment');
 var TA = require("../../build/Release/ta-lib");
 var BinaryOption = require('../documents/options/BinaryOption');
 var VolcoProcessor = (function () {
-    function VolcoProcessor(quotesCount, maxMinutes, macdOptions) {
+    function VolcoProcessor(quotesCount, minMinutes, maxMinutes, macdOptions, maCrossOptions) {
         this.quotesCount = quotesCount;
+        this.minMinutes = minMinutes;
         this.maxMinutes = maxMinutes;
         this.macdOptions = macdOptions;
+        this.maCrossOptions = maCrossOptions;
         this.closes = [];
     }
     VolcoProcessor.prototype.process = function (portfolio, quote, isPendingOption) {
@@ -17,20 +19,24 @@ var VolcoProcessor = (function () {
         else {
             return;
         }
-        if (isPendingOption ||
-            moment(quote.rewards[0].expiration)
-                .diff(moment(quote.dateTime), 'minutes') > this.maxMinutes)
+        if (isPendingOption)
             return;
-        var result = TA.MACD(0, this.closes.length - 1, this.closes, this.macdOptions.fastPeriod, this.macdOptions.slowPeriod, this.macdOptions.signalPeriod);
-        if (result.outNBElement < this.macdOptions.maxAfterCross)
+        var expiration = moment(quote.rewards[0].expiration)
+            .diff(moment(quote.dateTime), 'minutes');
+        if (expiration < this.minMinutes || expiration > this.maxMinutes)
             return;
-        var hist = result.outMACDHist[result.outNBElement - 1], macd = result.outMACD[result.outNBElement - 1];
+        var macd = TA.MACD(0, this.closes.length - 1, this.closes, this.macdOptions.fastPeriod, this.macdOptions.slowPeriod, this.macdOptions.signalPeriod);
+        var maFast = TA.SMA(0, this.closes.length - 1, this.closes, this.maCrossOptions.fastPeriod);
+        var maSlow = TA.SMA(0, this.closes.length - 1, this.closes, this.maCrossOptions.slowPeriod);
+        if (macd.outNBElement < this.macdOptions.maxAfterCross)
+            return;
+        var hist = macd.outMACDHist[macd.outNBElement - 1], macdVal = macd.outMACD[macd.outNBElement - 1];
         if (Math.abs(hist) < this.macdOptions.minHistHeight ||
             Math.abs(hist) > this.macdOptions.maxHistHeight)
             return;
         var _a = this.macdOptions, maxAfterCross = _a.maxAfterCross, minBeforeCross = _a.minBeforeCross, maxIter = maxAfterCross + minBeforeCross + 1, crossIdx = -1, crossSign = 0;
         for (var i = 2; i <= maxIter; i++) {
-            var prevHist = result.outMACDHist[result.outNBElement - i];
+            var prevHist = macd.outMACDHist[macd.outNBElement - i];
             if (crossIdx > -1) {
                 if (this.mathSign(prevHist) == crossSign) {
                     if (i - crossIdx >= this.macdOptions.minBeforeCross) {
@@ -62,11 +68,11 @@ var VolcoProcessor = (function () {
                 var histFactor = this.macdOptions.minHistRaisingFactor;
                 if (Math.abs(prevHist) * histFactor > Math.abs(hist))
                     return;
-                var macdFactor = this.macdOptions.minMACDRaisingFactor, prevMacd = result.outMACD[result.outNBElement - i];
-                if (Math.abs(prevMacd) * macdFactor > Math.abs(macd))
+                var macdFactor = this.macdOptions.minMACDRaisingFactor, prevMacd = macd.outMACD[macd.outNBElement - i];
+                if (Math.abs(prevMacd) * macdFactor > Math.abs(macdVal))
                     return;
                 hist = prevHist;
-                macd = prevMacd;
+                macdVal = prevMacd;
             }
         }
     };

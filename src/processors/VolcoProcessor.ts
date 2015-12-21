@@ -14,8 +14,10 @@ class VolcoProcessor implements IProcessor {
 	
 	constructor(
 		private quotesCount: number,
+        private minMinutes: number,
 		private maxMinutes: number,
-		private macdOptions: VolcoProcessor.MACDOptions
+		private macdOptions: VolcoProcessor.MACDOptions,
+        private maCrossOptions: VolcoProcessor.MACrossOptions
 	) { }
 	
 	process(portfolio: number, quote: Quote, isPendingOption: boolean): BinaryOption {
@@ -28,21 +30,34 @@ class VolcoProcessor implements IProcessor {
 			return;
 		}
 		
-		if (isPendingOption ||
-			moment(quote.rewards[0].expiration)
-			.diff(moment(quote.dateTime), 'minutes') > this.maxMinutes) return;
+		if (isPendingOption) return;
+        
+        var expiration = moment(quote.rewards[0].expiration)
+            .diff(moment(quote.dateTime), 'minutes');
+        
+        if (expiration < this.minMinutes || expiration > this.maxMinutes) return;
 		
-		var result = TA.MACD(
+		var macd = TA.MACD(
 			0, this.closes.length - 1, this.closes,
 			this.macdOptions.fastPeriod,
 			this.macdOptions.slowPeriod,
 			this.macdOptions.signalPeriod
 		);
+        
+        var maFast = TA.SMA(
+            0, this.closes.length - 1, this.closes,
+            this.maCrossOptions.fastPeriod
+        );
+        
+        var maSlow = TA.SMA(
+            0, this.closes.length - 1, this.closes,
+            this.maCrossOptions.slowPeriod
+        );
 		
-		if (result.outNBElement < this.macdOptions.maxAfterCross) return;
+		if (macd.outNBElement < this.macdOptions.maxAfterCross) return;
 		
-		var hist = result.outMACDHist[result.outNBElement - 1],
-			macd = result.outMACD[result.outNBElement - 1];
+		var hist = macd.outMACDHist[macd.outNBElement - 1],
+			macdVal = macd.outMACD[macd.outNBElement - 1];
 		
 		if (Math.abs(hist) < this.macdOptions.minHistHeight ||
 			Math.abs(hist) > this.macdOptions.maxHistHeight) return;
@@ -52,7 +67,7 @@ class VolcoProcessor implements IProcessor {
             crossIdx = -1,
             crossSign = 0;
 		for (var i = 2; i <= maxIter; i++) {
-			var prevHist = result.outMACDHist[result.outNBElement - i];
+			var prevHist = macd.outMACDHist[macd.outNBElement - i];
 			
             if (crossIdx > -1) {
                 if (this.mathSign(prevHist) == crossSign) {
@@ -84,11 +99,11 @@ class VolcoProcessor implements IProcessor {
                 if (Math.abs(prevHist) * histFactor > Math.abs(hist)) return;
                 
                 var macdFactor = this.macdOptions.minMACDRaisingFactor,
-                    prevMacd = result.outMACD[result.outNBElement - i];
-                if (Math.abs(prevMacd) * macdFactor > Math.abs(macd)) return;
+                    prevMacd = macd.outMACD[macd.outNBElement - i];
+                if (Math.abs(prevMacd) * macdFactor > Math.abs(macdVal)) return;
                 
                 hist = prevHist;
-                macd = prevMacd;
+                macdVal = prevMacd;
             }
 		}
 	}
@@ -112,6 +127,13 @@ module VolcoProcessor {
 		minHistRaisingFactor: number;
 		minMACDRaisingFactor: number;
 	}
+    
+    export interface MACrossOptions {
+        fastPeriod: number;
+        slowPeriod: number;
+        
+        maxAfterCross: number;
+    }
 }
 
 export = VolcoProcessor;
