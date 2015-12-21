@@ -3,15 +3,15 @@ var moment = require('moment');
 var TA = require("../../build/Release/ta-lib");
 var BinaryOption = require('../documents/options/BinaryOption');
 var VolcoProcessor = (function () {
-    function VolcoProcessor(minQuotes, maxMinutes, macdOptions) {
-        this.minQuotes = minQuotes;
+    function VolcoProcessor(quotesCount, maxMinutes, macdOptions) {
+        this.quotesCount = quotesCount;
         this.maxMinutes = maxMinutes;
         this.macdOptions = macdOptions;
         this.closes = [];
     }
     VolcoProcessor.prototype.process = function (portfolio, quote, isPendingOption) {
         this.closes.push(quote.close);
-        if (this.closes.length > this.minQuotes) {
+        if (this.closes.length > this.quotesCount) {
             this.closes.shift();
         }
         else {
@@ -22,13 +22,13 @@ var VolcoProcessor = (function () {
                 .diff(moment(quote.dateTime), 'minutes') > this.maxMinutes)
             return;
         var result = TA.MACD(0, this.closes.length - 1, this.closes, this.macdOptions.fastPeriod, this.macdOptions.slowPeriod, this.macdOptions.signalPeriod);
-        if (result.outNBElement < this.macdOptions.maxHists)
+        if (result.outNBElement < this.macdOptions.maxAfterCross)
             return;
         var hist = result.outMACDHist[result.outNBElement - 1], macd = result.outMACD[result.outNBElement - 1];
         if (Math.abs(hist) < this.macdOptions.minHistHeight ||
             Math.abs(hist) > this.macdOptions.maxHistHeight)
             return;
-        for (var i = 2; i < this.macdOptions.maxHists; i++) {
+        for (var i = 2; i < this.macdOptions.maxAfterCross; i++) {
             var prevHist = result.outMACDHist[result.outNBElement - i];
             if (this.mathSign(prevHist) != this.mathSign(hist)) {
                 if (i > this.macdOptions.minRaisingHists) {

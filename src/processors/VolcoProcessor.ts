@@ -13,7 +13,7 @@ class VolcoProcessor implements IProcessor {
 	private closes: number[] = [];
 	
 	constructor(
-		private minQuotes: number,
+		private quotesCount: number,
 		private maxMinutes: number,
 		private macdOptions: VolcoProcessor.MACDOptions
 	) { }
@@ -22,7 +22,7 @@ class VolcoProcessor implements IProcessor {
 		
 		this.closes.push(quote.close);
 		
-		if (this.closes.length > this.minQuotes) {
+		if (this.closes.length > this.quotesCount) {
 			this.closes.shift();
 		} else {
 			return;
@@ -39,7 +39,7 @@ class VolcoProcessor implements IProcessor {
 			this.macdOptions.signalPeriod
 		);
 		
-		if (result.outNBElement < this.macdOptions.maxHists) return;
+		if (result.outNBElement < this.macdOptions.maxAfterCross) return;
 		
 		var hist = result.outMACDHist[result.outNBElement - 1],
 			macd = result.outMACD[result.outNBElement - 1];
@@ -47,7 +47,7 @@ class VolcoProcessor implements IProcessor {
 		if (Math.abs(hist) < this.macdOptions.minHistHeight ||
 			Math.abs(hist) > this.macdOptions.maxHistHeight) return;
 		
-		for (var i = 2; i < this.macdOptions.maxHists; i++) {
+		for (var i = 2; i < this.macdOptions.maxAfterCross; i++) {
 			var prevHist = result.outMACDHist[result.outNBElement - i];
 			
 			if (this.mathSign(prevHist) != this.mathSign(hist)) {
@@ -87,7 +87,7 @@ module VolcoProcessor {
 		slowPeriod: number;
 		signalPeriod: number;
 		
-		maxHists: number;
+		maxAfterCross: number;
 		
 		minHistHeight: number;
 		maxHistHeight: number;

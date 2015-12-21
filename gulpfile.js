@@ -171,7 +171,7 @@ gulp.task('run:db', ['db:clean'], function() {
 		collector = new DbCollector('eurusd', 0),
 		processor = new VolcoProcessor(60, 20, {
 			fastPeriod: 12, slowPeriod: 26, signalPeriod: 9,
-			maxHists: 20, minHistHeight: 0.00005, maxHistHeight: 0.01,
+			maxAfterCross: 20, minHistHeight: 0.00005, maxHistHeight: 0.01,
 			minRaisingHists: 5, minHistRaisingFactor: 0.8, minMACDRaisingFactor: 1.0
 		}),
 		investor = new ConsoleInvestor(),
