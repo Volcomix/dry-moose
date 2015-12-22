@@ -8,6 +8,7 @@ var MACrossService = require('./services/MACrossService');
 var BollingerService = require('./services/BollingerService');
 var PortfolioService = require('./services/PortfolioService');
 var GainsService = require('./services/GainsService');
+var OptionsService = require('./services/OptionsService');
 var router = express.Router();
 router.get('/minutes/first', function (req, res, next) {
     var firstDate;
@@ -41,6 +42,32 @@ router.get('/minutes/last', function (req, res, next) {
 });
 router.get('/minutes/:dateTime', function (req, res, next) {
     getByMinute(moment(req.params.dateTime)).then(function (data) { return res.send(data); });
+});
+router.get('/previous/option/:dateTime', function (req, res, next) {
+    OptionsService.getPrevious(new Date(req.params.dateTime))
+        .then(function (result) {
+        if (result.length)
+            return getByMinute(moment(result[0].dateTime));
+    })
+        .then(function (data) {
+        if (data)
+            res.send(data);
+        else
+            res.sendStatus(404);
+    });
+});
+router.get('/next/option/:dateTime', function (req, res, next) {
+    OptionsService.getNext(new Date(req.params.dateTime))
+        .then(function (result) {
+        if (result.length)
+            return getByMinute(moment(result[0].dateTime));
+    })
+        .then(function (data) {
+        if (data)
+            res.send(data);
+        else
+            res.sendStatus(404);
+    });
 });
 function getByMinute(dateTime) {
     var roundedDateTime = dateTime.clone(); // Next operations mutates Moment object

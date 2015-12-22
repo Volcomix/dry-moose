@@ -20,16 +20,28 @@ var MonitoringStoreImpl = (function (_super) {
                     _this._data = receiveAction.data;
                     _this.emitChange();
                     break;
+                case ActionType.ReceiveFirstQuotes:
+                    var receiveAction = action;
+                    _this._data = receiveAction.data;
+                    _this.setStartXDomain();
+                    _this.emitChange();
+                    break;
                 case ActionType.ReceiveLastQuotes:
                     var receiveAction = action;
                     _this._data = receiveAction.data;
                     _this.setEndXDomain();
                     _this.emitChange();
                     break;
-                case ActionType.ReceiveFirstQuotes:
-                    var receiveAction = action;
-                    _this._data = receiveAction.data;
-                    _this.setStartXDomain();
+                case ActionType.ReceivePreviousOption:
+                    var optionAction = action;
+                    _this._data = optionAction.data;
+                    _this.setOptionXDomain(optionAction.dateTime);
+                    _this.emitChange();
+                    break;
+                case ActionType.ReceiveNextOption:
+                    var optionAction = action;
+                    _this._data = optionAction.data;
+                    _this.setOptionXDomain(optionAction.dateTime);
                     _this.emitChange();
                     break;
             }
@@ -58,6 +70,12 @@ var MonitoringStoreImpl = (function (_super) {
     MonitoringStoreImpl.prototype.setEndXDomain = function () {
         var endDateTime = this._data.endDate, startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
         this._resetXDomain = [startDateTime, endDateTime];
+    };
+    MonitoringStoreImpl.prototype.setOptionXDomain = function (dateTime) {
+        this._resetXDomain = [
+            moment(dateTime).subtract({ hour: 1 }).toDate(),
+            moment(dateTime).add({ hour: 1 }).toDate()
+        ];
     };
     return MonitoringStoreImpl;
 })(AbstractStore);

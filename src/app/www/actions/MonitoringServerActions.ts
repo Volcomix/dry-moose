@@ -27,6 +27,24 @@ export function receiveLast(data: MonitoringData) {
 	} as Receive);
 }
 
+export function receivePreviousOption(data: MonitoringData, dateTime: Date) {
+    AppDispatcher.dispatch({
+        actionType: ActionType.ReceivePreviousOption,
+        data, dateTime
+    } as ReceiveOption);
+}
+
+export function receiveNextOption(data: MonitoringData, dateTime: Date) {
+    AppDispatcher.dispatch({
+        actionType: ActionType.ReceiveNextOption,
+        data, dateTime
+    } as ReceiveOption);
+}
+
 export interface Receive extends IAction {
 	data: MonitoringData;
+}
+
+export interface ReceiveOption extends Receive {
+    dateTime: Date;
 }

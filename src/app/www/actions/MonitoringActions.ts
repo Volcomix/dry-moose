@@ -13,3 +13,11 @@ export function getLast() {
 export function get(dateTime: Date) {
 	MonitoringUtils.get(dateTime);
 }
+
+export function getPreviousOption(dateTime: Date) {
+    MonitoringUtils.getPreviousOption(dateTime);
+}
+
+export function getNextOption(dateTime: Date) {
+    MonitoringUtils.getNextOption(dateTime);
+}

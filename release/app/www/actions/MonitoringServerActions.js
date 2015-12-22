@@ -22,3 +22,17 @@ function receiveLast(data) {
     });
 }
 exports.receiveLast = receiveLast;
+function receivePreviousOption(data, dateTime) {
+    AppDispatcher.dispatch({
+        actionType: ActionType.ReceivePreviousOption,
+        data: data, dateTime: dateTime
+    });
+}
+exports.receivePreviousOption = receivePreviousOption;
+function receiveNextOption(data, dateTime) {
+    AppDispatcher.dispatch({
+        actionType: ActionType.ReceiveNextOption,
+        data: data, dateTime: dateTime
+    });
+}
+exports.receiveNextOption = receiveNextOption;

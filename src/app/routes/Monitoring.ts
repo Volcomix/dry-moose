@@ -15,6 +15,7 @@ import MACrossService = require('./services/MACrossService');
 import BollingerService = require('./services/BollingerService');
 import PortfolioService = require('./services/PortfolioService');
 import GainsService = require('./services/GainsService');
+import OptionsService = require('./services/OptionsService');
 
 var router = express.Router();
 
@@ -52,6 +53,32 @@ router.get('/minutes/last', function(req, res, next) {
 
 router.get('/minutes/:dateTime', function(req, res, next) {
 	getByMinute(moment(req.params.dateTime)).then(data => res.send(data));
+});
+
+router.get('/previous/option/:dateTime', function(req, res, next) {
+    OptionsService.getPrevious(new Date(req.params.dateTime))
+    .then(result => {
+        if (result.length) return getByMinute(moment(result[0].dateTime));
+    })
+    .then(data => {
+        if (data)
+            res.send(data);
+        else
+            res.sendStatus(404);
+    });
+});
+
+router.get('/next/option/:dateTime', function(req, res, next) {
+    OptionsService.getNext(new Date(req.params.dateTime))
+    .then(result => {
+        if (result.length) return getByMinute(moment(result[0].dateTime));
+    })
+    .then(data => {
+        if (data)
+            res.send(data)
+        else
+            res.sendStatus(404);
+    });
 });
 
 function getByMinute(dateTime: moment.Moment): Q.Promise<MonitoringData> {

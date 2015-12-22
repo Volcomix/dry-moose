@@ -36,6 +36,13 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 			startDateTime = moment(endDateTime).subtract({ hours: 2 }).toDate();
 		this._resetXDomain = [startDateTime, endDateTime];
 	}
+    
+    private setOptionXDomain(dateTime: Date) {
+        this._resetXDomain = [
+            moment(dateTime).subtract({ hour: 1 }).toDate(),
+            moment(dateTime).add({ hour: 1 }).toDate()
+        ]; 
+    }
 	
 	constructor() {
 		super();
@@ -48,19 +55,33 @@ class MonitoringStoreImpl extends AbstractStore implements MonitoringStore {
 					this.emitChange();
 					break;
 					
-				case ActionType.ReceiveLastQuotes:
-					var receiveAction = action as MonitoringServerActions.Receive;
-					this._data = receiveAction.data;
-					this.setEndXDomain();
-					this.emitChange();
-					break;
-					
 				case ActionType.ReceiveFirstQuotes:
 					var receiveAction = action as MonitoringServerActions.Receive;
 					this._data = receiveAction.data;
 					this.setStartXDomain();
 					this.emitChange();
 					break;
+					
+				case ActionType.ReceiveLastQuotes:
+					var receiveAction = action as MonitoringServerActions.Receive;
+					this._data = receiveAction.data;
+					this.setEndXDomain();
+					this.emitChange();
+					break;
+                
+                case ActionType.ReceivePreviousOption:
+                    var optionAction = action as MonitoringServerActions.ReceiveOption;
+                    this._data = optionAction.data;
+                    this.setOptionXDomain(optionAction.dateTime)
+                    this.emitChange();
+                    break;
+                
+                case ActionType.ReceiveNextOption:
+                    var optionAction = action as MonitoringServerActions.ReceiveOption;
+                    this._data = optionAction.data;
+                    this.setOptionXDomain(optionAction.dateTime)
+                    this.emitChange();
+                    break;
 			}
 		});
 	}

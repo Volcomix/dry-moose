@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 var chai = require('chai');
-var chaiAsPromised = require("chai-as-promised");
+var chaiAsPromised = require('chai-as-promised');
 var Q = require('q');
 var moment = require('moment');
 var GenericASCIIM1 = require('../../collectors/GenericASCIIM1');

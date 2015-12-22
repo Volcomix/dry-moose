@@ -113,7 +113,7 @@ var Chart = (function (_super) {
     Object.defineProperty(Chart.prototype, "controls", {
         get: function () {
             if (this.state.monitoringData) {
-                return React.createElement(ChartControls, null);
+                return React.createElement(ChartControls, {"xScale": this.xScale});
             }
         },
         enumerable: true,

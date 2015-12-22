@@ -125,7 +125,7 @@ class Chart extends React.Component<Chart.Props, Chart.State> {
 	
 	private get controls() {
 		if (this.state.monitoringData) {
-			return <ChartControls />;
+			return <ChartControls xScale={this.xScale} />;
 		}
 	}
 	
