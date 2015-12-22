@@ -13,7 +13,7 @@ var ChartControls = (function (_super) {
         _super.apply(this, arguments);
     }
     ChartControls.prototype.render = function () {
-        return (React.createElement("div", {"className": 'chart-controls'}, React.createElement(Button, {"onClick": this.goToStart}, React.createElement("i", {"className": "material-icons"}, "skip_previous")), React.createElement(Button, {"onClick": this.goToEnd}, React.createElement("i", {"className": "material-icons"}, "skip_next"))));
+        return (React.createElement("div", {"className": 'chart-controls'}, React.createElement(Button, {"onClick": this.goToStart}, React.createElement("i", {"className": 'material-icons'}, "skip_previous")), React.createElement("div", null, React.createElement(Button, {"onClick": null}, React.createElement("i", {"className": 'material-icons'}, "fast_rewind")), React.createElement(Button, {"onClick": null}, React.createElement("i", {"className": 'material-icons'}, "fast_forward"))), React.createElement(Button, {"onClick": this.goToEnd}, React.createElement("i", {"className": 'material-icons'}, "skip_next"))));
     };
     ChartControls.prototype.goToStart = function () {
         MonitoringActions.getFirst();

@@ -76,7 +76,7 @@ describe('Supervisor', function() {
 		});
 		it('should buy options', function() {
 			return Q.ninvoke(DbManager.db.collection('options'), 'aggregate', [
-				{ $group: { "_id": "$direction", "count": { $sum: 1 }}}
+				{ $group: { _id: '$direction', count: { $sum: 1 }}}
 			])
 			.then(function(result) {
 				result.should.deep.equal([
@@ -110,7 +110,7 @@ describe('Supervisor', function() {
 		});
 		it('should get gains', function() {
 			return Q.ninvoke(DbManager.db.collection('gains'), 'aggregate', [
-				{ $group: { "_id": "$value", "count": { $sum: 1 }}}
+				{ $group: { _id: '$value', count: { $sum: 1 }}}
 			])
 			.then(function(result) {
 				result.should.deep.equal([

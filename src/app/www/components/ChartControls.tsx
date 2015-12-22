@@ -11,10 +11,18 @@ class ChartControls extends React.Component<{}, {}> {
 		return (
 			<div className='chart-controls'>
 				<Button onClick={this.goToStart}>
-					<i className="material-icons">skip_previous</i>
+					<i className='material-icons'>skip_previous</i>
 				</Button>
+                <div>
+                    <Button onClick={null}>
+                        <i className='material-icons'>fast_rewind</i>
+                    </Button>
+                    <Button onClick={null}>
+                        <i className='material-icons'>fast_forward</i>
+                    </Button>
+                </div>
 				<Button onClick={this.goToEnd}>
-					<i className="material-icons">skip_next</i>
+					<i className='material-icons'>skip_next</i>
 				</Button>
 			</div>
 		);

@@ -26,16 +26,16 @@ svg {
 .chart-controls {
 	pointer-events: none;
 	position: absolute;
-	bottom: 40px;
-	left: 30px;
-	right: 70px;
+	bottom: 34px;
+	left: 24px;
+	right: 64px;
 	display: flex;
 	justify-content: space-between;
 }
 
 .chart-controls button {
 	pointer-events: auto;
-	margin: 0px;
+	margin: 4px;
 }
 
 .overlay {

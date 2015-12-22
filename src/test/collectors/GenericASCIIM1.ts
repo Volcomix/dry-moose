@@ -1,7 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 
 import chai = require('chai');
-import chaiAsPromised = require("chai-as-promised");
+import chaiAsPromised = require('chai-as-promised');
 import Q = require('q');
 import moment = require('moment');
 
