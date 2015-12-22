@@ -170,10 +170,10 @@ gulp.task('run:db', ['db:clean'], function() {
 		DemoCapacitor = require('./release/capacitors/DemoCapacitor'),
 		collector = new DbCollector('eurusd', 0),
 		processor = new VolcoProcessor(
-            90, 0, 20,
+            90, 0, 60,
             {
                 fastPeriod: 12, slowPeriod: 26, signalPeriod: 9,
-                minBeforeCross: 14, minAfterCross: 1, maxAfterCross: 5,
+                minBeforeCross: 14, minAfterCross: 0, maxAfterCross: 5,
                 minHistHeight: 0.00005, maxHistHeight: 0.01,
                 minHistRaisingFactor: 0.8, minMACDRaisingFactor: 1.0
             },
