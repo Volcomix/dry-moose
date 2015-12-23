@@ -26,7 +26,10 @@ router.get('/minutes/first', function(req, res, next) {
 		PortfolioService.getFirstDate(),
 		GainsService.getFirstDate()])
 	.then((results) => {
-		firstDate = moment.min(...results.map(result => moment(result[0].dateTime)));
+		firstDate = moment.min(...results
+            .filter(result => !!result[0])
+            .map(result => moment(result[0].dateTime))
+        );
 		return getByMinute(firstDate);
 	})
 	.then(data => {
@@ -42,7 +45,10 @@ router.get('/minutes/last', function(req, res, next) {
 		PortfolioService.getLastDate(),
 		GainsService.getLastDate()])
 	.then((results) => {
-		lastDate = moment.max(...results.map(result => moment(result[0].dateTime)));
+		lastDate = moment.max(...results
+            .filter(result => !!result[0])
+            .map(result => moment(result[0] && result[0].dateTime))
+        );
 		return getByMinute(lastDate);
 	})
 	.then(data => {

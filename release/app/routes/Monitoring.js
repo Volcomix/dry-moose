@@ -17,7 +17,9 @@ router.get('/minutes/first', function (req, res, next) {
         PortfolioService.getFirstDate(),
         GainsService.getFirstDate()])
         .then(function (results) {
-        firstDate = moment.min.apply(moment, results.map(function (result) { return moment(result[0].dateTime); }));
+        firstDate = moment.min.apply(moment, results
+            .filter(function (result) { return !!result[0]; })
+            .map(function (result) { return moment(result[0].dateTime); }));
         return getByMinute(firstDate);
     })
         .then(function (data) {
@@ -32,7 +34,9 @@ router.get('/minutes/last', function (req, res, next) {
         PortfolioService.getLastDate(),
         GainsService.getLastDate()])
         .then(function (results) {
-        lastDate = moment.max.apply(moment, results.map(function (result) { return moment(result[0].dateTime); }));
+        lastDate = moment.max.apply(moment, results
+            .filter(function (result) { return !!result[0]; })
+            .map(function (result) { return moment(result[0] && result[0].dateTime); }));
         return getByMinute(lastDate);
     })
         .then(function (data) {
