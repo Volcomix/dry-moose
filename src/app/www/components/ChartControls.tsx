@@ -29,6 +29,9 @@ class ChartControls extends React.Component<ChartControls.Props, {}> {
                     <Button onClick={this.goToPreviousOption}>
                         <i className='material-icons'>fast_rewind</i>
                     </Button>
+                    <Button onClick={this.refresh}>
+                        <i className='material-icons'>refresh</i>
+                    </Button>
                     <Button onClick={this.goToNextOption}>
                         <i className='material-icons'>fast_forward</i>
                     </Button>
@@ -45,6 +48,9 @@ class ChartControls extends React.Component<ChartControls.Props, {}> {
     
 	private goToEnd = () =>
         MonitoringActions.getLast();
+    
+    private refresh = () =>
+        MonitoringActions.get(this.xDomainCenter);
     
     private goToPreviousOption = () =>
         MonitoringActions.getPreviousOption(this.xDomainCenter);

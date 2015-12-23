@@ -19,6 +19,9 @@ var ChartControls = (function (_super) {
         this.goToEnd = function () {
             return MonitoringActions.getLast();
         };
+        this.refresh = function () {
+            return MonitoringActions.get(_this.xDomainCenter);
+        };
         this.goToPreviousOption = function () {
             return MonitoringActions.getPreviousOption(_this.xDomainCenter);
         };
@@ -35,7 +38,7 @@ var ChartControls = (function (_super) {
         configurable: true
     });
     ChartControls.prototype.render = function () {
-        return (React.createElement("div", {"className": 'chart-controls'}, React.createElement(Button, {"onClick": this.goToStart}, React.createElement("i", {"className": 'material-icons'}, "skip_previous")), React.createElement("div", null, React.createElement(Button, {"onClick": this.goToPreviousOption}, React.createElement("i", {"className": 'material-icons'}, "fast_rewind")), React.createElement(Button, {"onClick": this.goToNextOption}, React.createElement("i", {"className": 'material-icons'}, "fast_forward"))), React.createElement(Button, {"onClick": this.goToEnd}, React.createElement("i", {"className": 'material-icons'}, "skip_next"))));
+        return (React.createElement("div", {"className": 'chart-controls'}, React.createElement(Button, {"onClick": this.goToStart}, React.createElement("i", {"className": 'material-icons'}, "skip_previous")), React.createElement("div", null, React.createElement(Button, {"onClick": this.goToPreviousOption}, React.createElement("i", {"className": 'material-icons'}, "fast_rewind")), React.createElement(Button, {"onClick": this.refresh}, React.createElement("i", {"className": 'material-icons'}, "refresh")), React.createElement(Button, {"onClick": this.goToNextOption}, React.createElement("i", {"className": 'material-icons'}, "fast_forward"))), React.createElement(Button, {"onClick": this.goToEnd}, React.createElement("i", {"className": 'material-icons'}, "skip_next"))));
     };
     return ChartControls;
 })(React.Component);
