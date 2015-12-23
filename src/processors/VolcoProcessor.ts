@@ -78,14 +78,21 @@ class VolcoProcessor implements IProcessor {
             if (step == 1 || step == 2) {
                 var curMacd = macd.outMACD[macd.outNBElement - i],
                     prevMacd = macd.outMACD[macd.outNBElement - i - 1],
+                    angleMacd = macd.outMACD[macd.outNBElement - i - 2],
                     macdFactor = this.macdOptions.minMACDRaisingFactor,
                     histFactor = this.macdOptions.minHistRaisingFactor;
                 
                 // => stop
-                if (Math.abs(curHist) < this.macdOptions.minHistHeight ||
+                if (
+                    Math.abs(curHist) < this.macdOptions.minHistHeight ||
                     Math.abs(curHist) > this.macdOptions.maxHistHeight ||
                     Math.abs(curHist) < Math.abs(prevHist) * histFactor ||
-                    Math.abs(curMacd) < Math.abs(prevMacd) * macdFactor) {
+                    Math.abs(curMacd) < Math.abs(prevMacd) * macdFactor ||
+                    this.mathDot(
+                        angleMacd, prevMacd, curMacd,
+                        this.macdOptions.angleNormFactor
+                    ) > this.macdOptions.angleMaxDotProduct
+                ) {
                     return;
                 };
             }
@@ -166,7 +173,15 @@ class VolcoProcessor implements IProcessor {
         }
 	}
 	
-	private mathSign (x) { return ((x === 0 || isNaN(x)) ? x : (x > 0 ? 1 : -1)); }
+	private mathSign(x) { return ((x === 0 || isNaN(x)) ? x : (x > 0 ? 1 : -1)); }
+    
+    private mathDot(p1: number, p2: number, p3: number, factor: number) {
+        var ax = -1 * factor, ay = p1 - p2,
+            bx = 1 * factor, by = p3 - p2,
+            al = Math.sqrt(ax * ax + ay * ay),
+            bl = Math.sqrt(bx * bx + by * by);
+        return (ax / al) * (bx / bl) + (ay / al) * (by / bl);
+    }
 }
 
 module VolcoProcessor {
@@ -184,6 +199,9 @@ module VolcoProcessor {
 		
 		minHistRaisingFactor: number;
 		minMACDRaisingFactor: number;
+        
+        angleNormFactor: number;
+        angleMaxDotProduct: number;
 	}
     
     export interface MACrossOptions {

@@ -175,7 +175,8 @@ gulp.task('run:db', ['db:clean'], function() {
                 fastPeriod: 12, slowPeriod: 26, signalPeriod: 9,
                 minBeforeCross: 14, minAfterCross: 0, maxAfterCross: 5,
                 minHistHeight: 0.00005, maxHistHeight: 0.01,
-                minHistRaisingFactor: 0.8, minMACDRaisingFactor: 1.0
+                minHistRaisingFactor: 0.8, minMACDRaisingFactor: 1.0,
+                angleNormFactor: 0.00001, angleMaxDotProduct: -0.1
             },
             { fastPeriod: 9, slowPeriod: 21, maxAfterCross: 5 }
         ),
