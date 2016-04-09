@@ -11,17 +11,18 @@ declare module 'ta-lib' {
      * optInTimePeriod:(From 2 to 100000)
      *    Number of period
      */
-    export function SMA(
+    function SMA(
         startIdx: number,
         endIdx: number,
         inReal: number[],
         optInTimePeriod: number // From 2 to 100000
-    ): {
-        retCode: number,
-        outBegIdx: number,
-        outNBElement: number,
-        outReal: number[]
-    };
+    ): SMA.Result
+    
+    module SMA {
+        interface Result extends TAResult {
+            outReal: number[];
+        }
+    }
     
     /**
      * TA_MACD - Moving Average Convergence/Divergence
@@ -40,21 +41,22 @@ declare module 'ta-lib' {
      * optInSignalPeriod:(From 1 to 100000)
      *    Smoothing for the signal line (nb of period)
      */
-    export function MACD(
+    function MACD(
         startIdx: number,
         endIdx: number,
         inReal: number[],
         optInFastPeriod: number, // From 2 to 100000
         optInSlowPeriod: number, // From 2 to 100000
         optInSignalPeriod: number // From 1 to 100000
-    ): {
-        retCode: number,
-        outBegIdx: number,
-        outNBElement: number,
-        outMACD: number[],
-        outMACDSignal: number[],
-        outMACDHist: number[]
-    };
+    ): MACD.Result
+    
+    module MACD {
+        interface Result extends TAResult {
+            outMACD: number[];
+            outMACDSignal: number[];
+            outMACDHist: number[];
+        } 
+    }
     
     /*
      * TA_BBANDS - Bollinger Bands
@@ -76,7 +78,7 @@ declare module 'ta-lib' {
      * optInMAType:
      *    Type of Moving Average
      */
-    export function BBANDS(
+    function BBANDS(
         startIdx: number,
         endIdx: number,
         inReal: number[],
@@ -84,13 +86,20 @@ declare module 'ta-lib' {
         optInNbDevUp: number, /* From TA_REAL_MIN to TA_REAL_MAX */
         optInNbDevDn: number, /* From TA_REAL_MIN to TA_REAL_MAX */
         optInMAType: MAType
-    ): {
-        retCode: number,
-        outBegIdx: number,
-        outNBElement: number,
-        outRealUpperBand: number[],
-        outRealMiddleBand: number[],
-        outRealLowerBand: number[]
+    ): BBANDS.Result
+    
+    module BBANDS {
+        interface Result extends TAResult {
+            outRealUpperBand: number[];
+            outRealMiddleBand: number[];
+            outRealLowerBand: number[];
+        }
+    }
+    
+    interface TAResult {
+        retCode: number;
+        outBegIdx: number;
+        outNBElement: number;
     }
     
     export const enum MAType { Sma, Ema, Wma, Dema, Tema, Trima, Kama, Mama, T3 }
