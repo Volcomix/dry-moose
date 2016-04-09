@@ -1,5 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-/// <reference path="./common/material-design-lite.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -16,8 +15,8 @@ var Loading = (function (_super) {
     };
     Loading.prototype.render = function () {
         var _this = this;
-        return (React.createElement("div", {"className": 'overlay'}, React.createElement("div", {"className": 'mdl-spinner mdl-js-spinner is-active', "ref": function (ref) { return _this.loadingElement = ref; }})));
+        return (React.createElement("div", {className: 'overlay'}, React.createElement("div", {className: 'mdl-spinner mdl-js-spinner is-active', ref: function (ref) { return _this.loadingElement = ref; }})));
     };
     return Loading;
-})(React.Component);
+}(React.Component));
 module.exports = Loading;

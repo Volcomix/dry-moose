@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 import Quote = require('./Quote');
 import MACD = require('./MACD');
 import MACross = require('./MACross');

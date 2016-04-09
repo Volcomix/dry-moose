@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var TA = require("../../../../build/Release/ta-lib");
 function get(quotes, fastPeriod, slowPeriod) {
     var fastResult = TA.SMA(0, quotes.length - 1, quotes.map(function (quote) { return quote.close; }), fastPeriod);

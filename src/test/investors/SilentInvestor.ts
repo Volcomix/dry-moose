@@ -1,5 +1,3 @@
-/// <reference path="../../../typings/tsd.d.ts" />
-
 import SilentInvestor = require('../../investors/SilentInvestor');
 import Option = require('../../documents/options/Option');
 import Quote = require('../../documents/Quote');

@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var fs = require('fs');
 var readline = require('readline');
 var Q = require('q');
@@ -62,5 +62,5 @@ var GenericASCIIM1 = (function () {
         });
     };
     return GenericASCIIM1;
-})();
+}());
 module.exports = GenericASCIIM1;

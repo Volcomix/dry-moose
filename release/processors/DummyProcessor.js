@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var BinaryOption = require('../documents/options/BinaryOption');
 /**
  * Dummy quote processor :
@@ -34,5 +34,5 @@ var DummyProcessor = (function () {
         return option;
     };
     return DummyProcessor;
-})();
+}());
 module.exports = DummyProcessor;

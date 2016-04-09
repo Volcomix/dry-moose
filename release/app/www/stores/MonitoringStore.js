@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -78,6 +78,6 @@ var MonitoringStoreImpl = (function (_super) {
         ];
     };
     return MonitoringStoreImpl;
-})(AbstractStore);
+}(AbstractStore));
 var MonitoringStore = new MonitoringStoreImpl();
 module.exports = MonitoringStore;

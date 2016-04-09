@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -33,7 +33,7 @@ var XCursor = (function (_super) {
     XCursor.prototype.render = function () {
         if (this.state.mouseX) {
             var dateTime = this.snapDateTime();
-            return (React.createElement("g", {"className": 'x cursor', "transform": 'translate(' + this.props.scale(dateTime) + ', 0)'}, React.createElement("line", {"y2": this.props.height}), React.createElement("rect", {x: -60, y: this.props.height, "width": 120, "height": 14}), React.createElement("text", {"dy": '.71em', y: this.props.height + 3}, this.dateFormat(dateTime))));
+            return (React.createElement("g", {className: 'x cursor', transform: 'translate(' + this.props.scale(dateTime) + ', 0)'}, React.createElement("line", {y2: this.props.height}), React.createElement("rect", {x: -60, y: this.props.height, width: 120, height: 14}), React.createElement("text", {dy: '.71em', y: this.props.height + 3}, this.dateFormat(dateTime))));
         }
         else {
             return null;
@@ -46,5 +46,5 @@ var XCursor = (function (_super) {
         return moment.max(moment.min(dateTime, maxDateTime), minDateTime).toDate();
     };
     return XCursor;
-})(React.Component);
+}(React.Component));
 module.exports = XCursor;

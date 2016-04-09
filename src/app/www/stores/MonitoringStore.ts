@@ -1,5 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-
 import moment = require('moment');
 
 import MonitoringData = require('../../../documents/MonitoringData');

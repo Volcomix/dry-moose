@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var Q = require('q');
 var d3 = require('d3');
 var moment = require('moment');
@@ -111,7 +111,7 @@ var OptionReceiver = (function () {
         configurable: true
     });
     return OptionReceiver;
-})();
+}());
 var OptionReceiver;
 (function (OptionReceiver) {
     (function (Direction) {

@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var ConsoleInvestor = (function () {
     function ConsoleInvestor() {
     }
@@ -6,5 +6,5 @@ var ConsoleInvestor = (function () {
         console.log(option);
     };
     return ConsoleInvestor;
-})();
+}());
 module.exports = ConsoleInvestor;

@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -95,7 +95,7 @@ var Chart = (function (_super) {
                     this.xScale.domain(this.state.resetXDomain);
                     this.zoom.x(this.xScale);
                 }
-                return (React.createElement("g", {"transform": 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {"height": height, "scale": this.xScale}), this.props.charts.map(function (ChartType, id) {
+                return (React.createElement("g", {transform: 'translate(' + margin.left + ', ' + margin.top + ')'}, React.createElement(XAxis, {height: height, scale: this.xScale}), this.props.charts.map(function (ChartType, id) {
                     var y = id ? dividersPx[id - 1] : 0, rowHeight;
                     if (id == dividersPx.length) {
                         rowHeight = height - y;
@@ -103,8 +103,8 @@ var Chart = (function (_super) {
                     else {
                         rowHeight = dividersPx[id] - y;
                     }
-                    return (React.createElement(ChartType, {"key": id, "monitoringData": _this.state.monitoringData, y: y, "width": width, "height": rowHeight, "xScale": _this.xScale, "zoom": _this.zoom}));
-                }), this.state.dividers.map(function (ratio, id) { return (React.createElement(Divider, {"key": id, "id": id, y: dividersPx[id], "width": width + margin.right, "drag": _this.drag})); })));
+                    return (React.createElement(ChartType, {key: id, monitoringData: _this.state.monitoringData, y: y, width: width, height: rowHeight, xScale: _this.xScale, zoom: _this.zoom}));
+                }), this.state.dividers.map(function (ratio, id) { return (React.createElement(Divider, {key: id, id: id, y: dividersPx[id], width: width + margin.right, drag: _this.drag})); })));
             }
         },
         enumerable: true,
@@ -113,7 +113,7 @@ var Chart = (function (_super) {
     Object.defineProperty(Chart.prototype, "controls", {
         get: function () {
             if (this.state.monitoringData) {
-                return React.createElement(ChartControls, {"xScale": this.xScale});
+                return React.createElement(ChartControls, {xScale: this.xScale});
             }
         },
         enumerable: true,
@@ -130,7 +130,7 @@ var Chart = (function (_super) {
     });
     Chart.prototype.render = function () {
         var _this = this;
-        return (React.createElement("div", {"className": 'chart'}, React.createElement("svg", {"ref": function (ref) { return _this.svg = ref; }}, this.chart), this.controls, this.loading));
+        return (React.createElement("div", {className: 'chart'}, React.createElement("svg", {ref: function (ref) { return _this.svg = ref; }}, this.chart), this.controls, this.loading));
     };
     /**
      * Get dividers ratios to separate charts.
@@ -145,5 +145,5 @@ var Chart = (function (_super) {
     };
     Chart.margin = { top: 20, right: 50, bottom: 30, left: 20 };
     return Chart;
-})(React.Component);
+}(React.Component));
 module.exports = Chart;

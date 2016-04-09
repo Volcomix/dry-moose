@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var d3 = require('d3');
 function updateYScale(accessors, xScale, yScale, height, yDomainPadding) {
     var extent = accessors.reduce(function (globalExtent, accessor) {

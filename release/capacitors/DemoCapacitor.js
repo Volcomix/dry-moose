@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var Q = require('q');
 var DbManager = require('../database/DbManager');
 var DemoCapacitor = (function () {
@@ -8,7 +8,7 @@ var DemoCapacitor = (function () {
     DemoCapacitor.prototype.getPortfolio = function () {
         var _this = this;
         var cursor = DbManager.db.collection('portfolio')
-            .find()
+            .find({})
             .sort({ dateTime: -1 })
             .limit(1);
         return Q.ninvoke(cursor, 'next')
@@ -17,5 +17,5 @@ var DemoCapacitor = (function () {
         });
     };
     return DemoCapacitor;
-})();
+}());
 module.exports = DemoCapacitor;

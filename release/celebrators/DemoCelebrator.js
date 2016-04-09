@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var Q = require('q');
 var DbManager = require('../database/DbManager');
 var BinaryOption = require('../documents/options/BinaryOption');
@@ -43,5 +43,5 @@ var DemoCelebrator = (function () {
         return option.amount * (1 + option.payout);
     };
     return DemoCelebrator;
-})();
+}());
 module.exports = DemoCelebrator;

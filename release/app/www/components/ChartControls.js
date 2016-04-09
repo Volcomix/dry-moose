@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -38,8 +38,8 @@ var ChartControls = (function (_super) {
         configurable: true
     });
     ChartControls.prototype.render = function () {
-        return (React.createElement("div", {"className": 'chart-controls'}, React.createElement(Button, {"onClick": this.goToStart}, React.createElement("i", {"className": 'material-icons'}, "skip_previous")), React.createElement("div", null, React.createElement(Button, {"onClick": this.goToPreviousOption}, React.createElement("i", {"className": 'material-icons'}, "fast_rewind")), React.createElement(Button, {"onClick": this.refresh}, React.createElement("i", {"className": 'material-icons'}, "refresh")), React.createElement(Button, {"onClick": this.goToNextOption}, React.createElement("i", {"className": 'material-icons'}, "fast_forward"))), React.createElement(Button, {"onClick": this.goToEnd}, React.createElement("i", {"className": 'material-icons'}, "skip_next"))));
+        return (React.createElement("div", {className: 'chart-controls'}, React.createElement(Button, {onClick: this.goToStart}, React.createElement("i", {className: 'material-icons'}, "skip_previous")), React.createElement("div", null, React.createElement(Button, {onClick: this.goToPreviousOption}, React.createElement("i", {className: 'material-icons'}, "fast_rewind")), React.createElement(Button, {onClick: this.refresh}, React.createElement("i", {className: 'material-icons'}, "refresh")), React.createElement(Button, {onClick: this.goToNextOption}, React.createElement("i", {className: 'material-icons'}, "fast_forward"))), React.createElement(Button, {onClick: this.goToEnd}, React.createElement("i", {className: 'material-icons'}, "skip_next"))));
     };
     return ChartControls;
-})(React.Component);
+}(React.Component));
 module.exports = ChartControls;

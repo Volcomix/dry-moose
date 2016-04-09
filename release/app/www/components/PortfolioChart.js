@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -26,11 +26,11 @@ var PortfolioChart = (function (_super) {
                 y: [this.yPortfolioAccessor]
             }
         ], this.props.xScale, this.yScale, this.props.height, PortfolioChart.yDomainPadding);
-        return (React.createElement(ChartRow, {"title": 'Portfolio', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": PortfolioChart.clipPath, "yTickFormat": PortfolioChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--orange', "data": this.props.monitoringData.portfolio, "xAccessor": this.xPortfolioAccessor, "yAccessor": this.yPortfolioAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": PortfolioChart.clipPath})));
+        return (React.createElement(ChartRow, {title: 'Portfolio', y: this.props.y, width: this.props.width, height: this.props.height, yScale: this.yScale, zoom: this.props.zoom, clipPath: PortfolioChart.clipPath, yTickFormat: PortfolioChart.yTickFormat}, React.createElement(LineSeries, {className: 'mdl-color-text--orange', data: this.props.monitoringData.portfolio, xAccessor: this.xPortfolioAccessor, yAccessor: this.yPortfolioAccessor, xScale: this.props.xScale, yScale: this.yScale, clipPath: PortfolioChart.clipPath})));
     };
     PortfolioChart.yTickFormat = d3.format(',.2f');
     PortfolioChart.yDomainPadding = 0.2;
     PortfolioChart.clipPath = 'clipPortfolio';
     return PortfolioChart;
-})(ChartBase);
+}(ChartBase));
 module.exports = PortfolioChart;

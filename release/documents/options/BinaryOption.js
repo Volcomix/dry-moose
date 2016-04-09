@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/tsd.d.ts" />
+"use strict";
 var BinaryOption;
 (function (BinaryOption) {
     (function (Direction) {

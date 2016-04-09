@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var TA = require("../../../../build/Release/ta-lib");
 function get(quotes, timePeriod, nbDev) {
     var result = TA.BBANDS(0, quotes.length - 1, quotes.map(function (quote) { return quote.close; }), timePeriod, nbDev, nbDev, 0 /* Sma */);

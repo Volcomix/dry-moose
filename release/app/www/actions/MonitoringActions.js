@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var MonitoringUtils = require('../utils/MonitoringUtils');
 function getFirst() {
     MonitoringUtils.getFirst();

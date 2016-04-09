@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var ActionType;
 (function (ActionType) {
     ActionType[ActionType["ReceiveQuotes"] = 0] = "ReceiveQuotes";

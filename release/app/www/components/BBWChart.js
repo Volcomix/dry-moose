@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -26,11 +26,11 @@ var BBWChart = (function (_super) {
                 y: [this.yBandWidthAccessor]
             }
         ], this.props.xScale, this.yScale, this.props.height, BBWChart.yDomainPadding);
-        return (React.createElement(ChartRow, {"title": 'Bollinger Bands Width', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": BBWChart.clipPath, "yTickFormat": BBWChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--teal', "data": this.props.monitoringData.bband, "xAccessor": this.xBBandAccessor, "yAccessor": this.yBandWidthAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": BBWChart.clipPath})));
+        return (React.createElement(ChartRow, {title: 'Bollinger Bands Width', y: this.props.y, width: this.props.width, height: this.props.height, yScale: this.yScale, zoom: this.props.zoom, clipPath: BBWChart.clipPath, yTickFormat: BBWChart.yTickFormat}, React.createElement(LineSeries, {className: 'mdl-color-text--teal', data: this.props.monitoringData.bband, xAccessor: this.xBBandAccessor, yAccessor: this.yBandWidthAccessor, xScale: this.props.xScale, yScale: this.yScale, clipPath: BBWChart.clipPath})));
     };
     BBWChart.yTickFormat = d3.format(',.5f');
     BBWChart.yDomainPadding = 0.2;
     BBWChart.clipPath = 'clipBBW';
     return BBWChart;
-})(ChartBase);
+}(ChartBase));
 module.exports = BBWChart;

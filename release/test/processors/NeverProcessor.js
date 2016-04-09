@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/tsd.d.ts" />
+"use strict";
 var chai = require('chai');
 var moment = require('moment');
 var NeverProcessor = require('../../processors/NeverProcessor');

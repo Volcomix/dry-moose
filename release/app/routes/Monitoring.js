@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/tsd.d.ts" />
+"use strict";
 var express = require('express');
 var Q = require('q');
 var moment = require('moment');

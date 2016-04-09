@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -17,8 +17,8 @@ var LineSeries = (function (_super) {
         this.line
             .x(function (d) { return _this.props.xScale(_this.props.xAccessor(d)); })
             .y(function (d) { return _this.props.yScale(_this.props.yAccessor(d)); });
-        return (React.createElement("path", {"className": 'line ' + this.props.className, d: this.line(this.props.data), "clipPath": 'url(#' + this.props.clipPath + ')'}));
+        return (React.createElement("path", {className: 'line ' + this.props.className, d: this.line(this.props.data), clipPath: 'url(#' + this.props.clipPath + ')'}));
     };
     return LineSeries;
-})(React.Component);
+}(React.Component));
 module.exports = LineSeries;

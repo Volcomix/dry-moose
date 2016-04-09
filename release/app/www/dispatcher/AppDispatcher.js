@@ -1,3 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var flux = require('flux');
 module.exports = new flux.Dispatcher();

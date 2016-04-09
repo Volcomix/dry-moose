@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 interface MACD {
 	dateTime: Date;
 	value: number;

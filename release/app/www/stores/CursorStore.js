@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -34,6 +34,6 @@ var CursorStoreImpl = (function (_super) {
         configurable: true
     });
     return CursorStoreImpl;
-})(AbstractStore);
+}(AbstractStore));
 var CursorStore = new CursorStoreImpl();
 module.exports = CursorStore;

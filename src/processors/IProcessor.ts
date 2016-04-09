@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 import Quote = require('../documents/Quote');
 import Option = require('../documents/options/Option');
 

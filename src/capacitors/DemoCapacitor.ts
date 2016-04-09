@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 import Q = require('q');
 
 import DbManager = require('../database/DbManager');
@@ -12,7 +10,7 @@ class DemoCapacitor implements ICapacitor {
 	
 	getPortfolio(): Q.Promise<number> {
 		var cursor = DbManager.db.collection('portfolio')
-		.find()
+		.find({})
 		.sort({ dateTime: -1 })
 		.limit(1);
 			

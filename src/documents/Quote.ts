@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 import Reward = require('./Reward');
 
 interface Quote {

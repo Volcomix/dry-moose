@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var express = require('express');
 var DbManager = require('../database/DbManager');
 var Monitoring = require('./routes/Monitoring');

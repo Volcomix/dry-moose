@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var ActionType = require('../constants/ActionType');
 function move(mouse) {

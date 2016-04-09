@@ -1,5 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-
 import MonitoringUtils = require('../utils/MonitoringUtils');
 
 export function getFirst() {

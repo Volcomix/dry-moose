@@ -1,5 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-
 import Q = require('q');
 import d3 = require('d3');
 import moment = require('moment');

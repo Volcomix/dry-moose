@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 /**
  * Never ask for any option
  */
@@ -9,5 +9,5 @@ var NeverProcessor = (function () {
         return null;
     };
     return NeverProcessor;
-})();
+}());
 module.exports = NeverProcessor;

@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var Q = require('q');
 var DbManager = require('../../../database/DbManager');
 function getPrevious(dateTime) {

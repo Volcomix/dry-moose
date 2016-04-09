@@ -1,5 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-
 import MonitoringData = require('../../../documents/MonitoringData');
 
 import IAction = require('./IAction');

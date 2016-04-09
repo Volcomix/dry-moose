@@ -1,5 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-
 import AppDispatcher = require('../dispatcher/AppDispatcher');
 import ActionType = require('../constants/ActionType');
 import IAction = require('./IAction');

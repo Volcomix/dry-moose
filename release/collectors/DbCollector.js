@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var Q = require('q');
 var DbManager = require('../database/DbManager');
 var DbCollector = (function () {
@@ -9,19 +9,18 @@ var DbCollector = (function () {
     DbCollector.prototype.collect = function () {
         var _this = this;
         return Q.Promise(function (resolve, reject, notify) {
-            var cursor = DbManager.db.collection(_this.collectionName).find();
+            var cursor = DbManager.db.collection(_this.collectionName).find({});
             if (_this.limit) {
                 cursor.limit(_this.limit);
             }
-            cursor.each(function (err, quote) {
+            cursor.forEach(function (quote) { return notify(quote); }, function (err) {
                 if (err)
                     return reject(err);
-                if (quote == null)
+                else
                     return resolve(null);
-                notify(quote);
             });
         });
     };
     return DbCollector;
-})();
+}());
 module.exports = DbCollector;

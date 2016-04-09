@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -29,8 +29,8 @@ var XAxis = (function (_super) {
         this.axis
             .scale(this.props.scale)
             .tickSize(-this.props.height, 0);
-        return (React.createElement("g", null, React.createElement("g", {"className": 'x axis', "transform": 'translate(0, ' + this.props.height + ')', "ref": function (ref) { return d3.select(ref).call(_this.axis); }}), React.createElement(XCursor, {"height": this.props.height, "scale": this.props.scale})));
+        return (React.createElement("g", null, React.createElement("g", {className: 'x axis', transform: 'translate(0, ' + this.props.height + ')', ref: function (ref) { return d3.select(ref).call(_this.axis); }}), React.createElement(XCursor, {height: this.props.height, scale: this.props.scale})));
     };
     return XAxis;
-})(React.Component);
+}(React.Component));
 module.exports = XAxis;

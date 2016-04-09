@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -42,7 +42,7 @@ var YCursor = (function (_super) {
     Object.defineProperty(YCursor.prototype, "cursor", {
         get: function () {
             if (this.state.mouseY) {
-                return (React.createElement("g", {"className": 'y cursor', "transform": 'translate(0, ' + this.state.mouseY + ')'}, React.createElement("line", {"x2": this.props.width}), React.createElement("rect", {x: this.props.width, y: -7, "width": 50, "height": 14}), React.createElement("text", {"dy": '.32em', x: this.props.width + 3}, this.label)));
+                return (React.createElement("g", {className: 'y cursor', transform: 'translate(0, ' + this.state.mouseY + ')'}, React.createElement("line", {x2: this.props.width}), React.createElement("rect", {x: this.props.width, y: -7, width: 50, height: 14}), React.createElement("text", {dy: '.32em', x: this.props.width + 3}, this.label)));
             }
         },
         enumerable: true,
@@ -50,10 +50,10 @@ var YCursor = (function (_super) {
     });
     YCursor.prototype.render = function () {
         var _this = this;
-        return (React.createElement("g", null, this.cursor, React.createElement("rect", {"className": 'pane', "ref": function (ref) { return _this.pane = ref; }, "width": this.props.width, "height": this.props.height, "onMouseOut": this.onMouseOut})));
+        return (React.createElement("g", null, this.cursor, React.createElement("rect", {className: 'pane', ref: function (ref) { return _this.pane = ref; }, width: this.props.width, height: this.props.height, onMouseOut: this.onMouseOut})));
     };
     return YCursor;
-})(React.Component);
+}(React.Component));
 var YCursor;
 (function (YCursor) {
     YCursor.defaultState = {

@@ -1,5 +1,3 @@
-/// <reference path="typings/tsd.d.ts" />
-
 var path = require('path');
 
 var gulp = require('gulp');
@@ -55,7 +53,10 @@ gulp.task('clean', function() {
 });
 
 gulp.task('build:src', function() {
-	return gulp.src(['src/**/*.ts?(x)', '!src/test/**', 'addon/**/*.d.ts'])
+	return gulp.src([
+            'src/**/*.ts?(x)', '!src/test/**', 'addon/**/*.d.ts',
+            'typings/main.d.ts', 'typings/main/**/*.d.ts'
+        ])
 		.pipe(tsc(tsProject))
 		.js.pipe(addon())
 		.pipe(gulp.dest('release'));
@@ -64,7 +65,7 @@ gulp.task('build:src', function() {
 gulp.task('build:app', function() {
 	return gulp.src([
 			'src/**/*.ts', '!src/test/**', '!src/app/www/**',
-			'addon/**/*.d.ts'
+			'addon/**/*.d.ts', 'typings/main.d.ts', 'typings/main/**/*.d.ts'
 		])
 		.pipe(tsc(tsProject))
 		.js.pipe(addon())
@@ -72,20 +73,29 @@ gulp.task('build:app', function() {
 });
 
 gulp.task('build:www', function() {
-	return gulp.src(['src/app/www/**/*.ts?(x)', 'src/documents/**/*.ts'])
+	return gulp.src([
+            'src/app/www/**/*.ts?(x)', 'src/documents/**/*.ts',
+            'typings/main.d.ts', 'typings/main/**/*.d.ts'
+        ])
 		.pipe(tsc(tsProject))
 		.js.pipe(gulp.dest('release'));
 });
 
 gulp.task('build:test', function() {
-	return gulp.src(['src/test/**/*.ts', 'addon/**/*.d.ts'])
+	return gulp.src([
+            'src/test/**/*.ts', 'addon/**/*.d.ts',
+            'typings/main.d.ts', 'typings/main/**/*.d.ts'
+        ])
 		.pipe(tsc({ target: 'ES5', module: 'commonjs' }))
 		.js.pipe(addon())
 		.pipe(gulp.dest('release/test'));
 });
 
 gulp.task('build', ['clean'], function() {
-	return gulp.src(['src/**/*.ts?(x)', 'addon/**/*.d.ts'])
+	return gulp.src([
+            'src/**/*.ts?(x)', 'addon/**/*.d.ts',
+            'typings/main.d.ts', 'typings/main/**/*.d.ts'
+        ])
 		.pipe(tsc(tsProject))
 		.js.pipe(addon())
 		.pipe(gulp.dest('release'));

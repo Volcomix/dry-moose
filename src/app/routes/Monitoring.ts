@@ -1,6 +1,5 @@
-/// <reference path="../../../typings/tsd.d.ts" />
-
 import express = require('express');
+import core = require('express-serve-static-core');
 import Q = require('q');
 import moment = require('moment');
 

@@ -1,6 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-/// <reference path="./common/material-design-lite.d.ts" />
-
 import React = require('react');
 
 class Button extends React.Component<Button.Props, {}> {

@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -32,11 +32,11 @@ var QuotesChart = (function (_super) {
                 y: [function (d) { return d.option.quote.close; }]
             }
         ], this.props.xScale, this.yScale, this.props.height, QuotesChart.yDomainPadding);
-        return (React.createElement(ChartRow, {"title": 'Euro/U.S. Dollar', y: this.props.y, "width": this.props.width, "height": this.props.height, "yScale": this.yScale, "zoom": this.props.zoom, "clipPath": QuotesChart.clipPath, "yTickFormat": QuotesChart.yTickFormat}, React.createElement(LineSeries, {"className": 'mdl-color-text--indigo', "data": this.props.monitoringData.quotes, "xAccessor": this.xQuoteAccessor, "yAccessor": this.yQuoteAccessor, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath}), React.createElement(GainSeries, {"gains": this.props.monitoringData.gains, "xScale": this.props.xScale, "yScale": this.yScale, "clipPath": QuotesChart.clipPath})));
+        return (React.createElement(ChartRow, {title: 'Euro/U.S. Dollar', y: this.props.y, width: this.props.width, height: this.props.height, yScale: this.yScale, zoom: this.props.zoom, clipPath: QuotesChart.clipPath, yTickFormat: QuotesChart.yTickFormat}, React.createElement(LineSeries, {className: 'mdl-color-text--indigo', data: this.props.monitoringData.quotes, xAccessor: this.xQuoteAccessor, yAccessor: this.yQuoteAccessor, xScale: this.props.xScale, yScale: this.yScale, clipPath: QuotesChart.clipPath}), React.createElement(GainSeries, {gains: this.props.monitoringData.gains, xScale: this.props.xScale, yScale: this.yScale, clipPath: QuotesChart.clipPath})));
     };
     QuotesChart.yTickFormat = d3.format(',.5f');
     QuotesChart.yDomainPadding = 0.2;
     QuotesChart.clipPath = 'clipQuotes';
     return QuotesChart;
-})(ChartBase);
+}(ChartBase));
 module.exports = QuotesChart;

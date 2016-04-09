@@ -1,6 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-/// <reference path="./common/material-design-lite.d.ts" />
-
 import React = require('react');
 
 class Loading extends React.Component<{}, {}> {

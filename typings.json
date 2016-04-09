@@ -1,0 +1,44 @@
+{
+  "ambientDependencies": {
+    "d3": "registry:dt/d3#0.0.0+20160317120654",
+    "es6-promise": "registry:dt/es6-promise#0.0.0+20160317120654",
+    "express": "registry:dt/express#4.0.0+20160317120654",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160322035842",
+    "flux": "registry:dt/flux#0.0.0+20160317120654",
+    "mime": "registry:dt/mime#0.0.0+20160316155526",
+    "mongodb": "registry:dt/mongodb#2.1.0+20160328151449",
+    "node": "registry:dt/node#4.0.0+20160330064709",
+    "q": "registry:dt/q#0.0.0+20160323171452",
+    "react": "registry:dt/react#0.14.0+20160319053454",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160316155526",
+    "serve-static": "registry:dt/serve-static#0.0.0+20160317120654"
+  },
+  "ambientDevDependencies": {
+    "browser-sync": "registry:dt/browser-sync#0.0.0+20160316155526",
+    "browserify": "registry:dt/browserify#12.0.1+20160317120654",
+    "chai": "registry:dt/chai#3.4.0+20160317120654",
+    "chai-as-promised": "registry:dt/chai-as-promised#0.0.0+20160317120654",
+    "chalk": "registry:dt/chalk#0.4.0+20160317120654",
+    "chokidar": "registry:dt/chokidar#1.4.3+20160316155526",
+    "del": "registry:dt/del#2.2.0+20160317120654",
+    "glob": "registry:dt/glob#5.0.10+20160317120654",
+    "gulp": "registry:dt/gulp#3.8.0+20160316155526",
+    "gulp-mocha": "registry:dt/gulp-mocha#0.0.0+20160316155526",
+    "gulp-nodemon": "registry:dt/gulp-nodemon#0.0.0+20160316155526",
+    "gulp-typescript": "registry:dt/gulp-typescript#0.0.0+20160317120654",
+    "gulp-util": "registry:dt/gulp-util#0.0.0+20160316155526",
+    "lodash": "registry:dt/lodash#3.10.0+20160330154726",
+    "micromatch": "registry:dt/micromatch#2.3.7+20160123140905",
+    "minimatch": "registry:dt/minimatch#2.0.8+20160317120654",
+    "mocha": "registry:dt/mocha#2.2.5+20160317120654",
+    "orchestrator": "registry:dt/orchestrator#0.0.0+20160316155526",
+    "parse-glob": "registry:dt/parse-glob#3.0.4+20160110125512",
+    "promises-a-plus": "registry:dt/promises-a-plus#0.0.0+20160317120654",
+    "through2": "registry:dt/through2#2.0.0+20160317120654",
+    "vinyl": "registry:dt/vinyl#1.1.0+20160316155526",
+    "vinyl-source-stream": "registry:dt/vinyl-source-stream#0.0.0+20160316155526"
+  },
+  "dependencies": {
+    "moment": "registry:npm/moment#2.10.5+20160211003958"
+  }
+}

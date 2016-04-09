@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+"use strict";
 var Q = require('q');
 var moment = require('moment');
 var DbManager = require('./database/DbManager');
@@ -125,5 +125,5 @@ var Supervisor = (function () {
         });
     };
     return Supervisor;
-})();
+}());
 module.exports = Supervisor;

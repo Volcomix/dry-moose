@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/tsd.d.ts" />
+"use strict";
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var Q = require('q');

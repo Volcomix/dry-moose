@@ -1,5 +1,3 @@
-/// <reference path="../typings/tsd.d.ts" />
-
 import mongodb = require('mongodb');
 import Q = require('q');
 import moment = require('moment');

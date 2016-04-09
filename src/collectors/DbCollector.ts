@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 import Q = require('q');
 
 import DbManager = require('../database/DbManager');
@@ -12,17 +10,21 @@ class DbCollector implements ICollector {
 	
 	collect(): Q.Promise<void> {
 		return Q.Promise<void>((resolve, reject, notify) => {
-			var cursor = DbManager.db.collection(this.collectionName).find();
+			var cursor = DbManager.db.collection(this.collectionName).find({});
 			
 			if (this.limit) {
 				cursor.limit(this.limit);
 			}
 			
-			cursor.each((err, quote: Quote) => {
-				if (err) return reject(err);
-				if (quote == null) return resolve(null);
-				notify(quote);
-			});
+			cursor.forEach(
+                (quote: Quote) => notify(quote),
+                err => {
+                    if (err)
+                        return reject(err);
+                    else
+                        return resolve(null);
+                }
+            );
 		});
 	}
 }

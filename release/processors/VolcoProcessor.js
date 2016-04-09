@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var moment = require('moment');
 var TA = require("../../build/Release/ta-lib");
 var BinaryOption = require('../documents/options/BinaryOption');
@@ -137,5 +137,5 @@ var VolcoProcessor = (function () {
         return (ax / al) * (bx / bl) + (ay / al) * (by / bl);
     };
     return VolcoProcessor;
-})();
+}());
 module.exports = VolcoProcessor;

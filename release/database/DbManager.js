@@ -1,4 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
 var Q = require('q');
 var mongodb = require('mongodb');
 /**

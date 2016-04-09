@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 import chai = require('chai');
 import Q = require('q');
 import moment = require('moment');

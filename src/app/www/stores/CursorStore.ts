@@ -1,5 +1,3 @@
-/// <reference path="../../../../typings/tsd.d.ts" />
-
 import AbstractStore = require('./AbstractStore');
 import IStore = require('./IStore');
 import AppDispatcher = require('../dispatcher/AppDispatcher');

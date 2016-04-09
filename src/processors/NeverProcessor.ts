@@ -1,5 +1,3 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
 import IProcessor = require('./IProcessor');
 import Quote = require('../documents/Quote');
 import BinaryOption = require('../documents/options/BinaryOption');
