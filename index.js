@@ -1,8 +1,10 @@
 const Chrome = require('./chrome')
+const Market = require('./market')
 
 async function main() {
   try {
     const client = await Chrome.launch()
+    const market = await Market.fetch(client)
     return
 
     const { Network, Page, Runtime } = client
