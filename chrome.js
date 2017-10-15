@@ -3,16 +3,14 @@ const { execFile } = require('child_process')
 const CDP = require('chrome-remote-interface')
 const setTimeoutPromise = util.promisify(setTimeout)
 
-const defaultOptions = {
-  executablePath: 'google-chrome-stable',
-  debuggingPort: 9222,
-  maxRetry: 10,
-  retryTimeout: 500,
-}
-
 class Chrome {
   constructor(options) {
-    Object.assign(this, defaultOptions, options)
+    this.executablePath = 'google-chrome-stable'
+    this.debuggingPort = 9222
+    this.maxRetry = 10
+    this.retryTimeout = 500
+
+    Object.assign(this, options)
   }
 
   static async launch(options) {
