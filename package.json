@@ -1,0 +1,22 @@
+{
+  "name": "dry-moose",
+  "version": "1.0.0",
+  "description": "Trading bot",
+  "main": "index.js",
+  "author": "Volcomix",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {
+    "chrome-remote-interface": "^0.25.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Volcomix/dry-moose.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Volcomix/dry-moose/issues"
+  },
+  "homepage": "https://github.com/Volcomix/dry-moose#readme"
+}
