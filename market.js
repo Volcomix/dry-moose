@@ -18,41 +18,62 @@ class Market {
 
   async watch() {
     const { Network, Page } = this.client
+    console.log('Loading market...')
+    this.initPromises()
     Network.requestWillBeSent(this.requestWillBeSent.bind(this))
     Network.loadingFinished(this.loadingFinished.bind(this))
     await Network.enable()
     await Page.enable()
-    Page.navigate({ url: baseUrl })
+    await Page.navigate({ url: baseUrl })
+    await Promise.all(
+      Object.keys(this.loadersPromises)
+        .map(url => this.loadersPromises[url].promise)
+    )
+    console.log('Market loaded.')
+  }
+
+  initPromises() {
+    this.loadersPromises = this.loadersUrls()
+      .reduce((promises, url) => {
+        const promise = {}
+        promise.promise = new Promise((resolve, reject) => {
+          promise.resolve = resolve
+          promise.reject = reject
+        })
+        promises[url] = promise
+        return promises
+      }, {})
   }
 
   requestWillBeSent({ requestId, request }) {
-    const urls = Object.getOwnPropertyNames(Market.prototype).filter(url => (
-      (url.startsWith(apiUrl) || url.startsWith(apiUrlStatic))
-      && request.url.startsWith(url)
-    ))
-
+    const urls = this.loadersUrls()
+      .filter(url => request.url.startsWith(url))
     if (urls.length > 1) {
       throw new Error(`Bad response loader URL configuration: ${request.url}`)
     } else if (urls.length === 1) {
       const url = urls[0]
-      console.log(`Response loader found for request ${requestId}: ${url}`)
-      this.requests[requestId] = this[url].bind(this)
+      this.requests[requestId] = url
     }
   }
 
   async loadingFinished({ requestId }) {
     const { Network } = this.client
-    const loadResponse = this.requests[requestId]
-    if (loadResponse) {
-      console.log(`Loading response for request ${requestId}...`)
+    const url = this.requests[requestId]
+    if (url) {
       const response = await Network.getResponseBody({ requestId })
       let body = response.body
       if (response.base64Encoded) {
         body = Buffer.from(body, 'base64').toString()
       }
-      loadResponse(JSON.parse(body))
-      console.log(`Response loaded for request ${requestId}.`)
+      this[url](JSON.parse(body))
+      console.log(`Response loaded: ${url}`)
+      this.loadersPromises[url].resolve()
     }
+  }
+
+  loadersUrls() {
+    return Object.getOwnPropertyNames(Market.prototype)
+      .filter(url => url.startsWith(apiUrl) || url.startsWith(apiUrlStatic))
   }
 
   [`${apiUrlStatic}/candles/closingprices.json`](response) {
