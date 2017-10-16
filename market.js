@@ -12,11 +12,11 @@ class Market {
     this.stocksIndustries = {}
   }
 
-  static fetch(client) {
-    return new Market(client).fetch()
+  static watch(client) {
+    return new Market(client).watch()
   }
 
-  async fetch() {
+  async watch() {
     const { Network, Page } = this.client
     Network.requestWillBeSent(this.requestWillBeSent.bind(this))
     Network.loadingFinished(this.loadingFinished.bind(this))
