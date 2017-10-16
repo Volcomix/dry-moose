@@ -1,3 +1,7 @@
+const baseUrl = 'https://www.etoro.com'
+const apiUrl = `${baseUrl}/sapi`
+const apiUrlStatic = 'https://api.etorostatic.com/sapi'
+
 class Market {
   constructor(client) {
     this.client = client
@@ -6,63 +10,6 @@ class Market {
     this.instrumentTypes = {}
     this.exchangeInfo = {}
     this.stocksIndustries = {}
-
-    this.responseLoaders = {
-      [`${apiUrlStatic}/candles/closingprices.json`]:
-      response => this.mergeResponse(
-        response,
-        this.instruments,
-        instrument => instrument.InstrumentId,
-      ),
-      [`${apiUrlStatic}/instrumentsmetadata/V1.1/instruments`]:
-      response => this.mergeResponse(
-        response.InstrumentDisplayDatas,
-        this.instruments,
-        displayData => displayData.InstrumentID,
-      ),
-      [`${apiUrlStatic}/trade-real/instruments`]:
-      response => this.mergeResponse(
-        response.Instruments,
-        this.instruments,
-        instrument => instrument.InstrumentID,
-      ),
-      [`${apiUrlStatic}/app-data/web-client/app-data/instruments-groups.json`]:
-      response => {
-        this.mergeResponse(
-          response.InstrumentTypes,
-          this.instrumentTypes,
-          instrumentType => instrumentType.InstrumentTypeID,
-        )
-        this.mergeResponse(
-          response.ExchangeInfo,
-          this.exchangeInfo,
-          info => info.ExchangeID,
-        )
-        this.mergeResponse(
-          response.StocksIndustries,
-          this.stocksIndustries,
-          stocksIndustry => stocksIndustry.IndustryID,
-        )
-      },
-      [`${apiUrl}/trade-real/instruments/?InstrumentDataFilters`]:
-      response => this.mergeResponse(
-        response.Rates,
-        this.instruments,
-        rate => rate.InstrumentID,
-      ),
-      [`${apiUrl}/trade-real/instruments/private`]:
-      response => this.mergeResponse(
-        response.PrivateInstruments,
-        this.instruments,
-        instrument => instrument.InstrumentID,
-      ),
-      [`${apiUrl}/insights/insights/uniques`]:
-      response => this.mergeResponse(
-        response,
-        this.instruments,
-        instrument => instrument.instrumentId,
-      ),
-    }
   }
 
   static fetch(client) {
@@ -71,20 +18,25 @@ class Market {
 
   async fetch() {
     const { Network, Page } = this.client
-    Network.requestWillBeSent(params => this.requestWillBeSent(params))
-    Network.loadingFinished(params => this.loadingFinished(params))
+    Network.requestWillBeSent(this.requestWillBeSent.bind(this))
+    Network.loadingFinished(this.loadingFinished.bind(this))
     await Network.enable()
     await Page.enable()
     Page.navigate({ url: baseUrl })
   }
 
   requestWillBeSent({ requestId, request }) {
-    for (let url of Object.keys(this.responseLoaders)) {
-      if (request.url.startsWith(url)) {
-        console.log(`Loader found for request ${requestId}: ${url}`)
-        this.requests[requestId] = this.responseLoaders[url]
-        break
-      }
+    const urls = Object.getOwnPropertyNames(Market.prototype).filter(url => (
+      (url.startsWith(apiUrl) || url.startsWith(apiUrlStatic))
+      && request.url.startsWith(url)
+    ))
+
+    if (urls.length > 1) {
+      throw new Error(`Bad response loader URL configuration: ${request.url}`)
+    } else if (urls.length === 1) {
+      const url = urls[0]
+      console.log(`Response loader found for request ${requestId}: ${url}`)
+      this.requests[requestId] = this[url].bind(this)
     }
   }
 
@@ -103,6 +55,72 @@ class Market {
     }
   }
 
+  [`${apiUrlStatic}/candles/closingprices.json`](response) {
+    this.mergeResponse(
+      response,
+      this.instruments,
+      instrument => instrument.InstrumentId,
+    )
+  }
+
+  [`${apiUrlStatic}/instrumentsmetadata/V1.1/instruments`](response) {
+    this.mergeResponse(
+      response.InstrumentDisplayDatas,
+      this.instruments,
+      displayData => displayData.InstrumentID,
+    )
+  }
+
+  [`${apiUrlStatic}/trade-real/instruments`](response) {
+    this.mergeResponse(
+      response.Instruments,
+      this.instruments,
+      instrument => instrument.InstrumentID,
+    )
+  }
+
+  [`${apiUrlStatic}/app-data/web-client/app-data/instruments-groups.json`](response) {
+    this.mergeResponse(
+      response.InstrumentTypes,
+      this.instrumentTypes,
+      instrumentType => instrumentType.InstrumentTypeID,
+    )
+    this.mergeResponse(
+      response.ExchangeInfo,
+      this.exchangeInfo,
+      info => info.ExchangeID,
+    )
+    this.mergeResponse(
+      response.StocksIndustries,
+      this.stocksIndustries,
+      stocksIndustry => stocksIndustry.IndustryID,
+    )
+  }
+
+  [`${apiUrl}/trade-real/instruments/?InstrumentDataFilters`](response) {
+    this.mergeResponse(
+      response.Rates,
+      this.instruments,
+      rate => rate.InstrumentID,
+    )
+  }
+
+  [`${apiUrl}/trade-real/instruments/private`](response) {
+    this.mergeResponse(
+      response.PrivateInstruments,
+      this.instruments,
+      instrument => instrument.InstrumentID,
+    )
+  }
+
+  [`${apiUrl}/insights/insights/uniques`](response) {
+    this.mergeResponse(
+      response,
+      this.instruments,
+      instrument => instrument.instrumentId,
+    )
+  }
+
   mergeResponse(data, target, getId) {
     data.forEach(item => {
       const id = getId(item)
@@ -115,9 +133,5 @@ class Market {
     })
   }
 }
-
-const baseUrl = 'https://www.etoro.com'
-const apiUrl = `${baseUrl}/sapi`
-const apiUrlStatic = 'https://api.etorostatic.com/sapi'
 
 module.exports = Market
