@@ -2,9 +2,10 @@ const Chrome = require('./chrome')
 const Market = require('./market')
 
 async function main() {
+  const chrome = new Chrome()
   try {
-    const client = await Chrome.launch()
-    const market = await Market.watch(client)
+    await chrome.launch()
+    const market = await Market.watch(chrome.client)
     return
 
     const { Network, Page, Runtime } = client
@@ -176,6 +177,7 @@ async function main() {
     console.log(`Mode: ${mode.result.value}`)
   } catch (error) {
     console.error(error)
+    chrome.close()
   }
 }
 

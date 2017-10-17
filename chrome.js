@@ -13,22 +13,21 @@ class Chrome {
     Object.assign(this, options)
   }
 
-  static async launch(options) {
-    return new Chrome(options).launch()
+  async launch() {
+    this.process = this.exec()
+    this.client = await this.getClient()
+    console.log('Client connected.')
   }
 
-  async launch() {
-    const chrome = this.exec()
-    try {
-      const client = await this.getClient()
-      console.log('Client connected.')
-      return client
-    } catch (error) {
-      if (chrome) {
-        console.log('Killing Chrome...')
-        chrome.kill()
-      }
-      throw error
+  async close() {
+    if (this.client) {
+      console.log('Closing client...')
+      await this.client.close()
+      console.log('Client closed.')
+    }
+    if (this.process) {
+      console.log('Killing Chrome...')
+      this.process.kill()
     }
   }
 
