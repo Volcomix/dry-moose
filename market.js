@@ -25,14 +25,22 @@ class Market {
     await Network.enable()
     await Page.enable()
     await Page.navigate({ url: baseUrl })
-    await Promise.all(
-      Object.keys(this.loadersPromises)
-        .map(url => this.loadersPromises[url].promise)
-    )
+    await Promise.all([
+      Promise.all(
+        Object.keys(this.loadersPromises)
+          .map(url => this.loadersPromises[url].promise)
+      ).then(this.marketPromise.resolve),
+      this.marketPromise.promise
+    ])
     console.log('Market loaded.')
   }
 
   initPromises() {
+    this.marketPromise = {}
+    this.marketPromise.promise = new Promise((resolve, reject) => {
+      this.marketPromise.resolve = resolve
+      this.marketPromise.reject = reject
+    })
     this.loadersPromises = this.loadersUrls()
       .reduce((promises, url) => {
         const promise = {}
@@ -46,28 +54,36 @@ class Market {
   }
 
   requestWillBeSent({ requestId, request }) {
-    const urls = this.loadersUrls()
-      .filter(url => request.url.startsWith(url))
-    if (urls.length > 1) {
-      throw new Error(`Bad response loader URL configuration: ${request.url}`)
-    } else if (urls.length === 1) {
-      const url = urls[0]
-      this.requests[requestId] = url
+    try {
+      const urls = this.loadersUrls()
+        .filter(url => request.url.startsWith(url))
+      if (urls.length > 1) {
+        throw new Error(`Bad response loader URL configuration: ${request.url}`)
+      } else if (urls.length === 1) {
+        const url = urls[0]
+        this.requests[requestId] = url
+      }
+    } catch (error) {
+      this.marketPromise.reject(error)
     }
   }
 
   async loadingFinished({ requestId }) {
-    const { Network } = this.client
-    const url = this.requests[requestId]
-    if (url) {
-      const response = await Network.getResponseBody({ requestId })
-      let body = response.body
-      if (response.base64Encoded) {
-        body = Buffer.from(body, 'base64').toString()
+    try {
+      const { Network } = this.client
+      const url = this.requests[requestId]
+      if (url) {
+        const response = await Network.getResponseBody({ requestId })
+        let body = response.body
+        if (response.base64Encoded) {
+          body = Buffer.from(body, 'base64').toString()
+        }
+        this[url](JSON.parse(body))
+        console.log(`Response loaded: ${url}`)
+        this.loadersPromises[url].resolve()
       }
-      this[url](JSON.parse(body))
-      console.log(`Response loaded: ${url}`)
-      this.loadersPromises[url].resolve()
+    } catch (error) {
+      this.marketPromise.reject(error)
     }
   }
 
