@@ -17,30 +17,28 @@ class Market {
   }
 
   async watch() {
-    const { Network, Page } = this.client
     console.log('Loading market...')
     this.initPromises()
-    Network.requestWillBeSent(this.requestWillBeSent.bind(this))
-    Network.loadingFinished(this.loadingFinished.bind(this))
-    await Network.enable()
-    await Page.enable()
-    await Page.navigate({ url: baseUrl })
-    await Promise.all([
-      Promise.all(
-        Object.keys(this.loadersPromises)
-          .map(url => this.loadersPromises[url].promise)
-      ).then(this.marketPromise.resolve),
-      this.marketPromise.promise
-    ])
+    await this.initNetwork()
+    await this.navigate()
+    await this.waitPromises()
     console.log('Market loaded.')
   }
 
   initPromises() {
+    this.initMarketPromise()
+    this.initLoadersPromises()
+  }
+
+  initMarketPromise() {
     this.marketPromise = {}
     this.marketPromise.promise = new Promise((resolve, reject) => {
       this.marketPromise.resolve = resolve
       this.marketPromise.reject = reject
     })
+  }
+
+  initLoadersPromises() {
     this.loadersPromises = this.loadersUrls()
       .reduce((promises, url) => {
         const promise = {}
@@ -51,6 +49,23 @@ class Market {
         promises[url] = promise
         return promises
       }, {})
+  }
+
+  async waitPromises() {
+    await Promise.all([
+      Promise.all(
+        Object.keys(this.loadersPromises)
+          .map(url => this.loadersPromises[url].promise)
+      ).then(this.marketPromise.resolve),
+      this.marketPromise.promise
+    ])
+  }
+
+  async initNetwork() {
+    const { Network } = this.client
+    Network.requestWillBeSent(this.requestWillBeSent.bind(this))
+    Network.loadingFinished(this.loadingFinished.bind(this))
+    await Network.enable()
   }
 
   requestWillBeSent({ requestId, request }) {
@@ -168,6 +183,12 @@ class Market {
         target[id] = item
       }
     })
+  }
+
+  async navigate() {
+    const { Page } = this.client
+    await Page.enable()
+    await Page.navigate({ url: baseUrl })
   }
 }
 
