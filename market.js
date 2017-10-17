@@ -12,8 +12,10 @@ class Market {
     this.stocksIndustries = {}
   }
 
-  static watch(client) {
-    return new Market(client).watch()
+  static async watch(client) {
+    const market = new Market(client)
+    await market.watch()
+    return market
   }
 
   async watch() {
