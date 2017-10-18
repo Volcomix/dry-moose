@@ -152,6 +152,9 @@ class Market {
   }
 
   [`${apiUrl}/trade-real/instruments/?InstrumentDataFilters`](response) {
+    Object.keys(response.InstrumentsToActivityState).forEach(id => {
+      this.instruments[id]._isActive = response.InstrumentsToActivityState[id]
+    })
     this.mergeResponse(
       response.Rates,
       this.instruments,
