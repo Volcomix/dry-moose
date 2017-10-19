@@ -18,6 +18,15 @@ async function main() {
           instrument.MinPositionAmount / leverage,
           instrument.MinPositionAmountAbsolute
         )
+
+        const minLeverage = instrument.Leverages.find(leverage =>
+          instrument.MinPositionAmount / leverage === instrument._minBet
+        )
+        const askAmount = instrument._minBet * minLeverage
+        const minUnits = askAmount / instrument.Ask
+        const bidAmount = minUnits * instrument.Bid
+        instrument._minCost = askAmount - bidAmount
+
         return instrument
       })
       .filter(instrument => instrument._minBet <= maxBet)
@@ -44,6 +53,13 @@ async function main() {
       })
     )
     console.log(infos)
+
+    instruments
+      .sort((a, b) => a._minCost - b._minCost)
+      .slice(0, 20)
+      .forEach(instrument => {
+        console.log(`${instrument.SymbolFull}: ${instrument._minCost}`)
+      })
 
   } catch (error) {
     console.error(error)
