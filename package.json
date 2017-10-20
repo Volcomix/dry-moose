@@ -6,10 +6,12 @@
   "author": "Volcomix",
   "license": "MIT",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "mongo": "systemctl start mongodb"
   },
   "dependencies": {
-    "chrome-remote-interface": "^0.25.1"
+    "chrome-remote-interface": "^0.25.1",
+    "mongodb": "^2.2.33"
   },
   "repository": {
     "type": "git",

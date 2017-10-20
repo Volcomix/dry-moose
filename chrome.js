@@ -1,10 +1,12 @@
 const util = require('util')
+const EventEmitter = require('events')
 const { execFile } = require('child_process')
 const CDP = require('chrome-remote-interface')
 const setTimeoutPromise = util.promisify(setTimeout)
 
-class Chrome {
+class Chrome extends EventEmitter {
   constructor(options) {
+    super()
     this.executablePath = 'google-chrome-stable'
     this.debuggingPort = 9222
     this.maxRetry = 10
@@ -36,8 +38,9 @@ class Chrome {
     return execFile(this.executablePath, [
       `--remote-debugging-port=${this.debuggingPort}`,
     ]).on('close', code => {
-      console.log(`Chrome exited.`);
-    });
+      console.log(`Chrome exited.`)
+      this.emit('close', code)
+    })
   }
 
   async getClient(retry = 0) {

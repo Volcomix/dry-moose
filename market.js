@@ -56,8 +56,8 @@ class Market {
   async waitPromises() {
     await Promise.all([
       Promise.all(
-        Object.keys(this.loadersPromises)
-          .map(url => this.loadersPromises[url].promise)
+        Object.values(this.loadersPromises)
+          .map(loaderPromise => loaderPromise.promise)
       ).then(this.marketPromise.resolve),
       this.marketPromise.promise
     ])

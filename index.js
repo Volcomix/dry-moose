@@ -1,16 +1,39 @@
 const Chrome = require('./chrome')
 const Market = require('./market')
+const MongoClient = require('mongodb').MongoClient
 
 async function main() {
   const chrome = new Chrome()
   try {
     await chrome.launch()
+
+    console.log('Connecting to MongoDB...')
+    const url = 'mongodb://localhost:27017/dry-moose'
+    const db = await MongoClient.connect(url)
+    console.log('MongoDB connected.')
+
+    chrome.on('close', code => {
+      if (db) {
+        console.log('Closing MongoDB connection...')
+        db.close()
+        console.log('MongoDB connection closed.')
+      }
+    })
+
     const market = await Market.watch(chrome.client)
+
+    await db.collection('instruments')
+      .insertMany(Object.values(market.instruments))
+    await db.collection('instrumentTypes')
+      .insertMany(Object.values(market.instrumentTypes))
+    await db.collection('exchangeInfo')
+      .insertMany(Object.values(market.exchangeInfo))
+    await db.collection('stockIndustries')
+      .insertMany(Object.values(market.stocksIndustries))
 
     const maxBet = 50
 
-    const instruments = Object.keys(market.instruments)
-      .map(instrument => market.instruments[instrument])
+    const instruments = Object.values(market.instruments)
       .filter(instrument => instrument._isActive && !instrument.IsDelisted)
       .map(instrument => {
         const leverage = instrument.Leverages[instrument.Leverages.length - 1]
