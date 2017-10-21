@@ -1,6 +1,12 @@
+const util = require('util')
+const setTimeoutPromise = util.promisify(setTimeout)
+
+const MongoClient = require('mongodb').MongoClient
+
 const Chrome = require('./chrome')
 const Market = require('./market')
-const MongoClient = require('mongodb').MongoClient
+
+const maxBet = 500
 
 async function main() {
   const chrome = new Chrome()
@@ -22,6 +28,22 @@ async function main() {
 
     const market = await Market.watch(chrome.client)
 
+    Object.values(market.instruments).forEach(instrument => {
+      const leverage = instrument.Leverages[instrument.Leverages.length - 1]
+      instrument._minBet = Math.max(
+        instrument.MinPositionAmount / leverage,
+        instrument.MinPositionAmountAbsolute
+      )
+
+      const minLeverage = instrument.Leverages.find(leverage =>
+        instrument.MinPositionAmount / leverage === instrument._minBet
+      )
+      const askAmount = instrument._minBet * minLeverage
+      const minUnits = askAmount / instrument.Ask
+      const bidAmount = minUnits * instrument.Bid
+      instrument._minCost = askAmount - bidAmount
+    })
+
     const collectionNames = [
       'instruments',
       'instrumentTypes',
@@ -39,28 +61,38 @@ async function main() {
       await collection.insertMany(Object.values(market[name]))
     }
 
-    const maxBet = 500
-
     const instruments = Object.values(market.instruments)
-      .filter(instrument => instrument._isActive && !instrument.IsDelisted)
-      .map(instrument => {
-        const leverage = instrument.Leverages[instrument.Leverages.length - 1]
-        instrument._minBet = Math.max(
-          instrument.MinPositionAmount / leverage,
-          instrument.MinPositionAmountAbsolute
-        )
+      .filter(instrument =>
+        instrument._isActive
+        && !instrument.IsDelisted
+        && instrument._minBet <= maxBet
+      )
+      .sort((a, b) => a._minCost - b._minCost)
+      .slice(0, 6)
 
-        const minLeverage = instrument.Leverages.find(leverage =>
-          instrument.MinPositionAmount / leverage === instrument._minBet
-        )
-        const askAmount = instrument._minBet * minLeverage
-        const minUnits = askAmount / instrument.Ask
-        const bidAmount = minUnits * instrument.Bid
-        instrument._minCost = askAmount - bidAmount
+    instruments.forEach(instrument => {
+      console.log(`${instrument.SymbolFull}: ${instrument._minCost}`)
+    })
 
-        return instrument
-      })
-      .filter(instrument => instrument._minBet <= maxBet)
+    const speed = 500
+
+    await clickElement(chrome.client, '.options.dropdown-menu')
+    await setTimeoutPromise(speed)
+    await clickElement(chrome.client, '.drop-select-box-option.edit')
+    let deleted = true
+    while (deleted) {
+      await setTimeoutPromise(speed)
+      deleted = await clickElement(chrome.client,
+        '.table-body.market .table-row.edit .card-head-remove'
+      )
+    }
+    await setTimeoutPromise(speed)
+    await clickElement(chrome.client,
+      '.inner-header-buttons.edit.edit-head .done[ng-show="editMode"]'
+    )
+
+    return
+
     console.log(`${instruments.length} instruments with min bet <= ${maxBet}$`)
 
     const infos = new Set(
@@ -96,6 +128,34 @@ async function main() {
     console.error(error)
     chrome.close()
   }
+}
+
+async function clickElement({ Runtime, Input }, selectors) {
+  const { result: { value: target } } = await Runtime.evaluate({
+    expression: `(${selectors => {
+      const node = document
+        .querySelector(selectors)
+      if (!node) {
+        return
+      }
+      const rect = node.getBoundingClientRect()
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      }
+    }})('${selectors}')`,
+    returnByValue: true,
+  })
+
+  if (target) {
+    const options = { button: 'left', clickCount: 1, ...target }
+    options.type = 'mousePressed'
+    await Input.dispatchMouseEvent(options)
+    options.type = 'mouseReleased'
+    await Input.dispatchMouseEvent(options)
+    return true
+  }
+  return false
 }
 
 main()
