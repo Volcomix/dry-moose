@@ -22,16 +22,24 @@ async function main() {
 
     const market = await Market.watch(chrome.client)
 
-    await db.collection('instruments')
-      .insertMany(Object.values(market.instruments))
-    await db.collection('instrumentTypes')
-      .insertMany(Object.values(market.instrumentTypes))
-    await db.collection('exchangeInfo')
-      .insertMany(Object.values(market.exchangeInfo))
-    await db.collection('stockIndustries')
-      .insertMany(Object.values(market.stocksIndustries))
+    const collectionNames = [
+      'instruments',
+      'instrumentTypes',
+      'exchangeInfo',
+      'stocksIndustries',
+    ]
 
-    const maxBet = 50
+    for (let name of collectionNames) {
+      const collection = db.collection(name)
+      try {
+        await collection.drop()
+      } catch (error) {
+        // Collection does not exist
+      }
+      await collection.insertMany(Object.values(market[name]))
+    }
+
+    const maxBet = 500
 
     const instruments = Object.values(market.instruments)
       .filter(instrument => instrument._isActive && !instrument.IsDelisted)
