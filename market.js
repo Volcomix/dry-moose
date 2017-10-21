@@ -125,7 +125,7 @@ class Market {
     )
   }
 
-  [`${apiUrlStatic}/trade-real/instruments`](response) {
+  [`${apiUrlStatic}/trade-real/instruments?InstrumentDataFilters`](response) {
     this.mergeResponse(
       response.Instruments,
       this.instruments,
@@ -162,7 +162,7 @@ class Market {
     )
   }
 
-  [`${apiUrl}/trade-real/instruments/private`](response) {
+  [`${apiUrl}/trade-real/instruments/private?InstrumentDataFilters`](response) {
     this.mergeResponse(
       response.PrivateInstruments,
       this.instruments,

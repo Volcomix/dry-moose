@@ -1,6 +1,6 @@
 const util = require('util')
 const EventEmitter = require('events')
-const { execFile } = require('child_process')
+const { spawn } = require('child_process')
 const CDP = require('chrome-remote-interface')
 const setTimeoutPromise = util.promisify(setTimeout)
 
@@ -16,7 +16,7 @@ class Chrome extends EventEmitter {
   }
 
   async launch() {
-    this.process = this.exec()
+    this.process = this.spawn()
     this.client = await this.getClient()
     console.log('Client connected.')
   }
@@ -33,11 +33,11 @@ class Chrome extends EventEmitter {
     }
   }
 
-  exec() {
+  spawn() {
     console.log('Starting Chrome...')
-    return execFile(this.executablePath, [
+    return spawn(this.executablePath, [
       `--remote-debugging-port=${this.debuggingPort}`,
-    ]).on('close', code => {
+    ], { stdio: 'ignore' }).on('close', code => {
       console.log(`Chrome exited.`)
       this.emit('close', code)
     })
