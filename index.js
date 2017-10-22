@@ -28,20 +28,10 @@ async function main() {
 
     const market = await Market.watch(chrome.client)
 
-    Object.values(market.instruments).forEach(instrument => {
-      const leverage = instrument.Leverages[instrument.Leverages.length - 1]
-      instrument._minBet = Math.max(
-        instrument.MinPositionAmount / leverage,
-        instrument.MinPositionAmountAbsolute
-      )
-
-      const minLeverage = instrument.Leverages.find(leverage =>
-        instrument.MinPositionAmount / leverage === instrument._minBet
-      )
-      const askAmount = instrument._minBet * minLeverage
-      const minUnits = askAmount / instrument.Ask
-      const bidAmount = minUnits * instrument.Bid
-      instrument._minCost = askAmount - bidAmount
+    Object.values(market.instruments).forEach(instr => {
+      instr._bidAskSpread = instr.Ask - instr.Bid
+      instr._bidAskSpreadPercent = instr._bidAskSpread / instr.Ask
+      instr._minCost = instr.MinPositionAmount * instr._bidAskSpreadPercent
     })
 
     const collectionNames = [
@@ -64,8 +54,9 @@ async function main() {
     const instruments = Object.values(market.instruments)
       .filter(instrument =>
         instrument._isActive
+        && instrument.IsMarketOpen
         && !instrument.IsDelisted
-        && instrument._minBet <= maxBet
+        && instrument.MinPositionAmountAbsolute <= maxBet
       )
       .sort((a, b) => a._minCost - b._minCost)
       .slice(0, 6)
@@ -73,6 +64,8 @@ async function main() {
     instruments.forEach(instrument => {
       console.log(`${instrument.SymbolFull}: ${instrument._minCost}`)
     })
+
+    return
 
     const speed = 500
 
@@ -116,13 +109,6 @@ async function main() {
       })
     )
     console.log(infos)
-
-    instruments
-      .sort((a, b) => a._minCost - b._minCost)
-      .slice(0, 20)
-      .forEach(instrument => {
-        console.log(`${instrument.SymbolFull}: ${instrument._minCost}`)
-      })
 
   } catch (error) {
     console.error(error)
