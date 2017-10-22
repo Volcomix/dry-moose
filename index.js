@@ -26,8 +26,8 @@ class DryMoose {
       const browser = await puppeteer.launch({ appMode: true, ...chromeOptions })
       this.db = await MongoClient.connect(mongoUri)
       await this.db.collection('executions').insertOne({
-        date: new Date(),
-        event: 'start',
+        Date: new Date(),
+        Event: 'start',
       })
       const page = await browser.newPage()
       page.on('response', this.receiveResponse.bind(this))
@@ -57,65 +57,69 @@ class DryMoose {
   }
 
   async receiveClosingPrices(closingPrices) {
+    const date = new Date()
     await this.db.collection('closingPrices')
       .insertMany(closingPrices.map(
         closingPrice => ({
-          date: new Date(),
+          Date: date,
           ...closingPrice,
         })))
   }
 
   async receiveDisplayDatas(displayDatas) {
+    const date = new Date()
     await this.db.collection('displayDatas')
       .insertMany(displayDatas.InstrumentDisplayDatas.map(
         instrument => ({
-          date: new Date(),
+          Date: date,
           ...instrument,
         })
       ))
   }
 
   async receiveInstruments(instruments) {
+    const date = new Date()
     await this.db.collection('instruments')
       .insertMany(instruments.Instruments.map(
         instrument => ({
-          date: new Date(),
+          Date: date,
           ...instrument,
         })
       ))
   }
 
   async receiveGroups(groups) {
-    await this.receiveInstrumentTypes(groups.InstrumentTypes)
-    await this.receiveExchangeInfo(groups.ExchangeInfo)
-    await this.receiveStocksIndustries(groups.StocksIndustries)
+    const date = new Date()
+    await this.receiveInstrumentTypes(groups.InstrumentTypes, date)
+    await this.receiveExchangeInfo(groups.ExchangeInfo, date)
+    await this.receiveStocksIndustries(groups.StocksIndustries, date)
   }
 
-  async receiveInstrumentTypes(instrumentTypes) {
+  async receiveInstrumentTypes(instrumentTypes, date) {
     await this.db.collection('instrumentTypes')
       .insertMany(instrumentTypes.map(
         instrumentType => ({
-          date: new Date(),
+          Date: date,
           ...instrumentType,
         })
       ))
   }
 
-  async receiveExchangeInfo(exchangeInfo) {
+  async receiveExchangeInfo(exchangeInfo, date) {
     await this.db.collection('exchangeInfo')
       .insertMany(exchangeInfo.map(
         exchange => ({
-          date: new Date(),
+          Date: date,
           ...exchange,
         })
       ))
   }
 
-  async receiveStocksIndustries(stocksIndustries) {
+  async receiveStocksIndustries(stocksIndustries, date) {
     await this.db.collection('stocksIndustries')
       .insertMany(stocksIndustries.map(
         industry => ({
-          date: new Date(),
+          Date: date,
           ...industry,
         })
       ))
@@ -127,10 +131,11 @@ class DryMoose {
   }
 
   async receiveActivityStates(activityStates) {
+    const date = new Date()
     await this.db.collection('activityStates')
       .insertMany(Object.keys(activityStates).map(
         InstrumentId => ({
-          date: new Date(),
+          Date: date,
           InstrumentId,
           ActivityState: activityStates[InstrumentId],
         })
@@ -142,20 +147,22 @@ class DryMoose {
   }
 
   async receivePrivateInstruments(privateInstruments) {
+    const date = new Date()
     await this.db.collection('privateInstruments')
       .insertMany(privateInstruments.PrivateInstruments.map(
         privateInstrument => ({
-          date: new Date(),
+          Date: date,
           ...privateInstrument,
         })
       ))
   }
 
   async receiveInsights(insights) {
+    const date = new Date()
     await this.db.collection('insights')
       .insertMany(insights.map(
         insight => ({
-          date: new Date(),
+          Date: date,
           ...insight,
         })
       ))
