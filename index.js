@@ -1,147 +1,165 @@
-const util = require('util')
-const setTimeoutPromise = util.promisify(setTimeout)
-
+const puppeteer = require('puppeteer')
 const MongoClient = require('mongodb').MongoClient
 
-const Chrome = require('./chrome')
-const Market = require('./market')
+const chromeOptions = {
+  executablePath: 'google-chrome-stable',
+  userDataDir: '/home/volcomix/.config/google-chrome',
+}
 
-const maxBet = 500
+const mongoUri = 'mongodb://localhost:27017/drymoose'
+
+const urlBase = 'https://www.etoro.com'
+const urlApi = `${urlBase}/sapi`
+const urlApiStatic = 'https://api.etorostatic.com/sapi'
+
+const urlClosingPrices = `${urlApiStatic}/candles/closingprices.json`
+const urlDisplayDatas = `${urlApiStatic}/instrumentsmetadata/V1.1/instruments`
+const urlInstruments = `${urlApiStatic}/trade-real/instruments?InstrumentDataFilters`
+const urlGroups = `${urlApiStatic}/app-data/web-client/app-data/instruments-groups.json`
+const urlActivity = `${urlApi}/trade-real/instruments/?InstrumentDataFilters`
+const urlPrivate = `${urlApi}/trade-real/instruments/private?InstrumentDataFilters`
+const urlInsights = `${urlApi}/insights/insights/uniques`
+
+let db
 
 async function main() {
-  const chrome = new Chrome()
   try {
-    await chrome.launch()
+    const browser = await puppeteer.launch({ appMode: true, ...chromeOptions })
 
-    console.log('Connecting to MongoDB...')
-    const url = 'mongodb://localhost:27017/dry-moose'
-    const db = await MongoClient.connect(url)
-    console.log('MongoDB connected.')
+    db = await MongoClient.connect(mongoUri)
+    await db.collection('executions').insertOne({
+      date: new Date(),
+      event: 'start',
+    })
 
-    chrome.on('close', code => {
-      if (db) {
-        console.log('Closing MongoDB connection...')
-        db.close()
-        console.log('MongoDB connection closed.')
+    const page = await browser.newPage()
+    page.on('response', async response => {
+      const request = response.request()
+      if (request.url.startsWith(urlClosingPrices)) {
+        await receiveClosingPrices(await response.json())
+      } else if (request.url.startsWith(urlDisplayDatas)) {
+        await receiveDisplayDatas(await response.json())
+      } else if (request.url.startsWith(urlInstruments)) {
+        await receiveInstruments(await response.json())
+      } else if (request.url.startsWith(urlGroups)) {
+        await receiveGroups(await response.json())
+      } else if (request.url.startsWith(urlActivity)) {
+        await receiveActivity(await response.json())
+      } else if (request.url.startsWith(urlPrivate)) {
+        await receivePrivateInstruments(await response.json())
+      } else if (request.url.startsWith(urlInsights)) {
+        await receiveInsights(await response.json())
       }
     })
-
-    const market = await Market.watch(chrome.client)
-
-    Object.values(market.instruments).forEach(instr => {
-      instr._bidAskSpread = instr.Ask - instr.Bid
-      instr._bidAskSpreadPercent = instr._bidAskSpread / instr.Ask
-      instr._minCost = instr.MinPositionAmount * instr._bidAskSpreadPercent
-    })
-
-    const collectionNames = [
-      'instruments',
-      'instrumentTypes',
-      'exchangeInfo',
-      'stocksIndustries',
-    ]
-
-    for (let name of collectionNames) {
-      const collection = db.collection(name)
-      try {
-        await collection.drop()
-      } catch (error) {
-        // Collection does not exist
-      }
-      await collection.insertMany(Object.values(market[name]))
-    }
-
-    const instruments = Object.values(market.instruments)
-      .filter(instrument =>
-        instrument._isActive
-        && instrument.IsMarketOpen
-        && !instrument.IsDelisted
-        && instrument.MinPositionAmountAbsolute <= maxBet
-      )
-      .sort((a, b) => a._minCost - b._minCost)
-      .slice(0, 6)
-
-    instruments.forEach(instrument => {
-      console.log(`${instrument.SymbolFull}: ${instrument._minCost}`)
-    })
-
-    return
-
-    const speed = 500
-
-    await clickElement(chrome.client, '.options.dropdown-menu')
-    await setTimeoutPromise(speed)
-    await clickElement(chrome.client, '.drop-select-box-option.edit')
-    let deleted = true
-    while (deleted) {
-      await setTimeoutPromise(speed)
-      deleted = await clickElement(chrome.client,
-        '.table-body.market .table-row.edit .card-head-remove'
-      )
-    }
-    await setTimeoutPromise(speed)
-    await clickElement(chrome.client,
-      '.inner-header-buttons.edit.edit-head .done[ng-show="editMode"]'
-    )
-
-    return
-
-    console.log(`${instruments.length} instruments with min bet <= ${maxBet}$`)
-
-    const infos = new Set(
-      instruments.map(instrument => {
-        const instruId = instrument.InstrumentTypeID
-        const instrumentType = market.instrumentTypes[instruId]
-        let desc = instrumentType.InstrumentTypeDescription
-        const indusId = instrument.StocksIndustryID
-        if (indusId) {
-          const industry = market.stocksIndustries[indusId]
-          desc += ` - Industry: ${industry.IndustryName}`
-        }
-        const exchId = instrument.ExchangeID
-        if (exchId) {
-          const exchange = market.exchangeInfo[exchId]
-          if (exchange) {
-            desc += ` - Exchange: ${exchange.ExchangeDescription}`
-          }
-        }
-        return desc
-      })
-    )
-    console.log(infos)
-
+    await page.goto(urlBase)
   } catch (error) {
     console.error(error)
-    chrome.close()
   }
 }
 
-async function clickElement({ Runtime, Input }, selectors) {
-  const { result: { value: target } } = await Runtime.evaluate({
-    expression: `(${selectors => {
-      const node = document
-        .querySelector(selectors)
-      if (!node) {
-        return
-      }
-      const rect = node.getBoundingClientRect()
-      return {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
-      }
-    }})('${selectors}')`,
-    returnByValue: true,
-  })
+async function receiveClosingPrices(closingPrices) {
+  await db.collection('closingPrices')
+    .insertMany(closingPrices.map(
+      closingPrice => ({
+        date: new Date(),
+        ...closingPrice,
+      })))
+}
 
-  if (target) {
-    const options = { button: 'left', clickCount: 1, ...target }
-    options.type = 'mousePressed'
-    await Input.dispatchMouseEvent(options)
-    options.type = 'mouseReleased'
-    await Input.dispatchMouseEvent(options)
-    return true
-  }
-  return false
+async function receiveDisplayDatas(displayDatas) {
+  await db.collection('displayDatas')
+    .insertMany(displayDatas.InstrumentDisplayDatas.map(
+      instrument => ({
+        date: new Date(),
+        ...instrument,
+      })
+    ))
+}
+
+async function receiveInstruments(instruments) {
+  await db.collection('instruments')
+    .insertMany(instruments.Instruments.map(
+      instrument => ({
+        date: new Date(),
+        ...instrument,
+      })
+    ))
+}
+
+async function receiveGroups(groups) {
+  await receiveInstrumentTypes(groups.InstrumentTypes)
+  await receiveExchangeInfo(groups.ExchangeInfo)
+  await receiveStocksIndustries(groups.StocksIndustries)
+}
+
+async function receiveInstrumentTypes(instrumentTypes) {
+  await db.collection('instrumentTypes')
+    .insertMany(instrumentTypes.map(
+      instrumentType => ({
+        date: new Date(),
+        ...instrumentType,
+      })
+    ))
+}
+
+async function receiveExchangeInfo(exchangeInfo) {
+  await db.collection('exchangeInfo')
+    .insertMany(exchangeInfo.map(
+      exchange => ({
+        date: new Date(),
+        ...exchange,
+      })
+    ))
+}
+
+async function receiveStocksIndustries(stocksIndustries) {
+  await db.collection('stocksIndustries')
+    .insertMany(stocksIndustries.map(
+      industry => ({
+        date: new Date(),
+        ...industry,
+      })
+    ))
+}
+
+async function receiveActivity(activity) {
+  await receiveActivityStates(activity.InstrumentsToActivityState)
+  await receiveRates(activity.Rates)
+}
+
+async function receiveActivityStates(activityStates) {
+  await db.collection('activityStates')
+    .insertMany(Object.keys(activityStates).map(
+      InstrumentId => ({
+        date: new Date(),
+        InstrumentId,
+        ActivityState: activityStates[InstrumentId],
+      })
+    ))
+}
+
+async function receiveRates(rates) {
+  await db.collection('rates').insertMany(rates)
+}
+
+async function receivePrivateInstruments(privateInstruments) {
+  await db.collection('privateInstruments')
+    .insertMany(privateInstruments.PrivateInstruments.map(
+      privateInstrument => ({
+        date: new Date(),
+        ...privateInstrument,
+      })
+    ))
+}
+
+async function receiveInsights(insights) {
+  await db.collection('insights')
+    .insertMany(insights.map(
+      insight => ({
+        date: new Date(),
+        ...insight,
+      })
+    ))
 }
 
 main()
