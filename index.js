@@ -1,3 +1,6 @@
+const os = require('os')
+const path = require('path')
+
 const puppeteer = require('puppeteer')
 
 const MongoLogger = require('./mongo-logger')
@@ -5,7 +8,7 @@ const Sniffer = require('./sniffer')
 
 const chromeOptions = {
   executablePath: 'google-chrome-stable',
-  userDataDir: '/home/volcomix/.config/google-chrome',
+  userDataDir: path.join(os.homedir(), '.config/google-chrome'),
 }
 
 const url = 'https://www.etoro.com'
