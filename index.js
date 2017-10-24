@@ -3,8 +3,9 @@ const path = require('path')
 
 const puppeteer = require('puppeteer')
 
-const MongoLogger = require('./mongo-logger')
 const Sniffer = require('./sniffer')
+const MongoLogger = require('./mongo-logger')
+const ElasticLogger = require('./elastic-logger')
 
 const chromeOptions = {
   executablePath: 'google-chrome-stable',
@@ -21,13 +22,17 @@ class DryMoose {
       const mongoLogger = new MongoLogger()
       await mongoLogger.connect()
 
+      const elasticLogger = new ElasticLogger()
+
       const sniffer = new Sniffer()
       mongoLogger.listen(sniffer)
+      elasticLogger.listen(sniffer)
 
       const page = await browser.newPage()
       sniffer.sniff(page)
 
       await mongoLogger.logOne('executions', { Event: 'start' })
+      await elasticLogger.logOne('executions', { Event: 'start' })
       await page.goto(url)
 
     } catch (error) {

@@ -50,7 +50,7 @@ class Sniffer extends EventEmitter {
     const activityStates = response.InstrumentsToActivityState
     this.receive('activityStates', Object.keys(activityStates).map(
       InstrumentId => ({
-        InstrumentId,
+        InstrumentId: +InstrumentId,
         ActivityState: activityStates[InstrumentId],
       })
     ))
