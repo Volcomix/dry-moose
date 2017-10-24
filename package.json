@@ -7,10 +7,11 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
-    "mongo": "systemctl start mongodb"
+    "mongo": "systemctl start mongodb",
+    "elasticsearch": "systemctl start elasticsearch",
+    "kibana": "systemctl start kibana"
   },
   "dependencies": {
-    "chrome-remote-interface": "^0.25.1",
     "mongodb": "^2.2.33",
     "puppeteer": "^0.12.0"
   },
