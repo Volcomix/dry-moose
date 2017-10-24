@@ -29,34 +29,44 @@ class Sniffer extends EventEmitter {
   }
 
   receiveClosingPrices(response) {
-    this.emit('closingPrices', response)
+    this.receive('closingPrices', response)
   }
 
   receiveDisplayDatas(response) {
-    this.emit('displayDatas', response.InstrumentDisplayDatas)
+    this.receive('displayDatas', response.InstrumentDisplayDatas)
   }
 
   receiveInstruments(response) {
-    this.emit('instruments', response.Instruments)
+    this.receive('instruments', response.Instruments)
   }
 
   receiveGroups(response) {
-    this.emit('instrumentTypes', response.InstrumentTypes)
-    this.emit('exchangeInfo', response.ExchangeInfo)
-    this.emit('stocksIndustries', response.StocksIndustries)
+    this.receive('instrumentTypes', response.InstrumentTypes)
+    this.receive('exchangeInfo', response.ExchangeInfo)
+    this.receive('stocksIndustries', response.StocksIndustries)
   }
 
   receiveActivity(response) {
-    this.emit('activityStates', response.InstrumentsToActivityState)
-    this.emit('rates', response.Rates)
+    const activityStates = response.InstrumentsToActivityState
+    this.receive('activityStates', Object.keys(activityStates).map(
+      InstrumentId => ({
+        InstrumentId,
+        ActivityState: activityStates[InstrumentId],
+      })
+    ))
+    this.receive('rates', response.Rates)
   }
 
   receivePrivateInstruments(response) {
-    this.emit('privateInstruments', response.PrivateInstruments)
+    this.receive('privateInstruments', response.PrivateInstruments)
   }
 
   receiveInsights(response) {
-    this.emit('insights', response)
+    this.receive('insights', response)
+  }
+
+  receive(name, data) {
+    this.emit('data', name, data)
   }
 }
 
