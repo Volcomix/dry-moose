@@ -3,6 +3,7 @@ const path = require('path')
 
 const puppeteer = require('puppeteer')
 
+const Bot = require('./bot')
 const Sniffer = require('./sniffer')
 const Logger = require('./logger')
 const MongoLogger = require('./mongo-logger')
@@ -23,8 +24,11 @@ class DryMoose {
       const logger = new Logger(MongoLogger, ElasticLogger)
       await logger.connect()
 
+      const bot = new Bot()
+
       const sniffer = new Sniffer()
       logger.listen(sniffer)
+      bot.listen(sniffer)
 
       const page = await browser.newPage()
       sniffer.sniff(page)
