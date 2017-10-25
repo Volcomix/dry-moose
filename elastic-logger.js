@@ -13,10 +13,6 @@ class ElasticLogger {
     return `drymoose-${year}-${month}-${day}`
   }
 
-  listen(sniffer) {
-    sniffer.on('data', this.logMany.bind(this))
-  }
-
   logOne(type, doc) {
     return this.client.index({
       index: this.index,

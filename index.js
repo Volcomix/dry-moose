@@ -4,6 +4,7 @@ const path = require('path')
 const puppeteer = require('puppeteer')
 
 const Sniffer = require('./sniffer')
+const Logger = require('./logger')
 const MongoLogger = require('./mongo-logger')
 const ElasticLogger = require('./elastic-logger')
 
@@ -19,20 +20,16 @@ class DryMoose {
     try {
       const browser = await puppeteer.launch({ appMode: true, ...chromeOptions })
 
-      const mongoLogger = new MongoLogger()
-      await mongoLogger.connect()
-
-      const elasticLogger = new ElasticLogger()
+      const logger = new Logger(MongoLogger, ElasticLogger)
+      await logger.connect()
 
       const sniffer = new Sniffer()
-      mongoLogger.listen(sniffer)
-      elasticLogger.listen(sniffer)
+      logger.listen(sniffer)
 
       const page = await browser.newPage()
       sniffer.sniff(page)
 
-      await mongoLogger.logOne('executions', { Event: 'start' })
-      await elasticLogger.logOne('executions', { Event: 'start' })
+      await logger.logOne('executions', { Event: 'start' })
       await page.goto(url)
 
     } catch (error) {

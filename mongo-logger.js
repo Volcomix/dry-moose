@@ -7,10 +7,6 @@ class MongoLogger {
     this.db = await MongoClient.connect(mongoUri)
   }
 
-  listen(sniffer) {
-    sniffer.on('data', this.logMany.bind(this))
-  }
-
   logOne(collection, doc) {
     return this.db.collection(collection).insertOne(
       { Date: new Date(), ...doc }
