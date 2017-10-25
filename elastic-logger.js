@@ -28,8 +28,10 @@ class ElasticLogger {
     const date = new Date()
     return this.client.bulk({
       body: docs.reduce((body, doc) => {
-        body.push({ index: { _index: this.index, _type: type } })
-        body.push({ Date: date, ...doc })
+        body.push(
+          { index: { _index: this.index, _type: type } },
+          { Date: date, ...doc },
+        )
         return body
       }, []),
     })
