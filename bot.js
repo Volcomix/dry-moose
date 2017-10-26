@@ -30,6 +30,8 @@ class Bot {
       return
     }
     await this.updateBidAskSpreads()
+    const instruments = this.getBestInstruments()
+    console.log(instruments)
   }
 
   get isPlayable() {
@@ -57,7 +59,7 @@ class Bot {
     await this.logger.logMany('bidAskSpreads', bidAskSpreads)
     this.bidAskSpreads = bidAskSpreads.reduce(
       (bidAskSpreads, bidAskSpread) => {
-        bidAskSpreads[bidAskSpread.instrumentId] = bidAskSpread
+        bidAskSpreads[bidAskSpread.InstrumentId] = bidAskSpread
         return bidAskSpreads
       }, {}
     )
@@ -73,6 +75,13 @@ class Bot {
       Percent: percent,
       Amount: amount,
     }
+  }
+
+  getBestInstruments() {
+    const bidAskSpreads = Object.keys(this.bidAskSpreads).sort(
+      (a, b) => this.bidAskSpreads[a].Amount - this.bidAskSpreads[b].Amount
+    )
+    return bidAskSpreads.slice(0, 12)
   }
 }
 
