@@ -24,7 +24,7 @@ class DryMoose {
       const logger = new Logger(MongoLogger, ElasticLogger)
       await logger.connect()
 
-      const bot = new Bot()
+      const bot = new Bot(logger)
 
       const sniffer = new Sniffer()
       logger.listen(sniffer)
