@@ -1,3 +1,5 @@
+const maxBet = 50
+
 class Bot {
   listen(sniffer) {
     sniffer.on('data', this.receive.bind(this))
@@ -14,6 +16,33 @@ class Bot {
       docs[doc[key]] = doc
       return docs
     }, {})
+    if (['rates', 'privateInstruments'].includes(name)) {
+      this.update()
+    }
+  }
+
+  update() {
+    if (this.isPlayable) {
+      console.log(this.playableInstruments.length)
+    }
+  }
+
+  get isPlayable() {
+    return this.activityStates
+      && this.instruments
+      && this.closingPrices
+      && this.privateInstruments
+  }
+
+  get playableInstruments() {
+    return Object.keys(this.instruments).filter(
+      id => (
+        this.activityStates[id].ActivityState === true
+        && this.instruments[id].IsDelisted === false
+        && this.closingPrices[id].IsMarketOpen === true
+        && this.privateInstruments[id].MinPositionAmountAbsolute <= maxBet
+      )
+    )
   }
 }
 
