@@ -39,18 +39,20 @@ class Bot {
       && this.privateInstruments
   }
 
+  get playableInstruments() {
+    return Object.keys(this.instruments).filter(
+      id => (
+        this.activityStates[id].ActivityState === true
+        && this.instruments[id].IsDelisted === false
+        && this.closingPrices[id].IsMarketOpen === true
+        && this.privateInstruments[id].MinPositionAmountAbsolute <= maxBet
+      )
+    )
+  }
+
   async updateBidAskSpreads() {
     const bidAskSpreads = this.playableInstruments.map(
-      id => {
-        const rates = this.rates[id]
-        const percent = (rates.Ask - rates.Bid) / rates.Ask
-        const amount = percent * this.privateInstruments[id].MinPositionAmount
-        return {
-          InstrumentId: id,
-          Percent: percent,
-          Amount: amount,
-        }
-      }
+      instrumentId => this.getBidAskSpread(instrumentId)
     )
     await this.logger.logMany('bidAskSpreads', bidAskSpreads)
     this.bidAskSpreads = bidAskSpreads.reduce(
@@ -61,15 +63,16 @@ class Bot {
     )
   }
 
-  get playableInstruments() {
-    return Object.keys(this.instruments).filter(
-      id => (
-        this.activityStates[id].ActivityState === true
-        && this.instruments[id].IsDelisted === false
-        && this.closingPrices[id].IsMarketOpen === true
-        && this.privateInstruments[id].MinPositionAmountAbsolute <= maxBet
-      )
-    )
+  getBidAskSpread(instrumentId) {
+    const rates = this.rates[instrumentId]
+    const instrument = this.privateInstruments[instrumentId]
+    const percent = (rates.Ask - rates.Bid) / rates.Ask
+    const amount = percent * instrument.MinPositionAmount
+    return {
+      InstrumentId: instrumentId,
+      Percent: percent,
+      Amount: amount,
+    }
   }
 }
 
