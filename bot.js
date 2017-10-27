@@ -92,21 +92,17 @@ class Bot {
   }
 
   get bestInstruments() {
-    const bestInstruments = this.playableInstruments.sort(
-      (a, b) => this.bidAskSpreads[a].Amount - this.bidAskSpreads[b].Amount
-    )
-    return bestInstruments.slice(0, 12)
-  }
-
-  get playableInstruments() {
-    return Object.keys(this.instruments).filter(
-      id => (
+    return Object.keys(this.instruments)
+      .filter(id =>
         this.activityStates[id].ActivityState === true
         && this.instruments[id].IsDelisted === false
         && this.closingPrices[id].IsMarketOpen === true
         && this.minAmounts[id].MinAmount <= maxBet
       )
-    )
+      .sort((a, b) =>
+        this.bidAskSpreads[a].Amount - this.bidAskSpreads[b].Amount
+      )
+      .slice(0, 12)
   }
 }
 
