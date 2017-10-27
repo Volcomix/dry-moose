@@ -29,9 +29,9 @@ class Bot {
     if (!this.isPlayable) {
       return
     }
+    await this.updateMinAmounts()
     await this.updateBidAskSpreads()
-    const instruments = this.getBestInstruments()
-    console.log(instruments)
+    console.log(this.bestInstruments)
   }
 
   get isPlayable() {
@@ -41,28 +41,33 @@ class Bot {
       && this.privateInstruments
   }
 
-  get playableInstruments() {
-    return Object.keys(this.instruments).filter(
-      id => (
-        this.activityStates[id].ActivityState === true
-        && this.instruments[id].IsDelisted === false
-        && this.closingPrices[id].IsMarketOpen === true
-        && this.getMinAmount(id) <= maxBet
-      )
+  async updateMinAmounts() {
+    const minAmounts = Object.keys(this.privateInstruments).map(
+      instrumentId => this.getMinAmount(instrumentId)
+    )
+    await this.logger.logMany('minAmounts', minAmounts)
+    this.minAmounts = minAmounts.reduce(
+      (minAmounts, minAmount) => {
+        minAmounts[minAmount.InstrumentId] = minAmount
+        return minAmounts
+      }, {}
     )
   }
 
   getMinAmount(instrumentId) {
     const privateInstrument = this.privateInstruments[instrumentId]
     const maxLeverage = Math.max(...privateInstrument.Leverages)
-    return Math.max(
-      privateInstrument.MinPositionAmount / maxLeverage,
-      privateInstrument.MinPositionAmountAbsolute,
-    )
+    return {
+      InstrumentId: instrumentId,
+      MinAmount: Math.max(
+        privateInstrument.MinPositionAmount / maxLeverage,
+        privateInstrument.MinPositionAmountAbsolute,
+      ),
+    }
   }
 
   async updateBidAskSpreads() {
-    const bidAskSpreads = this.playableInstruments.map(
+    const bidAskSpreads = Object.keys(this.rates).map(
       instrumentId => this.getBidAskSpread(instrumentId)
     )
     await this.logger.logMany('bidAskSpreads', bidAskSpreads)
@@ -86,11 +91,22 @@ class Bot {
     }
   }
 
-  getBestInstruments() {
-    const bidAskSpreads = Object.keys(this.bidAskSpreads).sort(
+  get bestInstruments() {
+    const bestInstruments = this.playableInstruments.sort(
       (a, b) => this.bidAskSpreads[a].Amount - this.bidAskSpreads[b].Amount
     )
-    return bidAskSpreads.slice(0, 12)
+    return bestInstruments.slice(0, 12)
+  }
+
+  get playableInstruments() {
+    return Object.keys(this.instruments).filter(
+      id => (
+        this.activityStates[id].ActivityState === true
+        && this.instruments[id].IsDelisted === false
+        && this.closingPrices[id].IsMarketOpen === true
+        && this.minAmounts[id].MinAmount <= maxBet
+      )
+    )
   }
 }
 
