@@ -43,18 +43,21 @@ class Bot {
 
   get playableInstruments() {
     return Object.keys(this.instruments).filter(
-      id => {
-        const privateInstrument = this.privateInstruments[id]
-        const maxLeverage = Math.max(...privateInstrument.Leverages)
-        const minAmount = Math.max(
-          privateInstrument.MinPositionAmount / maxLeverage,
-          privateInstrument.MinPositionAmountAbsolute,
-        )
-        return this.activityStates[id].ActivityState === true
-          && this.instruments[id].IsDelisted === false
-          && this.closingPrices[id].IsMarketOpen === true
-          && minAmount <= maxBet
-      }
+      id => (
+        this.activityStates[id].ActivityState === true
+        && this.instruments[id].IsDelisted === false
+        && this.closingPrices[id].IsMarketOpen === true
+        && this.getMinAmount(id) <= maxBet
+      )
+    )
+  }
+
+  getMinAmount(instrumentId) {
+    const privateInstrument = this.privateInstruments[instrumentId]
+    const maxLeverage = Math.max(...privateInstrument.Leverages)
+    return Math.max(
+      privateInstrument.MinPositionAmount / maxLeverage,
+      privateInstrument.MinPositionAmountAbsolute,
     )
   }
 
