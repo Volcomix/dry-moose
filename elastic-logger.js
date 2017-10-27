@@ -18,7 +18,7 @@ class ElasticLogger {
       index: this.index,
       type,
       body: {
-        Date: new Date(),
+        date: new Date(),
         ...doc,
       },
     })
@@ -30,7 +30,7 @@ class ElasticLogger {
       body: docs.reduce((body, doc) => {
         body.push(
           { index: { _index: this.index, _type: type } },
-          { Date: date, ...doc },
+          { date, ...doc },
         )
         return body
       }, []),

@@ -9,14 +9,14 @@ class MongoLogger {
 
   logOne(collection, doc) {
     return this.db.collection(collection).insertOne(
-      { Date: new Date(), ...doc }
+      { date: new Date(), ...doc }
     )
   }
 
   logMany(collection, docs) {
     const date = new Date()
     return this.db.collection(collection).insertMany(
-      docs.map(doc => ({ Date: date, ...doc }))
+      docs.map(doc => ({ date, ...doc }))
     )
   }
 }

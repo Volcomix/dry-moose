@@ -33,7 +33,7 @@ class DryMoose {
       const page = await browser.newPage()
       sniffer.sniff(page)
 
-      await logger.logOne('executions', { Event: 'start' })
+      await logger.logOne('executions', { event: 'start' })
       await page.goto(url)
 
     } catch (error) {

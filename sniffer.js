@@ -1,5 +1,7 @@
 const EventEmitter = require('events')
 
+const JsonNormalizer = require('./json-normalizer')
+
 const urlApi = 'https://www.etoro.com/sapi'
 const urlApiStatic = 'https://api.etorostatic.com/sapi'
 
@@ -24,7 +26,9 @@ class Sniffer extends EventEmitter {
       name => request.url.startsWith(urls[name])
     )
     if (name) {
-      this[`receive${name}`](await response.json())
+      const json = await response.json()
+      const normalized = JsonNormalizer.normalize(json)
+      this[`receive${name}`](normalized)
     }
   }
 
@@ -33,32 +37,32 @@ class Sniffer extends EventEmitter {
   }
 
   receiveDisplayDatas(response) {
-    this.receive('displayDatas', response.InstrumentDisplayDatas)
+    this.receive('displayDatas', response.instrumentDisplayDatas)
   }
 
   receiveInstruments(response) {
-    this.receive('instruments', response.Instruments)
+    this.receive('instruments', response.instruments)
   }
 
   receiveGroups(response) {
-    this.receive('instrumentTypes', response.InstrumentTypes)
-    this.receive('exchangeInfo', response.ExchangeInfo)
-    this.receive('stocksIndustries', response.StocksIndustries)
+    this.receive('instrumentTypes', response.instrumentTypes)
+    this.receive('exchangeInfo', response.exchangeInfo)
+    this.receive('stocksIndustries', response.stocksIndustries)
   }
 
   receiveActivity(response) {
-    const activityStates = response.InstrumentsToActivityState
+    const activityStates = response.instrumentsToActivityState
     this.receive('activityStates', Object.keys(activityStates).map(
-      InstrumentId => ({
-        InstrumentId: +InstrumentId,
-        ActivityState: activityStates[InstrumentId],
+      instrumentId => ({
+        instrumentId: +instrumentId,
+        activityState: activityStates[instrumentId],
       })
     ))
-    this.receive('rates', response.Rates)
+    this.receive('rates', response.rates)
   }
 
   receivePrivateInstruments(response) {
-    this.receive('privateInstruments', response.PrivateInstruments)
+    this.receive('privateInstruments', response.privateInstruments)
   }
 
   receiveInsights(response) {

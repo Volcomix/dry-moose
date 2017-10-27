@@ -11,11 +11,9 @@ class Bot {
 
   async receive(name, data) {
     this[name] = data.reduce((docs, doc) => {
-      let key = Object.keys(doc).find(
-        key => /^[Ii]nstrumentI[Dd]$/.test(key)
-      )
-      if (!key) {
-        key = Object.keys(doc).find(key => /I[Dd]$/.test(key))
+      let key = 'instrumentId'
+      if (!doc[key]) {
+        key = Object.keys(doc).find(key => key.endsWith('Id'))
       }
       docs[doc[key]] = doc
       return docs
@@ -48,7 +46,7 @@ class Bot {
     await this.logger.logMany('minAmounts', minAmounts)
     this.minAmounts = minAmounts.reduce(
       (minAmounts, minAmount) => {
-        minAmounts[minAmount.InstrumentId] = minAmount
+        minAmounts[minAmount.instrumentId] = minAmount
         return minAmounts
       }, {}
     )
@@ -56,12 +54,12 @@ class Bot {
 
   getMinAmount(instrumentId) {
     const privateInstrument = this.privateInstruments[instrumentId]
-    const maxLeverage = Math.max(...privateInstrument.Leverages)
+    const maxLeverage = Math.max(...privateInstrument.leverages)
     return {
-      InstrumentId: instrumentId,
-      MinAmount: Math.max(
-        privateInstrument.MinPositionAmount / maxLeverage,
-        privateInstrument.MinPositionAmountAbsolute,
+      instrumentId: +instrumentId,
+      minAmount: Math.max(
+        privateInstrument.minPositionAmount / maxLeverage,
+        privateInstrument.minPositionAmountAbsolute,
       ),
     }
   }
@@ -73,7 +71,7 @@ class Bot {
     await this.logger.logMany('bidAskSpreads', bidAskSpreads)
     this.bidAskSpreads = bidAskSpreads.reduce(
       (bidAskSpreads, bidAskSpread) => {
-        bidAskSpreads[bidAskSpread.InstrumentId] = bidAskSpread
+        bidAskSpreads[bidAskSpread.instrumentId] = bidAskSpread
         return bidAskSpreads
       }, {}
     )
@@ -82,25 +80,21 @@ class Bot {
   getBidAskSpread(instrumentId) {
     const rates = this.rates[instrumentId]
     const instrument = this.privateInstruments[instrumentId]
-    const percent = (rates.Ask - rates.Bid) / rates.Ask
-    const amount = percent * instrument.MinPositionAmount
-    return {
-      InstrumentId: instrumentId,
-      Percent: percent,
-      Amount: amount,
-    }
+    const percent = (rates.ask - rates.bid) / rates.ask
+    const amount = percent * instrument.minPositionAmount
+    return { instrumentId: +instrumentId, percent, amount }
   }
 
   get bestInstruments() {
     return Object.keys(this.instruments)
       .filter(id =>
-        this.activityStates[id].ActivityState === true
-        && this.instruments[id].IsDelisted === false
-        && this.closingPrices[id].IsMarketOpen === true
-        && this.minAmounts[id].MinAmount <= maxBet
+        this.activityStates[id].activityState === true
+        && this.instruments[id].isDelisted === false
+        && this.closingPrices[id].isMarketOpen === true
+        && this.minAmounts[id].minAmount <= maxBet
       )
       .sort((a, b) =>
-        this.bidAskSpreads[a].Amount - this.bidAskSpreads[b].Amount
+        this.bidAskSpreads[a].amount - this.bidAskSpreads[b].amount
       )
       .slice(0, 12)
   }
