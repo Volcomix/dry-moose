@@ -32,7 +32,9 @@ class InstrumentPicker extends EventEmitter {
     }
     await this.updateMinAmounts()
     await this.updateBidAskSpreads()
-    this.emit('pick', new Set(this.bestInstruments.map(
+    const bestInstruments = this.bestInstruments
+    this.logger.logOne('bestInstruments', { bestInstruments })
+    this.emit('pick', new Set(bestInstruments.map(
       id => this.displayDatas[id].symbolFull
     )))
   }
