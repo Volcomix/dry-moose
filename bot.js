@@ -1,102 +1,89 @@
-const maxBet = 50
+const util = require('util')
+const setTimeoutPromise = util.promisify(setTimeout)
+
+const mouseSpeed = 500
 
 class Bot {
-  constructor(logger) {
-    this.logger = logger
+  constructor(page) {
+    this.page = page
   }
 
-  listen(sniffer) {
-    sniffer.on('data', this.receive.bind(this))
+  listen(instrumentPicker) {
+    instrumentPicker.on('pick', this.updateFavorites.bind(this))
   }
 
-  async receive(name, data) {
-    this[name] = data.reduce((docs, doc) => {
-      let key = 'instrumentId'
-      if (!doc[key]) {
-        key = Object.keys(doc).find(key => key.endsWith('Id'))
+  async updateFavorites(names) {
+    console.log(names)
+
+    const rowSelector = '.table-body.market .table-row'
+    const nameSelector = '.table-name-cell .user-info .user-nickname'
+    const favorites = new Set(await this.page.$$eval(
+      `${rowSelector} ${nameSelector}`,
+      spans => spans.map(span => span.textContent)
+    ))
+    console.log(favorites)
+
+    const obsoletes = [...favorites].filter(
+      favorite => !names.has(favorite)
+    )
+    console.log(obsoletes)
+    if (obsoletes.length) {
+      await setTimeoutPromise(mouseSpeed)
+      await this.page.click('.options.dropdown-menu')
+      await setTimeoutPromise(mouseSpeed)
+      await this.page.click('.drop-select-box-option.edit')
+      for (let obsolete of obsoletes) {
+        const rowsHandles = await this.page.$$(`${rowSelector}.edit`)
+        for (let rowHandle of rowsHandles) {
+          const name = await this.page.evaluate(
+            (row, nameSelector) => (
+              row.querySelector(nameSelector).textContent
+            ),
+            rowHandle,
+            nameSelector,
+          )
+          if (name === obsolete) {
+            const closeButton = await this.page.evaluateHandle(
+              row => row.querySelector('.card-head-remove'),
+              rowHandle,
+            )
+            await setTimeoutPromise(mouseSpeed)
+            await closeButton.click()
+            await closeButton.dispose()
+          }
+          await rowHandle.dispose()
+        }
       }
-      docs[doc[key]] = doc
-      return docs
-    }, {})
-    if (['rates', 'privateInstruments'].includes(name)) {
-      await this.update()
-    }
-  }
-
-  async update() {
-    if (!this.isPlayable) {
-      return
-    }
-    await this.updateMinAmounts()
-    await this.updateBidAskSpreads()
-    console.log(this.bestInstruments)
-  }
-
-  get isPlayable() {
-    return this.activityStates
-      && this.instruments
-      && this.closingPrices
-      && this.privateInstruments
-  }
-
-  async updateMinAmounts() {
-    const minAmounts = Object.keys(this.privateInstruments).map(
-      instrumentId => this.getMinAmount(instrumentId)
-    )
-    await this.logger.logMany('minAmounts', minAmounts)
-    this.minAmounts = minAmounts.reduce(
-      (minAmounts, minAmount) => {
-        minAmounts[minAmount.instrumentId] = minAmount
-        return minAmounts
-      }, {}
-    )
-  }
-
-  getMinAmount(instrumentId) {
-    const privateInstrument = this.privateInstruments[instrumentId]
-    const maxLeverage = Math.max(...privateInstrument.leverages)
-    return {
-      instrumentId: +instrumentId,
-      minAmount: Math.max(
-        privateInstrument.minPositionAmount / maxLeverage,
-        privateInstrument.minPositionAmountAbsolute,
-      ),
-    }
-  }
-
-  async updateBidAskSpreads() {
-    const bidAskSpreads = Object.keys(this.rates).map(
-      instrumentId => this.getBidAskSpread(instrumentId)
-    )
-    await this.logger.logMany('bidAskSpreads', bidAskSpreads)
-    this.bidAskSpreads = bidAskSpreads.reduce(
-      (bidAskSpreads, bidAskSpread) => {
-        bidAskSpreads[bidAskSpread.instrumentId] = bidAskSpread
-        return bidAskSpreads
-      }, {}
-    )
-  }
-
-  getBidAskSpread(instrumentId) {
-    const rates = this.rates[instrumentId]
-    const instrument = this.privateInstruments[instrumentId]
-    const percent = (rates.ask - rates.bid) / rates.ask
-    const amount = percent * instrument.minPositionAmount
-    return { instrumentId: +instrumentId, percent, amount }
-  }
-
-  get bestInstruments() {
-    return Object.keys(this.instruments)
-      .filter(id =>
-        this.activityStates[id].activityState === true
-        && this.instruments[id].isDelisted === false
-        && this.closingPrices[id].isMarketOpen === true
-        && this.minAmounts[id].minAmount <= maxBet
+      await setTimeoutPromise(mouseSpeed)
+      await this.page.click(
+        '.inner-header-buttons.edit.edit-head .done[ng-show="editMode"]'
       )
-      .sort((a, b) =>
-        this.bidAskSpreads[a].amount - this.bidAskSpreads[b].amount
-      )
-      .slice(0, 12)
+    }
+
+    const missings = [...names].filter(
+      name => !favorites.has(name)
+    )
+    console.log(missings)
+    if (missings.length) {
+      for (let missing of missings) {
+        await setTimeoutPromise(mouseSpeed)
+        await this.page.click(
+          '.a-head-toolbox .w-search-ph .w-search-icon.sprite'
+        )
+        await setTimeoutPromise(mouseSpeed)
+        await this.page.type(
+          '.a-head-toolbox .w-search-ph .w-search-input',
+          missing,
+          { delay: 100 },
+        )
+        await setTimeoutPromise(mouseSpeed)
+        await this.page.click(
+          '.a-head-toolbox .w-search-ph .autocomplete-ph'
+          + ' .w-search-results-ph .w-search-results'
+          + ' .i-search-result .i-search-result-button-ph'
+        )
+      }
+    }
   }
 }
 
