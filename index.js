@@ -3,12 +3,12 @@ const path = require('path')
 
 const puppeteer = require('puppeteer')
 
-const Sniffer = require('./sniffer')
-const Logger = require('./logger')
-const MongoLogger = require('./mongo-logger')
-const ElasticLogger = require('./elastic-logger')
-const InstrumentPicker = require('./instrument-picker')
-const Bot = require('./bot')
+const Sniffer = require('./lib/sniffer')
+const Logger = require('./lib/logger')
+const MongoLogger = require('./lib/mongo-logger')
+const ElasticLogger = require('./lib/elastic-logger')
+const InstrumentPicker = require('./lib/instrument-picker')
+const Bot = require('./lib/bot')
 
 const chromeOptions = {
   executablePath: 'google-chrome-unstable',
