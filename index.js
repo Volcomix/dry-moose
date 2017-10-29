@@ -45,4 +45,6 @@ class DryMoose {
   }
 }
 
+process.on('unhandledRejection', error => { throw error })
+
 new DryMoose().run()
