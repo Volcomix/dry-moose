@@ -34,7 +34,7 @@ class DryMoose {
       instrumentPicker.listen(sniffer)
 
       const bot = new Bot(page)
-      bot.listen(instrumentPicker)
+      await bot.listen(instrumentPicker)
 
       await logger.logOne('executions', { event: 'start' })
       await page.goto(url)
