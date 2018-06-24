@@ -11,7 +11,7 @@ const urls = {
   Instruments: `${urlApiStatic}/trade-real/instruments?InstrumentDataFilters`,
   Groups: `${urlApiStatic}/app-data/web-client/app-data/instruments-groups.json`,
   Activity: `${urlApi}/trade-real/instruments/?InstrumentDataFilters`,
-  PrivateInstruments: `${urlApi}/trade-real/instruments/private?InstrumentDataFilters`,
+  PrivateInstruments: `${urlApi}/trade-real/instruments/private/index`,
   Insights: `${urlApi}/insights/insights/uniques`,
 }
 
@@ -21,11 +21,15 @@ class Sniffer extends EventEmitter {
   }
 
   async receiveResponse(response) {
+    if (!response.ok()) {
+      return
+    }
     const request = response.request()
     const name = Object.keys(urls).find(
-      name => request.url.startsWith(urls[name])
+      name => request.url().startsWith(urls[name])
     )
     if (name) {
+      console.log(request.url())
       const json = await response.json()
       const normalized = JsonNormalizer.normalize(json)
       this[`receive${name}`](normalized)

@@ -39,10 +39,18 @@ class InstrumentPicker extends EventEmitter {
   }
 
   get isPlayable() {
-    return this.activityStates
+    const isDataAvailable = this.activityStates
       && this.instruments
       && this.closingPrices
       && this.privateInstruments
+    if (isDataAvailable) {
+      const ratesLength = Object.keys(this.rates).length
+      const privateInstrumentsLength = Object.keys(this.privateInstruments).length
+      console.log('ratesLength:', ratesLength)
+      console.log('privateInstrumentsLength:', privateInstrumentsLength)
+      return privateInstrumentsLength >= ratesLength
+    }
+    return false
   }
 
   async updateMinAmounts() {
@@ -84,11 +92,17 @@ class InstrumentPicker extends EventEmitter {
   }
 
   getBidAskSpread(instrumentId) {
-    const { bid, ask } = this.rates[instrumentId]
-    const { minPositionAmount } = this.privateInstruments[instrumentId]
-    const percent = (ask - bid) / ask
-    const amount = percent * minPositionAmount
-    return { instrumentId: +instrumentId, percent, amount }
+    try {
+      const { bid, ask } = this.rates[instrumentId]
+      const { minPositionAmount } = this.privateInstruments[instrumentId]
+      const percent = (ask - bid) / ask
+      const amount = percent * minPositionAmount
+      return { instrumentId: +instrumentId, percent, amount }
+    } catch (error) {
+      console.log(this.privateInstruments)
+      console.error('Error getting bid/ask spread for:', instrumentId)
+      throw error
+    }
   }
 
   get bestInstruments() {

@@ -1,10 +1,12 @@
 const MongoClient = require('mongodb').MongoClient
 
-const mongoUri = 'mongodb://localhost:27017/drymoose'
+const url = 'mongodb://localhost:27017'
+const dbName = 'drymoose'
 
 class MongoLogger {
   async connect() {
-    this.db = await MongoClient.connect(mongoUri)
+    const client = await MongoClient.connect(url)
+    this.db = client.db(dbName)
   }
 
   logOne(collection, doc) {
