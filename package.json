@@ -6,15 +6,10 @@
   "author": "Volcomix",
   "license": "MIT",
   "scripts": {
-    "start": "node .",
-    "mongo": "systemctl start mongodb",
-    "elasticsearch": "systemctl start elasticsearch",
-    "kibana": "systemctl start kibana"
+    "start": "node ."
   },
   "dependencies": {
-    "elasticsearch": "^13.3.1",
-    "mongodb": "^2.2.33",
-    "puppeteer": "^0.12.0"
+    "puppeteer": "^1.6.0"
   },
   "repository": {
     "type": "git",

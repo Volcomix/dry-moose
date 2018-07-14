@@ -1,52 +1,29 @@
-const os = require('os')
-const path = require('path')
+const Chrome = require('./lib/chrome')
+const Login = require('./lib/login')
+const DemoMode = require('./lib/demo-mode')
+const Market = require('./lib/market')
+const Chart = require('./lib/chart')
 
-const puppeteer = require('puppeteer')
-
-const Sniffer = require('./lib/sniffer')
-const Logger = require('./lib/logger')
-const MongoLogger = require('./lib/mongo-logger')
-const ElasticLogger = require('./lib/elastic-logger')
-const InstrumentPicker = require('./lib/instrument-picker')
-const Bot = require('./lib/bot')
-
-const chromeOptions = {
-  executablePath: 'google-chrome-unstable',
-  userDataDir: path.join(os.homedir(), '.config/google-chrome'),
-}
-
-const url = 'https://www.etoro.com/watchlists'
+const chromePath = 'google-chrome-unstable'
+const demoMode = true
 
 class DryMoose {
   async run() {
-    try {
-      const browser = await puppeteer.launch({ appMode: true, ...chromeOptions })
-      const page = await browser.newPage()
-
-      const sniffer = new Sniffer()
-      sniffer.sniff(page)
-
-      const logger = new Logger(MongoLogger, ElasticLogger)
-      await logger.connect()
-      logger.listen(sniffer)
-
-      const instrumentPicker = new InstrumentPicker(logger)
-      instrumentPicker.listen(sniffer)
-
-      const bot = new Bot(page)
-      await bot.listen(instrumentPicker)
-
-      logger.watch(bot)
-
-      await logger.logOne('executions', { event: 'start' })
-      await page.goto(url)
-
-    } catch (error) {
-      console.error(error)
-    }
+    const page = await new Chrome().launch(chromePath)
+    await new Login(page).wait()
+    await new DemoMode(page).set(demoMode)
+    const market = new Market(page)
+    await market.discover()
+    const instruments = await market.filter()
+    const chart = new Chart(page)
+    await chart.open()
+    await chart.load(instruments)
+    await chart.read()
   }
 }
 
-process.on('unhandledRejection', error => { throw error })
+process.on('unhandledRejection', error => {
+  throw error
+})
 
 new DryMoose().run()
