@@ -13,7 +13,7 @@ class DryMoose {
     await new DemoMode(page).set(demoMode)
     const market = new Market(page)
     await market.discover()
-    await market.filter()
+    const instruments = await market.filter()
   }
 }
 
