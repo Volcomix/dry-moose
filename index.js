@@ -18,6 +18,7 @@ class DryMoose {
     const chart = new Chart(page)
     await chart.open()
     await chart.load(instruments)
+    await chart.read()
   }
 }
 
