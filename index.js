@@ -11,7 +11,9 @@ class DryMoose {
     const page = await new Chrome().launch(chromePath)
     await new Login(page).wait()
     await new DemoMode(page).set(demoMode)
-    await new Market(page).discover()
+    const market = new Market(page)
+    await market.discover()
+    await market.filter()
   }
 }
 
