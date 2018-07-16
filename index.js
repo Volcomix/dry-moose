@@ -3,6 +3,7 @@ const Login = require('./lib/login')
 const DemoMode = require('./lib/demo-mode')
 const Market = require('./lib/market')
 const Chart = require('./lib/chart')
+const Ai = require('./lib/ai')
 
 const chromePath = 'google-chrome-unstable'
 const demoMode = true
@@ -19,6 +20,7 @@ class DryMoose {
     await chart.open()
     await chart.load(instruments)
     const data = await chart.read()
+    new Ai().learn(data)
   }
 }
 
