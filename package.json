@@ -9,7 +9,7 @@
     "start": "node ."
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^0.12.2",
+    "@tensorflow/tfjs": "^0.12.3",
     "@tensorflow/tfjs-node": "^0.1.9",
     "puppeteer": "^1.6.0"
   },
