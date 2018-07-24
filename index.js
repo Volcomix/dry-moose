@@ -20,7 +20,7 @@ class DryMoose {
     await chart.open()
     await chart.load(instruments)
     const data = await chart.read()
-    new Ai().learn(data)
+    await new Ai().learn(data)
   }
 }
 
