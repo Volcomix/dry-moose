@@ -5,7 +5,9 @@ const Market = require('./lib/market')
 const Chart = require('./lib/chart')
 const Ai = require('./lib/ai')
 
+/** Set undefined to run a bundled version of Chromium */
 const chromePath = 'google-chrome-unstable'
+
 const demoMode = true
 
 class DryMoose {
