@@ -1,33 +1,13 @@
-const Chrome = require('./lib/chrome')
-const Login = require('./lib/login')
-const DemoMode = require('./lib/demo-mode')
-const Market = require('./lib/market')
-const Chart = require('./lib/chart')
-const Ai = require('./lib/ai')
+const app = require('express')()
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
 
-/** Set undefined to run a bundled version of Chromium */
-const chromePath = 'google-chrome-unstable'
+const Browser = require('./lib/browser')
 
-const demoMode = true
+server.listen(4000)
 
-class DryMoose {
-  async run() {
-    const page = await new Chrome().launch(chromePath)
-    await new Login(page).wait()
-    await new DemoMode(page).set(demoMode)
-    const market = new Market(page)
-    await market.discover()
-    const instruments = await market.filter()
-    const chart = new Chart(page)
-    await chart.open()
-    await chart.load(instruments)
-    const data = await chart.read()
-    await new Ai(page).learn(data)
-  }
-}
-
-process.on('unhandledRejection', error => {
-  throw error
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html')
 })
 
-new DryMoose().run()
+new Browser(io)
