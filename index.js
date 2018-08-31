@@ -4,6 +4,7 @@ const io = require('socket.io')(server)
 
 const Browser = require('./lib/browser')
 const EToro = require('./lib/etoro')
+const Market = require('./lib/market')
 
 server.listen(4000)
 
@@ -12,7 +13,8 @@ app.get('/', (req, res) => {
 })
 
 const browser = new Browser(io)
-new EToro(browser, io)
+const eToro = new EToro(browser, io)
+new Market(eToro, io)
 
 process.on('unhandledRejection', error => {
   throw error
