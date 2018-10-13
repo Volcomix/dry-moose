@@ -9,6 +9,7 @@ const Filter = require('./lib/Filter')
 const ProCharts = require('./lib/ProCharts')
 const Chart = require('./lib/Chart')
 const Price = require('./lib/Price')
+const WebGL = require('./lib/WebGL')
 
 server.listen(4000)
 
@@ -23,6 +24,7 @@ const filter = new Filter(market, io)
 const proCharts = new ProCharts(browser, eToro, io)
 new Chart(proCharts, filter, io)
 new Price(proCharts, filter, io)
+new WebGL(browser, io)
 
 process.on('unhandledRejection', error => {
   throw error
